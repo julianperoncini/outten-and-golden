@@ -1,0 +1,30 @@
+
+
+{{ function('wp_footer') }}
+
+<div class="fixed inset-0 grid grid-cols-12 gap-x-20 z-[9999] px-20 pointer-events-none opacity-10 js-template-grid">
+    {% for i in 0..11 %}
+        <div class="col-span-1 bg-[#F00]"></div>
+    {% endfor %}
+</div>
+
+<script>
+    // Create a global array of all client image HTML
+    window.clientImageHTML = [
+        {% for client in options.client %}
+            {% set image_html %}
+                {{ client.image|get_timber_picture_responsive('medium', {
+                    img_class: 'w-full max-w-[20rem] s:max-w-[25rem] h-auto object-cover',
+                    lazy_srcset: false,
+                    lazy_src: false,
+                    lazy_sizes: false,
+                    draggable: false
+                })|raw }}
+            {% endset %}
+            {{ image_html|json_encode|raw }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+/**
+    * Draggable
+*/
+.slider-container {
+    display: flex;
+    height: 100%;
+}
+
+.is-hovering {
+    .slider-cursor {
+        .slider-cursor-inner {
+            opacity: 1;
+            transform: scale(1) rotate(-180deg);
+        }
+
+        &.prev-hover {
+            .slider-cursor-inner {
+                transform: scale(1) rotate(-180deg);
+            }
+        }
+
+        &.next-hover {
+            .slider-cursor-inner {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+    }
+}
+
+.slider-item {
+    margin-left: 2rem;
+    flex: 0 0 auto;
+
+    &:last-child {
+        margin-right: 4rem;
+    }
+}
+
+.slider-cursor {
+    pointer-events: none;
+
+    .slider-cursor-inner {
+        opacity: 0;
+        transform: scale(0) rotate(-90deg);
+        transition: transform .375s cubic-bezier(.625, .05, 0, 1), opacity .375s cubic-bezier(.625, .05, 0, 1);
+    }
+}

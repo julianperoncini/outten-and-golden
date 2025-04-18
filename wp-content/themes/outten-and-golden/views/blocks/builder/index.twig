@@ -1,0 +1,7 @@
+{% set data = props.data %}
+
+{% for item in data.items %}
+    {{ include('blocks/builder/modules/' ~ item.acf_fc_layout ~ '/index.twig', {
+        item: item
+    }, ignore_missing = true) }}
+{% endfor %}	

@@ -1,0 +1,31 @@
+{# Component accepts:
+   - text: string (required)
+   - href: string (optional)
+   - bgColor: string (optional, default: 'bg-white')
+   - textColor: string (optional, default: 'text-green')
+   - class: string (optional)
+#}
+
+{% set props = {
+    text: data.text ?? '',
+    href: data.href ?? false,
+    bgColor: data.bgColor ?? 'bg-white',
+    textColor: data.textColor ?? 'text-green',
+    class: data.class ?? ''
+} %}
+
+{% set base_classes = "relative flex items-center justify-center py-12 px-16 text-12 font-medium leading-none tracking-[0.12rem] uppercase" %}
+{% set element_classes = [
+    base_classes,
+    props.bgColor,
+    props.textColor,
+    props.class
+] | join(' ') %}
+
+<div class="relative flex">
+    {% if props.href %}
+        <a class="{{ element_classes }}" href="{{ props.href }}">{{ props.text }}</a>
+    {% else %}
+        <div class="{{ element_classes }}">{{ props.text }}</div>
+    {% endif %}
+</div>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html {{ site.language_attributes }}>
+
+<head itemscope>
+	<meta charset="{{ site.charset }}" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="robots" content="all">
+	<meta name="format-detection" content="telephone=no">
+	
+	<link rel="author" href="{{ site.theme.link }}/humans.txt" />
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+
+	{{ function('wp_head') }}
+	
+  	<style>@font-face{font-family:'sans';src:url('{{ theme.link }}/src/fonts/PPNeueMontreal-Medium.woff2') format('woff2'),url('{{ theme.link }}/src/fonts/PPNeueMontreal-Medium.woff') format('woff');font-weight:500;font-style:normal;font-display:swap}@font-face{font-family:'sans';src:url('{{ theme.link }}/src/fonts/PPNeueMontreal-Bold.woff2') format('woff2'),url('{{ theme.link }}/src/fonts/PPNeueMontreal-Bold.woff') format('woff');font-weight:700;font-style:normal;font-display:swap}@font-face{font-family:'disp';src:url('{{ theme.link }}/src/fonts/NON-Natural-Grotesk-Medium.woff2') format('woff2'),url('{{ theme.link }}/src/fonts/NON-Natural-Grotesk-Medium.woff') format('woff');font-weight:500;font-style:normal;font-display:swap}</style>
+
+	<!-- Favicons -->
+	<link rel="apple-touch-icon" href="{{ theme.link }}/static/fav/apple-touch-icon.png" />
+	<link rel="icon" type="image/png" href="{{ theme.link }}/static/fav/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/ico" href="{{ theme.link }}/static/fav/favicon.ico" />
+	<link rel="icon" type="image/svg+xml" href="{{ theme.link }}/static/fav/favicon.svg" />
+	<link rel="manifest" href="{{ theme.link }}/static/fav/site.webmanifest" />
+	<link rel="apple-touch-icon" href="{{ theme.link }}/static/fav/web-app-manifest-192x192.png" sizes="192x192" />
+	<link rel="apple-touch-icon" href="{{ theme.link }}/static/fav/web-app-manifest-512x512.png" sizes="512x512" />
+	<meta name="application-name" content="Your App Name"/>
+	<meta name="msapplication-TileColor" content="#FFFFFF" />
+	<meta name="theme-color" content="#FFFFFF" />
+
+	<script>
+		if (history.scrollRestoration) {
+			history.scrollRestoration = 'manual';
+		}
+  </script>	
+	
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+</head>
+
+<body class="is-loading {{ body_class }}" data-nav="">
+
+	{# WP-Adminbar #}
+	{{ function('wp_body_open') }}
+
+	{# Transition mask #}
+	<div class="mask fixed top-0 left-0 w-full h-full bg-black z-[9] pointer-events-none js-transition-mask"></div>
+
+	{# Header #}
+	<header class="fixed top-0 left-0 w-full flex px-20 py-20 justify-between z-5 s:text-white">
+	    {% block header %}{% endblock %}
+	</header>
+
+	{% include './_site_grid.twig' %}
+	

@@ -1,0 +1,34 @@
+<section class="relative">
+    <div class="site-max pt-250 pb-160">
+        <div class="site-grid">
+            <div class="col-start-1 col-span-full">
+                <div class="relative pb-95 flex flex-col items-center justify-center space-y-40">
+                    <div class="relative">
+                        <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
+                    </div>
+                    <div class="relative max-w-[102.6rem] mx-auto">
+                        <h1 class="text-center text-76 font-normal leading-[1.1] tracking-[-0.152rem] text-green">{{ item.title }}</h1>
+                    </div>
+                    <div class="relative">
+                        <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">{{ item.link.title }}</a>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-center">
+                    {% include "blocks/common/image.twig" with {
+                        props : {
+                            data: {
+                                image : item.image
+                            },
+                            options: {
+                                container_class: 'w-[85rem] rounded-[6.4rem] overflow-hidden',
+                                class : 'w-full h-full object-cover',
+                                aspect_ratio: '76.38%',
+                            }
+                        }
+                    } %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,49 @@
+{#
+	# Responsive Image Component
+	#
+	# @param {Object}        props                         - Image's properties
+	#-- @param {Object}      data                          - Image's data
+	#---- @param {Object}    image                         - Image's properties (desktop)
+	#-- @param {Object}      options                       - Image's options
+	#---- @param {String}    class                         - Image's class
+	#---- @param {String}    style                         - Image's style
+	#---- @param {Boolean}   draggable                     - Image's draggable
+	#---- @param {String}    decoding                      - Image's decoding
+	#---- @param {Number}    tabindex                      - Image's tabindex
+	#---- @param {String}    aspect_ratio                  - Image's aspect ratio (default: '62.5%')
+	#---- @param {String}    size                          - Timber image size (default: 'large')
+	#---- @param {String}    container_class               - Additional container classes
+	#---- @param {Boolean}   lazy_load                     - Enable lazy loading (default: true)
+#}
+
+{% set data = props.data|default({}) %}
+{% set options = props.options|default({}) %}
+
+{% set image = data.image|default(null) %}
+{% set class = options.class|default('w-full h-full object-cover') %}
+{% set style = options.style|default('') %}
+{% set draggable = options.draggable|default(false) %}
+{% set decoding = options.decoding|default('async') %}
+{% set tabindex = options.tabindex|default(null) %}
+{% set aspect_ratio = options.aspect_ratio|default('62.5%') %}
+{% set size = options.size|default('large') %}
+{% set container_class = options.container_class|default('') %}
+{% set lazy_load = options.lazy_load|default(false) %}
+
+{% if image %}
+	<div class="relative {{ container_class }}">
+		<div class="aspect" style="--aspect: {{ aspect_ratio }}"></div>
+		<picture class="absolute top-0 left-0 size-full bg-grey">
+		{{ image|get_timber_picture_responsive(size, {
+			img_class: class,
+			img_style: style,
+			img_draggable: draggable ? 'true' : 'false',
+			img_decoding: decoding,
+			img_tabindex: tabindex,
+			lazy_srcset: lazy_load,
+			lazy_src: lazy_load,
+			lazy_sizes: lazy_load
+		}) }}
+		</picture>
+	</div>
+{% endif %}

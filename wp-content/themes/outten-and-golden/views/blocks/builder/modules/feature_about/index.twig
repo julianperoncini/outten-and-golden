@@ -1,0 +1,33 @@
+<section class="relative bg-grey">
+    <div class="site-max py-120">
+        <div class="site-grid space-y-40">
+            <div class="relative col-start-2 col-span-3">
+                <h5 class="text-grey-taupe text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
+            </div>
+
+            <div class="relative col-start-2 col-span-14">
+                <h2 class="text-white-smoke text-48 font-normal leading-[1.2] tracking-[-0.096rem]">{{ item.title }}</h2>
+            </div>
+
+            <div class="relative col-start-2 col-span-3">
+                <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-grey py-15 px-25 bg-white-smoke uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                    <span class="inline-flex">
+                        {{ item.link.title }}
+                    </span>
+                    <span class="inline-flex">
+                        <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_5001_23171)">
+                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="#7A7871" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_5001_23171">
+                                    <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

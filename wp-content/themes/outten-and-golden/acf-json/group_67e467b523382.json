@@ -1,0 +1,191 @@
+{
+    "key": "group_67e467b523382",
+    "title": "Content Builder",
+    "fields": [
+        {
+            "key": "field_67e5a7900b8bd",
+            "label": "Builder",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "left",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_67e467b5260d2",
+            "label": "Content Builder",
+            "name": "content_builder",
+            "aria-label": "",
+            "type": "flexible_content",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layouts": {
+                "layout_67e57a5ae4d32": {
+                    "key": "layout_67e57a5ae4d32",
+                    "name": "feature_intro",
+                    "label": "Feature Intro",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_67e57aa68e151",
+                            "label": "Feature Intro",
+                            "name": "feature_intro",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_67e463bca6550"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_67e5960a42945": {
+                    "key": "layout_67e5960a42945",
+                    "name": "feature_cases",
+                    "label": "Feature Cases",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_67e5961842948",
+                            "label": "Feature Cases",
+                            "name": "feature_cases",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_67e46807d66b7"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_67e5cdc379faa": {
+                    "key": "layout_67e5cdc379faa",
+                    "name": "feature_about",
+                    "label": "Feature About",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_67e5cdcd79fad",
+                            "label": "Feature About",
+                            "name": "feature_about",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_67e46818e4085"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_67e5cea54e9f3": {
+                    "key": "layout_67e5cea54e9f3",
+                    "name": "feature_philanthropy",
+                    "label": "Feature Philanthropy",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_67e5ceac4e9f6",
+                            "label": "Feature Philanthropy",
+                            "name": "feature_philanthropy",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_67e46833f092d"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            },
+            "min": "",
+            "max": "",
+            "button_label": "Add Component"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1743113922
+}

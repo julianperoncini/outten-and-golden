@@ -1,0 +1,171 @@
+/* ==========================
+Imports - Must be first!
+	========================== */
+@use 'fonts';
+@use 'lenis';
+@use 'links';
+@use 'vimeo';
+@use 'draggable';
+@use 'form';
+
+/* ==========================
+	Tailwind
+	========================== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+* Root Variables
+*/
+:root {
+	--size: 375;
+	--b-l-h: 1.2;
+	--h-l-h: 0.85;
+	--c-l: 1;
+}
+
+@screen s {
+	:root {
+		--size: 1500;
+	}
+}
+
+@screen l {
+	:root {
+		--size: 1500;
+	}
+}
+
+/**
+* Mixin
+*/
+@mixin fluid($properties, $value) {
+	@each $property in $properties {
+		#{$property}: calc(#{$value} * (100vw / var(--size)));
+	}
+}
+
+@mixin lhCrop($line-height, $capital-letter: 1) {
+	&::before {
+		content: '';
+		display: block;
+		height: 0;
+		//width: 0;
+		top: calc((#{$capital-letter} - #{$line-height}) * 1rem);
+	}
+}
+
+
+/**
+* Defaults
+*/
+
+html,
+body {
+	height: auto;
+	overscroll-behavior: none;
+	width: 100%;
+}
+
+html {
+	@include fluid(font-size, 10);
+	@apply subpixel-antialiased antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	-font-smoothing: antialiased;
+	touch-action: manipulation;
+}
+
+body {
+	@apply text-18 s:text-20 font-sans font-medium leading-none;
+	line-height: 2.4rem;
+	@apply text-black;
+
+	&.admin-bar {
+		header {
+			top: var(--wp-admin--admin-bar--height);
+		}
+	}
+}
+
+main {
+	@apply relative;
+	@apply w-full;
+}
+
+
+/* ==========================
+	Grid
+	========================== */
+
+.site-gutter {
+	@apply px-32;
+}
+
+.site-grid {
+	@apply grid grid-cols-4 s:grid-cols-16 mx-auto w-full gap-x-24;
+}
+
+.site-max {
+	@apply max-w-[32.9rem] s:max-w-[137.5rem] mx-auto w-full;
+}
+
+/* ==========================
+	Aspect
+	========================== */
+.aspect {
+		padding-top: var(--aspect);
+}
+
+/* ==========================
+	Mask
+	========================== */
+.mask {
+		clip-path: inset(100% 0 0 0);
+}
+
+/* ==========================
+	Slash
+	========================== */
+.slash {
+	&:after {
+		content: '/';
+	}
+}
+
+/* ==========================
+	Img
+	========================== */
+.img {
+	@apply relative;
+
+	img {
+		@apply w-full h-full object-cover;
+	}
+}
+
+/* ==========================
+	Line
+	========================== */
+.line {
+	transform-origin: top left;
+	padding-bottom: 0.4rem;
+	white-space: nowrap;
+	will-change: transform;
+
+	.contant-link & {
+		padding-bottom: 2rem;
+	}
+}
+
+/* ==========================
+	Grid
+	========================== */
+.js-template-grid {
+	@apply opacity-0;
+
+	&.is-active {
+		@apply opacity-10;
+	}
+}

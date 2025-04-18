@@ -1,0 +1,15 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view class="page-client-stories">
+		<div class="app">
+			{% for item in content_builder %}
+				{{ include('blocks/' ~ item.acf_fc_layout ~ '.twig', {
+					item: item
+				}, ignore_missing = true) }}
+			{% endfor %}		
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}

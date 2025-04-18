@@ -1,0 +1,11 @@
+{
+    "require": {
+        "timber/timber": "^2.1",
+        "mindkomm/timmy": "^2.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}

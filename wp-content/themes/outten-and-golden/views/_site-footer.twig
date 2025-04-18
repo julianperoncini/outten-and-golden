@@ -1,0 +1,21 @@
+
+<footer class="bg-black overflow-hidden text-white js-sfoot">
+    <div class="will-change-transform">
+        {% if footer_menu_1 %}
+            <ul class="">
+                {% for item in footer_menu_1.items %}
+                    <li>
+                        {{ item.title }}
+                        {% if item.children %}
+                            <ul class="ml-20">
+                                {% for child in item.children %}
+                                    <li>{{ child.title }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</footer>

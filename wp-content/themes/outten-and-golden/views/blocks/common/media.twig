@@ -1,0 +1,22 @@
+{% set data = props.data %}
+{% set options = props.options %}
+{% set class = options.class | default(false) %}
+{% set style = options.style | default(false) %}
+
+<div class="media-container {{ class }}" style="{{ style }}">
+	{% if data.type == 'image' %}
+		{# PHASE 1 #}
+		<figure>
+		{% include "components/common/image.twig" with {
+			props : {
+				data: {
+					image : data.image
+				}
+			}
+		} %}
+		</figure>
+	{% else %}
+		{# PHASE 2 #}
+		<video src="{{ data.desktop_video_file.url }}" playsinline muted autoplay></video>
+	{% endif %}
+</div>

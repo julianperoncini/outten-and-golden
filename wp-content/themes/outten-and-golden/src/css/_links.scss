@@ -1,0 +1,58 @@
+/**
+  * Links styles
+*/
+.ulink {
+    text-decoration: none;
+    position: relative;
+
+    &.is-active {
+        &:before {
+            transform: scaleX(1) rotate(0.001deg);
+        }
+    }
+}
+
+.ulink::before,
+.ulink.is-full::before,
+.ulink.is-full::after{
+    content: "";
+    position: absolute;
+    bottom: -0.1em;
+    left: 0;
+    width: 100%;
+    height: 0.0625em;
+    background-color: currentColor;
+    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+    transform-origin: right;
+    transform: scaleX(0) rotate(0.001deg);
+}
+
+.ulink:hover::before {
+    transform-origin: left;
+    transform: scaleX(1) rotate(0.001deg);
+}
+
+/* Full link */
+.ulink.is-full::before {
+    transform-origin: left;
+    transform: scaleX(1) rotate(0.001deg);
+    transition-delay: 0.3s;
+}
+
+.ulink.is-full:hover::before {
+    transform-origin: right;
+    transform: scaleX(0) rotate(0.001deg);
+    transition-delay: 0s;
+}
+
+.ulink.is-full::after {
+    transform-origin: right;
+    transform: scaleX(0) rotate(0.001deg);
+    transition-delay: 0s;
+}
+
+.ulink.is-full:hover::after {
+    transform-origin: left;
+    transform: scaleX(1) rotate(0.001deg);
+    transition-delay: 0.3s;
+}

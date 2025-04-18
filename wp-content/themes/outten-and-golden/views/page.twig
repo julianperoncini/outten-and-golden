@@ -1,0 +1,17 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view>
+		<div class="app">
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: content_builder
+					}
+				}
+			} %}
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}
