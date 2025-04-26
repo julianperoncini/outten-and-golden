@@ -67,11 +67,10 @@ initTaxi.on('NAVIGATE_IN', (e) => {
 })
 
 const grid = document.querySelector('.js-template-grid')
-
 document.addEventListener('keydown', (e) => {
-	if (e.key === 'g') {
-		grid.classList.toggle('is-active')
-	}
+    if (e.shiftKey && e.key === 'G') {
+        grid.classList.toggle('is-active')
+    }
 })
 
 // Export initialized modules

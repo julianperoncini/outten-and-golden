@@ -1,4 +1,5 @@
 import preloader from './preloader'
+import search from './search'
 import lazyload from './lazyload'
 import menu from './menu'
 import split from './split'
@@ -9,6 +10,7 @@ import lazy from './lazy'
 export {
     preloader,
     lazyload,
+    search,
     menu,
     split,
     triggered,

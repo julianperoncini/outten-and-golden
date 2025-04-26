@@ -19,21 +19,19 @@ Imports - Must be first!
 * Root Variables
 */
 :root {
-	--size: 375;
-	--b-l-h: 1.2;
-	--h-l-h: 0.85;
-	--c-l: 1;
-}
-
-@screen s {
-	:root {
-		--size: 1500;
-	}
+	--size: 393;
+	--clamp: 16px;
 }
 
 @screen l {
 	:root {
-		--size: 1500;
+		--size: 1440;
+	}
+}
+
+@screen 3xl {
+	:root {
+		--size: 1920;
 	}
 }
 
@@ -41,21 +39,10 @@ Imports - Must be first!
 * Mixin
 */
 @mixin fluid($properties, $value) {
-	@each $property in $properties {
-		#{$property}: calc(#{$value} * (100vw / var(--size)));
-	}
+  @each $property in $properties {
+    #{$property}: calc(#{$value} * (100vw / var(--size)));
+  }
 }
-
-@mixin lhCrop($line-height, $capital-letter: 1) {
-	&::before {
-		content: '';
-		display: block;
-		height: 0;
-		//width: 0;
-		top: calc((#{$capital-letter} - #{$line-height}) * 1rem);
-	}
-}
-
 
 /**
 * Defaults
@@ -69,18 +56,21 @@ body {
 }
 
 html {
-	@include fluid(font-size, 10);
+	font-size: clamp(1px, calc(10 * (100vw / var(--size))), var(--clamp));
+	//@include fluid(font-size, 10);
+	font-kerning: none;
+	font-variant-ligatures: common-ligatures;
 	@apply subpixel-antialiased antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-	-font-smoothing: antialiased;
-	touch-action: manipulation;
+    -webkit-text-size-adjust: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-	@apply text-18 s:text-20 font-sans font-medium leading-none;
+	@apply text-14 font-sans;
 	line-height: 2.4rem;
 	@apply text-black;
+	min-height: 100vh;
 
 	&.admin-bar {
 		header {
@@ -99,39 +89,51 @@ main {
 	Grid
 	========================== */
 
-.site-gutter {
-	@apply px-32;
+.site-max {
+	padding-left: 2rem;
+	padding-right: 2rem;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+
+	.site-max {
+		padding-left: 0rem;
+		padding-right: 0rem;
+	}
+
+	@screen l {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
 }
 
 .site-grid {
-	@apply grid grid-cols-4 s:grid-cols-16 mx-auto w-full gap-x-24;
+    --gap: 0rem;
+    --cols: 4;
+
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-column-gap: var(--gap);
+
+    @screen s {
+        --gap: 2.5rem;
+        --cols: 16;
+    }
 }
 
-.site-max {
-	@apply max-w-[32.9rem] s:max-w-[137.5rem] mx-auto w-full;
-}
 
 /* ==========================
 	Aspect
 	========================== */
 .aspect {
-		padding-top: var(--aspect);
+	padding-top: var(--aspect);
 }
 
 /* ==========================
 	Mask
 	========================== */
 .mask {
-		clip-path: inset(100% 0 0 0);
-}
-
-/* ==========================
-	Slash
-	========================== */
-.slash {
-	&:after {
-		content: '/';
-	}
+	clip-path: inset(100% 0 0 0);
 }
 
 /* ==========================
@@ -146,20 +148,6 @@ main {
 }
 
 /* ==========================
-	Line
-	========================== */
-.line {
-	transform-origin: top left;
-	padding-bottom: 0.4rem;
-	white-space: nowrap;
-	will-change: transform;
-
-	.contant-link & {
-		padding-bottom: 2rem;
-	}
-}
-
-/* ==========================
 	Grid
 	========================== */
 .js-template-grid {
@@ -168,4 +156,57 @@ main {
 	&.is-active {
 		@apply opacity-10;
 	}
+}
+
+input {
+    @apply font-[300];
+}
+
+input::placeholder {
+	@apply text-grey-taupe;
+}
+
+.js-scrollboost-next {
+	@apply opacity-0;
+	pointer-events: none;
+
+	&.is-active {
+		@apply opacity-100;
+		pointer-events: auto;
+	}
+}
+
+.js-scrollboost-gradient {
+	@apply opacity-0;
+
+	&.is-active {
+		@apply opacity-100;
+	}
+}
+
+/**
+* Search
+*/
+
+header {
+	&.is-active {
+		.predictive-search-bar {
+			max-width: calc(100% - 5.8rem);
+		}
+
+		.predictive-search-close {
+			opacity: 1;
+			pointer-events: auto;
+		}
+	}
+}
+
+.predictive-search {
+	&-close {
+		opacity: 0;
+		pointer-events: none;
+	}
+}
+.predictive-search-tag {
+	@apply flex items-center gap-x-8 whitespace-nowrap mr-8 px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe;
 }
