@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 const PATHS = {
-	build: "/wp-content/themes/speaker-theme/dist/",
+	build: "/wp-content/themes/outten-and-golden/dist/",
 	src: path.join(__dirname, "src"),
 };
 

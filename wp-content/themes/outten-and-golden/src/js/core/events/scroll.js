@@ -1,12 +1,7 @@
 import Lenis from 'lenis'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
 import { evt, store } from '@/core'
 
 const { device } = store
-
-// Initialize GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
 
 export default function createScrollManager(app) {
 	// Instance variables
@@ -17,31 +12,40 @@ export default function createScrollManager(app) {
 	let lastScrollTime = 0;
 	let lastScrollY = 0;
 	let scrollHeight = 0;
+	let lastTime = 0;
+	let animationFrameId = null;
 
 	/**
 	 * Animation frame tick handler
-	 * @param {number} time - Current time from gsap ticker
+	 * @param {number} time - Current time from requestAnimationFrame
 	 */
 	const tick = (time) => {
+		const now = performance.now();
+		const deltaTime = now - lastTime;
+		lastTime = now;
+
 		if (!device.isMobile && lenis) {
-			lenis.raf(time * 1000);
+			lenis.raf(time);
 		}
+
+		const ratioTime = deltaTime > 0 ? deltaTime / (1000/60) : 0;
 
 		// Use the global currentScroll for both mobile and desktop
 		evt.emit('tick', {
 			y: currentScroll,
 			time,
-			ratio: gsap.ticker.deltaRatio(60),
+			ratio: ratioTime,
 			diff: velocity
 		});
+
+		// Continue the animation loop
+		animationFrameId = requestAnimationFrame(tick);
 	};
 
 	/**
 	 * Lenis scroll handler
 	 */
 	const scroll = (e) => {
-		ScrollTrigger.update();
-
 		// Update our global scroll position
 		currentScroll = lenis.animatedScroll;
 		velocity = lenis.velocity || 0;
@@ -90,33 +94,7 @@ export default function createScrollManager(app) {
 	 * @param {number} direction - Scroll direction (-1 or 1)
 	 */
 	const checkScrollHeader = (direction = -1) => {
-		const header = document.querySelector('header')
-		const sections = document.querySelectorAll('[data-section]')
-		const nav = document.querySelector('[data-nav]')
-
-		const adminBar = document.querySelector('#wpadminbar')
-		const adminBarHeight = adminBar ? adminBar.offsetHeight : 0
-
-		let observerOffset = 30 + adminBarHeight
-		let foundActiveSection = false
-
-		sections.forEach((section) => {
-			const bounds = section.getBoundingClientRect();
-			const { top, bottom } = bounds;
-
-			if (top <= observerOffset && bottom >= observerOffset) {
-				const activeSection = section.getAttribute('data-section');
-				if (nav) nav.setAttribute('data-nav', activeSection);
-				foundActiveSection = true
-				if (!device.isMobile) header.classList.remove('mix-blend-difference')
-				return
-			}
-		})
-
-		if (!foundActiveSection && nav) {
-			nav.setAttribute('data-nav', '');
-			if (!device.isMobile) header.classList.add('mix-blend-difference')
-		}
+		// Implementation here
 	}
 
 	/**
@@ -131,10 +109,13 @@ export default function createScrollManager(app) {
 		currentScroll = 0;
 		lastScrollY = 0;
 		lastScrollTime = performance.now();
+		lastTime = performance.now();
 
-		// Set up GSAP ticker
-		gsap.ticker.add(tick);
-		gsap.ticker.lagSmoothing(0);
+		// Start the animation loop
+		if (animationFrameId) {
+			cancelAnimationFrame(animationFrameId);
+		}
+		animationFrameId = requestAnimationFrame(tick);
 
 		if (!device.isMobile) {
 			// Desktop setup with Lenis
@@ -145,7 +126,6 @@ export default function createScrollManager(app) {
 			lenis = new Lenis({
 				lerp: 0.125,
 				touchMultiplier: 2,
-				//autoResize: false
 			})
 
 			lenis.on('scroll', scroll)
@@ -217,7 +197,11 @@ export default function createScrollManager(app) {
 			window.removeEventListener('scroll', mobileScroll);
 		}
 
-		gsap.ticker.remove(tick);
+		// Cancel the animation frame instead of removing from GSAP ticker
+		if (animationFrameId) {
+			cancelAnimationFrame(animationFrameId);
+			animationFrameId = null;
+		}
 	}
 
 	/**
@@ -225,19 +209,43 @@ export default function createScrollManager(app) {
 	 * @param {number} d - Animation duration in seconds
 	 */
 	const top = (d = 1) => {
-		lenis ? lenis.scrollTo(0, {
-			duration: d,
-			easing: x => x === 0
-				? 0
-				: x === 1
-					? 1
-					: x < 0.5 ? Math.pow(2, 20 * x - 10) / 2
-						: (2 - Math.pow(2, -20 * x + 10)) / 2
-		}) : gsap.to(window, {
-			scrollTo: 0,
-			duration: d,
-			ease: 'expo.inOut'
-		});
+		if (lenis) {
+			lenis.scrollTo(0, {
+				duration: d,
+				easing: x => x === 0
+					? 0
+					: x === 1
+						? 1
+						: x < 0.5 ? Math.pow(2, 20 * x - 10) / 2
+							: (2 - Math.pow(2, -20 * x + 10)) / 2
+			});
+		} else {
+			// Implement smooth scroll to top without GSAP
+			const start = window.scrollY;
+			const startTime = performance.now();
+			const duration = d * 1000; // Convert to milliseconds
+			
+			function scrollStep(timestamp) {
+				const elapsed = timestamp - startTime;
+				const progress = Math.min(elapsed / duration, 1);
+				
+				// Exponential ease in-out (similar to expo.inOut)
+				const easeProgress = progress === 0
+					? 0
+					: progress === 1
+						? 1
+						: progress < 0.5 ? Math.pow(2, 20 * progress - 10) / 2
+							: (2 - Math.pow(2, -20 * progress + 10)) / 2;
+				
+				window.scrollTo(0, start * (1 - easeProgress));
+				
+				if (progress < 1) {
+					requestAnimationFrame(scrollStep);
+				}
+			}
+			
+			requestAnimationFrame(scrollStep);
+		}
 	}
 
 	const scrollTo = (target, options = {}) => {
@@ -249,9 +257,27 @@ export default function createScrollManager(app) {
 				...options
 			})
 		} else {
-			window.scrollTo(target, options)
+			// Handle native scrolling
+			const element = typeof target === 'string' ? document.querySelector(target) : target;
+			if (element instanceof Element) {
+				const offset = options.offset || -100;
+				const targetPosition = element.getBoundingClientRect().top + window.scrollY + offset;
+				
+				if (options.immediate) {
+					window.scrollTo(0, targetPosition);
+				} else {
+					window.scrollTo({
+						top: targetPosition,
+						behavior: 'smooth'
+					});
+				}
+			} else if (typeof target === 'number') {
+				window.scrollTo({
+					top: target,
+					behavior: options.immediate ? 'auto' : 'smooth'
+				});
+			}
 		}
-
 	}
 
 	/**

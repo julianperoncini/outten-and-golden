@@ -1,6 +1,5 @@
 import { Renderer } from '@unseenco/taxi';
 import { evt, utils, store } from '@/core';
-import { gsap } from 'gsap';
 
 import {
     preloader,
@@ -9,6 +8,7 @@ import {
     triggered,
     slider,
     lazy,
+    search,
 } from '../components';
 
 const { qs, qsa, rect } = utils;
@@ -35,6 +35,8 @@ export default class extends Renderer {
         if (!isWpAdmin) {
             this.preloader?.loaded()
         }
+
+        search(qs('.js-search'))
     }
 
     onEnter() {
@@ -46,17 +48,7 @@ export default class extends Renderer {
         this.lazyElements = [];
         this.observers = [];
 
-        // Initialize components
-        this.initAllComponents();
-
-        // Run onEnterCompleted
-        this.onEnterCompleted();
-
         evt.emit('scroll:header');
-    }
-
-    initAllComponents() {
-        // Core components (always initialized)
     }
 
     onEnterCompleted() { }

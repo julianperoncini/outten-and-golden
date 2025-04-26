@@ -2,12 +2,6 @@
 
 {{ function('wp_footer') }}
 
-<div class="fixed inset-0 grid grid-cols-12 gap-x-20 z-[9999] px-20 pointer-events-none opacity-10 js-template-grid">
-    {% for i in 0..11 %}
-        <div class="col-span-1 bg-[#F00]"></div>
-    {% endfor %}
-</div>
-
 <script>
     // Create a global array of all client image HTML
     window.clientImageHTML = [
