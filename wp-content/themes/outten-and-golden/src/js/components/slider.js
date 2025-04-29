@@ -49,7 +49,7 @@ export default function createSlider(config) {
     }
 
     // Configuration
-    const snapConfig = config.snap || { move: false }
+    const snapConfig = config.snap || { move: true }
     let dragInstance
 
     // Initial setup
@@ -233,8 +233,6 @@ export default function createSlider(config) {
             e.preventDefault()
         }
 
-        handleCursorPosition(clientX, clientY)
-
         if (!state.down || axis !== 'x') return
 
         if (Math.abs(x - dragInstance.state.start.x) > 5 || Math.abs(y - dragInstance.state.start.y) > 5) {
@@ -243,37 +241,6 @@ export default function createSlider(config) {
 
         const delta = -(x - dragInstance.state.start.x) * state.scrollSensitivity + state.position.previous
         updateScrollTarget(delta)
-    }
-
-    const handleCursorPosition = (clientX, clientY) => {
-        const sectionBounds = rect(elements.container)
-
-        const isHovering = (
-            clientX >= sectionBounds.left &&
-            clientX <= sectionBounds.right &&
-            clientY >= sectionBounds.top &&
-            clientY <= sectionBounds.bottom
-        );
-
-        if (isHovering && !isMobile) {
-            elements.section.classList.add('is-hovering')
-            state.cursorX(clientX)
-            state.cursorY(clientY)
-
-            // Calculate hover zones
-            const relativeX = clientX - sectionBounds.left
-            const zoneSize = sectionBounds.width * 0.5
-
-            elements.cursor.classList.remove('prev-hover', 'next-hover')
-            if (relativeX < zoneSize) {
-                elements.cursor.classList.add('prev-hover')
-            } else if (relativeX > sectionBounds.width - zoneSize) {
-                elements.cursor.classList.add('next-hover')
-            }
-        } else {
-            elements.section.classList.remove('is-hovering')
-            elements.cursor.classList.remove('prev-hover', 'next-hover')
-        }
     }
 
     const trackCurrentIndex = () => {
@@ -322,22 +289,6 @@ export default function createSlider(config) {
         state.snapIndex = snapConfig.positions.indexOf(snappedPosition)
 
         return true
-    }
-
-    const handleContainerClick = (e) => {
-        if (state.hasDragged) return
-
-        const containerBounds = rect(elements.container)
-        const clickX = e.clientX - containerBounds.left
-        const clickZoneSize = containerBounds.width * 0.5
-
-        if (clickX < clickZoneSize) {
-            goToPrevious()
-            elements.cursor.classList.add('prev-hover')
-        } else if (clickX > containerBounds.width - clickZoneSize) {
-            goToNext()
-            elements.cursor.classList.add('next-hover')
-        }
     }
 
     const goToPrevious = () => {
@@ -429,7 +380,6 @@ export default function createSlider(config) {
         evt.on('tick', tick)
         evt.on('resize', cache)
 
-        !isMobile && elements.container && evt.on('click', elements.container, handleContainerClick)
         elements.prevButton && evt.on('click', elements.prevButton, goToPrevious)
         elements.nextButton && evt.on('click', elements.nextButton, goToNext)
 
@@ -442,7 +392,6 @@ export default function createSlider(config) {
         evt.off('resize', cache)
         evt.off('tick', tick)
 
-        !isMobile && elements.container && evt.off('click', elements.container, handleContainerClick)
         elements.prevButton && evt.off('click', elements.prevButton, goToPrevious)
         elements.nextButton && evt.off('click', elements.nextButton, goToNext)
 

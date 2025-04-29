@@ -8,12 +8,7 @@ import slider from './slider'
 import lazy from './lazy'
 
 export {
-    preloader,
-    lazyload,
     search,
-    menu,
-    split,
-    triggered,
     slider,
-    lazy,
+    triggered
 }

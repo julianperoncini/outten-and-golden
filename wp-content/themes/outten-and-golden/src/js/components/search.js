@@ -9,7 +9,7 @@ export default function initPredictiveSearch(el) {
     if (!el) return;
 
     // DOM Elements
-    const form = qs('form', el);
+    const form = qs('form', el.section);
     const input = qs('input', form);
     const header = qs('header');
     const close = qs('.predictive-search-close', header);
@@ -407,6 +407,8 @@ export default function initPredictiveSearch(el) {
             }
         });
     }
+
+    const unmount = () => {}
     
     // Return public API
     return {
@@ -430,6 +432,7 @@ export default function initPredictiveSearch(el) {
             }
         },
         clearTags: clearAllTags,
-        getActiveTags: () => [...activeTags]
+        getActiveTags: () => [...activeTags],
+        unmount,
     };
 }
