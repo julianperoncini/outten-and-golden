@@ -133,7 +133,7 @@
                     "allow_in_bindings": 0,
                     "rows": "",
                     "placeholder": "",
-                    "new_lines": "",
+                    "new_lines": "br",
                     "parent_repeater": "field_680d507b58e2d"
                 },
                 {
@@ -232,5 +232,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1745892518
+    "modified": 1745950997
 }

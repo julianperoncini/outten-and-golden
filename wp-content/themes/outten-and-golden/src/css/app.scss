@@ -2,6 +2,7 @@
 Imports - Must be first!
 	========================== */
 @use 'fonts';
+@use 'ease';
 @use 'lenis';
 @use 'links';
 @use 'vimeo';
@@ -209,4 +210,9 @@ header {
 }
 .predictive-search-tag {
 	@apply flex items-center gap-x-8 whitespace-nowrap mr-8 px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe;
+}
+
+.js-sop-bar-wrap.is-active {
+	@apply h-[8rem];
+	transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

@@ -2,7 +2,7 @@
 
     <div class="site-max h-screen flex sticky top-0 left-0 w-full h-full items-center justify-center js-t-text">
         <div class="mx-auto">
-            <div class="relative pb-95 flex flex-col items-center justify-center space-y-40 mx-auto sticky top-250">
+            <div class="relative pb-95 flex flex-col items-center justify-center space-y-40 mx-auto s:sticky top-250">
                 <div class="relative">
                     <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
                 </div>
@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="fixed s:relative w-full top-0 flex items-center justify-center h-screen js-t-screen">
+    <div class="fixed w-full top-0 flex items-center justify-center h-screen js-t-screen">
         <div class="w-full h-full [clip-path:inset(0_0_0_0_round_1.4rem)] s:[clip-path:inset(0_0_0_0_round_3.2rem)] l:[clip-path:inset(0_0_0_0_round_6.4rem)] mx-auto w-full js-t-hero sticky top-0">
             <div class="relative h-full flex items-center justify-center js-t-hero-content">
                 {% include "blocks/common/image.twig" with {

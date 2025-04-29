@@ -34,7 +34,7 @@ export default class extends Renderer {
     onEnter() {
         this.el = this.content;
 
-		//components['triggered'](this.el);
+		components['triggered'](this.el);
 
         this.sliderElements = [];
         this.lazyElements = [];
