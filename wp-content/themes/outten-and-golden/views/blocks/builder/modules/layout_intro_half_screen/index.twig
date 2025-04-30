@@ -1,0 +1,43 @@
+<section class="relative bg-white">
+    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    <div class="site-max">
+        <div class="site-grid">
+            <div class="flex flex-col items-start justify-end col-span-5 col-start-1 space-y-40 pb-32">
+                <div class="relative">
+                    <h5 class="text-grey text-12 font-normal leading-none tracking-[0.012rem] uppercase">
+                        {{ item.subtitle }}
+                    </h5>
+                </div>
+
+                <div class="relative">
+                    <h2 class="text-green text-120 font-normal leading-none tracking-[-0.024rem]">
+                        {{ item.title }}
+                    </h2>
+                </div>
+                    
+                <div class="relative max-w-[40rem]">
+                    <p class="text-green text-16 font-normal leading-[1.32]">
+                        {{ item.description }}
+                    </p>
+                </div>
+            </div> 
+
+            <div class="col-span-8 col-start-9">
+                <div class="relative">
+                    {% include "blocks/common/image.twig" with {
+                        props : {
+                            data: {
+                                image : item.image
+                            },
+                            options: {
+                                container_class: 'w-full h-full overflow-hidden',
+                                class : 'w-full h-full object-cover',
+                                aspect_ratio: '127%',
+                            }
+                        }
+                    } %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

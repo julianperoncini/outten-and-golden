@@ -1,3 +1,17 @@
-<section class="relative">
-    <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+<section class="relative bg-white">
+    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    <div class="site-max pt-[38rem] pb-135">
+        <div class="site-grid">
+            <div class="col-span-5 col-start-9">
+                <div class="relative space-y-40">
+                    <h2 class="text-green text-[12.0rem] font-normal leading-[0.88] tracking-[-0.24rem]">
+                        {{ item.title }}
+                    </h2>
+                    <p class="text-green text-16 font-normal leading-[1.32]">
+                        {{ item.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

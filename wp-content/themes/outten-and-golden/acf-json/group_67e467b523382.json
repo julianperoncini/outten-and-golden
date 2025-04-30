@@ -293,14 +293,14 @@
                 },
                 "layout_680d5a16a0012": {
                     "key": "layout_680d5a16a0012",
-                    "name": "layout_intro_+_image",
-                    "label": "Layout Intro + Image",
+                    "name": "layout_intro_and_image",
+                    "label": "Layout Intro and Image",
                     "display": "block",
                     "sub_fields": [
                         {
                             "key": "field_680d5a23a0015",
-                            "label": "Layout Intro + Image",
-                            "name": "layout_intro_+_image",
+                            "label": "Layout Intro and Image",
+                            "name": "layout_intro_and_image",
                             "aria-label": "",
                             "type": "clone",
                             "instructions": "",
@@ -389,14 +389,14 @@
                 },
                 "layout_680d5d5d674d7": {
                     "key": "layout_680d5d5d674d7",
-                    "name": "layout_slider_text_+_cta",
-                    "label": "Layout Slider Text + CTA",
+                    "name": "layout_slider_text_cta",
+                    "label": "Layout Slider Text and CTA",
                     "display": "block",
                     "sub_fields": [
                         {
                             "key": "field_680d5d8c674da",
-                            "label": "Layout Slider Text + CTA",
-                            "name": "layout_slider_text_+_cta",
+                            "label": "Layout Slider Text and CTA",
+                            "name": "layout_slider_text_and_cta",
                             "aria-label": "",
                             "type": "clone",
                             "instructions": "",
@@ -421,14 +421,14 @@
                 },
                 "layout_680d5f070264c": {
                     "key": "layout_680d5f070264c",
-                    "name": "layout_slider_text_+_cta_+_images",
-                    "label": "Layout Slider Text + CTA + Images",
+                    "name": "layout_slider_text_cta_and_images",
+                    "label": "Layout Slider Text, CTA and Images",
                     "display": "block",
                     "sub_fields": [
                         {
                             "key": "field_680d5f320264f",
-                            "label": "Layout Slider Text + CTA + Images",
-                            "name": "layout_slider_text_+_cta_+_images",
+                            "label": "Layout Slider Text, CTA and Images",
+                            "name": "layout_slider_text_cta_and_images",
                             "aria-label": "",
                             "type": "clone",
                             "instructions": "",
@@ -475,5 +475,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1745892826
+    "modified": 1745953184
 }

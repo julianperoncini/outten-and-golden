@@ -202,3 +202,37 @@ if (! function_exists('flpi_add_custom_plugin_links')) {
     }
   }
   add_filter('plugin_row_meta', 'flpi_add_custom_plugin_links', 10, 2);
+
+// Debug
+// add_action('admin_footer', function() {
+//     if (!function_exists('acf_get_field_groups')) return;
+    
+//     echo '<div style="position:fixed; bottom:10px; right:10px; background:white; padding:15px; border:1px solid #ccc; z-index:99999; max-height:50vh; overflow:auto;">';
+//     echo '<h3>ACF Layout Keys Debug</h3>';
+//     echo '<p>These are the exact keys your layouts are using:</p>';
+    
+//     $groups = acf_get_field_groups();
+//     $all_layouts = [];
+    
+//     foreach ($groups as $group) {
+//         $fields = acf_get_fields($group);
+//         foreach ($fields as $field) {
+//             if ($field['type'] === 'flexible_content') {
+//                 echo '<strong>Flexible Content Field: ' . esc_html($field['name']) . '</strong><ul>';
+//                 foreach ($field['layouts'] as $layout) {
+//                     echo '<li>Layout Label: <b>' . esc_html($layout['label']) . '</b><br>';
+//                     echo 'Machine Name: <code>' . esc_html($layout['name']) . '</code><br>';
+//                     echo 'Key: <code>' . esc_html($layout['key']) . '</code><br>';
+//                     echo 'Image should be named: <code>' . str_replace('_', '-', $layout['name']) . '.jpg</code></li>';
+                    
+//                     $all_layouts[$layout['name']] = $layout['label'];
+//                 }
+//                 echo '</ul>';
+//             }
+//         }
+//     }
+    
+//     echo '<p>Image Path: <code>' . get_stylesheet_directory() . '/acf-preview-images/</code></p>';
+//     echo '<button onclick="this.parentNode.style.display=\'none\'">Close</button>';
+//     echo '</div>';
+// });

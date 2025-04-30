@@ -61,7 +61,10 @@
                     },
                     "post_type": [
                         "post",
-                        "cases"
+                        "team",
+                        "cases",
+                        "newsroom",
+                        "client-stories"
                     ],
                     "post_status": "",
                     "taxonomy": "",
@@ -95,5 +98,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1745707263
+    "modified": 1745967704
 }
