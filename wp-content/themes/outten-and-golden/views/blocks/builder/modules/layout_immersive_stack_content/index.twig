@@ -1,0 +1,39 @@
+<section class="relative bg-white">
+    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    <div class="site-max py-160">
+        <div class="site-grid space-y-120">
+            {% for card in item.cards_stack %}
+                <article class="col-span-full col-start-1">
+                    <div class="site-grid">
+                        <div class="col-start-1 col-span-7 flex flex-col items-start justify-between">
+                            <div class="relative space-y-32">
+                                <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ card.subtitle }}</h5>
+                                <h2 class="text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ card.title }}</h2>
+                            </div>
+                            
+                            <div class="relative text-green">
+                                <p class="text-16 font-normal leading-[1.32]">{{ card.description }}</p>
+                            </div>
+                        </div>
+
+                        <div class="col-start-9 col-span-8">
+                            {% include "blocks/common/image.twig" with {
+                                props : {
+                                    data: {
+                                        image : card.image
+                                    },
+                                    options: {
+                                        container_class: 'w-full h-full overflow-hidden',
+                                        class : 'w-full h-full object-cover',
+                                        aspect_ratio: '103%',
+                                    }
+                                }
+                            } %}
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>

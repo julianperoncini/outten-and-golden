@@ -4,16 +4,13 @@ import lerp from '@14islands/lerp'
 import { evt, utils, store } from '@/core'
 import { DragHandler } from '@/core/events/dragHandler'
 
-// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger)
 
-// Destructure utilities
 const { qs, qsa, rect, CS } = utils
 const { device } = store
 const isMobile = device.isMobile
 
 export default function createSlider(config) {
-    // State management with default values
     const state = {
         isDragging: false,
         isDragged: false,
@@ -37,7 +34,6 @@ export default function createSlider(config) {
         maxScroll: 0
     }
 
-    // DOM elements
     const elements = {
         section: config.section,
         container: qs('.slider-container', config.section),
@@ -48,15 +44,12 @@ export default function createSlider(config) {
         cursor: qs('.slider-cursor', config.section)
     }
 
-    // Configuration
     const snapConfig = config.snap || { move: true }
     let dragInstance
 
-    // Initial setup
     gsap.set(elements.progress, { scaleX: 0.2 })
     gsap.set(elements.cursor, { xPercent: -50, yPercent: -50 })
 
-    // Initialize quick setters for performance
     const initQuickSetters = () => {
         state.progressX = gsap.quickSetter(elements.progress, 'scaleX')
 
@@ -65,7 +58,6 @@ export default function createSlider(config) {
         state.cursorY = gsap.quickTo(elements.cursor, 'y', { duration: 0.5, ease: 'expo' })
     }
 
-    // Calculate bounds
     const updateBounds = () => {
         const scrollY = window.scrollY
         const areaBounds = rect(elements.container)
@@ -77,7 +69,6 @@ export default function createSlider(config) {
         }]
     }
 
-    // Calculate item positions for slider
     const calculateItemPositions = (scrollY) => {
         const windowWidth = window.innerWidth
         const areaBounds = rect(elements.container)
@@ -269,7 +260,6 @@ export default function createSlider(config) {
         trackCurrentIndex();
     }
 
-    // Get selected item index based on pointer position
     const getSelectedIndex = (x, y) => {
         const currentX = x + state.position.current
         return state.itemPositions.findIndex(item =>
@@ -358,17 +348,15 @@ export default function createSlider(config) {
                     });
                 },
                 {
-                    rootMargin: '100px 0px', // Start rendering slightly before it's visible
-                    threshold: 0.01 // Trigger when just 1% is visible
+                    rootMargin: '100px 0px',
+                    threshold: 0.01
                 }
             );
 
             observer.observe(elements.container);
 
-            // Store observer for cleanup
             state.observer = observer;
         } else {
-            // Fallback for older browsers
             state.isVisible = true;
         }
     }

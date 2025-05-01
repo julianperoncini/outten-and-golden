@@ -163,6 +163,102 @@
                     "min": "",
                     "max": ""
                 },
+                "layout_6812332b3a7de": {
+                    "key": "layout_6812332b3a7de",
+                    "name": "feature_text_image",
+                    "label": "Feature Text Image",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_681233313a7e1",
+                            "label": "Feature Text Image",
+                            "name": "feature_text_image",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_681230d6946f4"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_681247b2a925c": {
+                    "key": "layout_681247b2a925c",
+                    "name": "feature_slider_logos",
+                    "label": "Feature Slider Logos",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_681247b8a925f",
+                            "label": "Feature Slider Logos",
+                            "name": "feature_slider_logos",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6812471065cff"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_681298ecc3b49": {
+                    "key": "layout_681298ecc3b49",
+                    "name": "feature_claim_content",
+                    "label": "Feature Claim Content",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_681298f1c3b4c",
+                            "label": "Feature Claim Content",
+                            "name": "feature_claim_content",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6812989445e07"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
                 "layout_68097320ccee2": {
                     "key": "layout_68097320ccee2",
                     "name": "layout_highlight_numbers",
@@ -450,6 +546,38 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_681221333f357": {
+                    "key": "layout_681221333f357",
+                    "name": "layout_immersive_stack_content",
+                    "label": "Layout Immersive Stack Content",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6812213f3f35a",
+                            "label": "Layout Immersive Stack Content",
+                            "name": "layout_immersive_stack_content",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6812207b75ef7"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             },
             "min": "",
@@ -475,5 +603,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1745953184
+    "modified": 1746049286
 }

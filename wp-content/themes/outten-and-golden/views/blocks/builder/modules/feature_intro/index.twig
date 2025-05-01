@@ -3,15 +3,23 @@
     <div class="site-max h-screen flex sticky top-0 left-0 w-full h-full items-center justify-center js-t-text">
         <div class="mx-auto">
             <div class="relative pb-95 flex flex-col items-center justify-center space-y-40 mx-auto s:sticky top-250">
-                <div class="relative">
-                    <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
-                </div>
-                <div class="relative s:max-w-[50rem] l:max-w-[102.6rem]">
-                    <h1 class="text-center text-32 s:text-40 l:text-76 font-normal leading-[1.1] tracking-[-0.152rem] text-green">{{ item.title }}</h1>
-                </div>
-                <div class="relative">
-                    <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">{{ item.link.title }}</a>
-                </div>
+                {% if item.subtitle %}
+                    <div class="relative">
+                        <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
+                    </div>
+                {% endif %}
+
+                {% if item.title %}
+                    <div class="relative s:max-w-[50rem] l:max-w-[102.6rem]">
+                        <h1 class="text-center text-32 s:text-40 l:text-76 font-normal leading-[1.1] tracking-[-0.152rem] text-green">{{ item.title }}</h1>
+                    </div>
+                {% endif %}
+
+                {% if item.link %}
+                    <div class="relative">
+                        <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">{{ item.link.title }}</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

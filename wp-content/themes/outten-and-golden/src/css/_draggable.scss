@@ -36,6 +36,14 @@
     }
 }
 
+.slider-item-logo {
+    flex: 0 0 auto;
+
+    &:last-child {
+        margin-right: 4rem;
+    }
+}
+
 .slider-cursor {
     pointer-events: none;
 

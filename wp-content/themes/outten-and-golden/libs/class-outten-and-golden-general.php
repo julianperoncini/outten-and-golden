@@ -216,6 +216,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         register_nav_menu('footer-menu-3', __('Footer Menu 3', 'outten-and-golden'));
         register_nav_menu('footer-menu-4', __('Footer Menu 4', 'outten-and-golden'));
         register_nav_menu('footer-menu-5', __('Footer Menu 5', 'outten-and-golden'));
+        register_nav_menu('footer-menu-6', __('Footer Menu 6', 'outten-and-golden'));
     }
 
     private function cleanup_wp_head() {
@@ -272,6 +273,9 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_2'] = Timber::get_menu('footer-menu-2');
         $context['footer_menu_3'] = Timber::get_menu('footer-menu-3');
         $context['footer_menu_4'] = Timber::get_menu('footer-menu-4');
+        $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
+        $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
+
         $context['options'] = get_fields('option');
         $args = array(
             'post_type' => 'post',

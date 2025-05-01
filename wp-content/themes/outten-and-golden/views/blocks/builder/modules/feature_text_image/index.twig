@@ -1,0 +1,62 @@
+<section class="relative">
+    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    <div class="site-max {{ item.background_color ? 'bg-' ~ item.background_color|lower : 'bg-yellow' }}">
+        <div class="site-grid">
+            <div class="col-start-1 col-span-5 py-65 pl-32 flex flex-col items-start justify-between">
+                <div class="relative flex flex-col space-y-40">
+                    <div class="relative">
+                        <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
+                    </div>
+
+                    <div class="relative">
+                        <h2 class="text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h2>
+                    </div>
+                </div>
+                
+                <div class="relative space-y-40">
+                    <div class="relative text-green">
+                        <p class="text-16 font-normal leading-[1.32]">{{ item.description }}</p>
+                    </div>
+
+                    <div class="relative">
+                        <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-yellow py-15 px-25 bg-black uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                            <span class="inline-flex">
+                                {{ item.link.title }}
+                            </span>
+                            <span class="inline-flex">
+                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5001_23171)">
+                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5001_23171">
+                                            <rect width="7" height="11" fill="currentColor" transform="translate(0.734375)"/>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-start-7 col-span-10 -mx-32">
+                <figure class="relative w-full h-full">
+                    {% include "blocks/common/image.twig" with {
+                        props : {
+                            data: {
+                                image : item.image
+                            },
+                            options: {
+                                container_class: 'w-full h-full overflow-hidden',
+                                class : 'w-full h-full object-cover',
+                                aspect_ratio: '100%',
+                            }
+                        }
+                    } %}
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>

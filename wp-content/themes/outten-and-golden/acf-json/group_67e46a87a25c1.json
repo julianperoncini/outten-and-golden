@@ -3,6 +3,37 @@
     "title": "Layout - Full Screen",
     "fields": [
         {
+            "key": "field_6812289390667",
+            "label": "Background Color",
+            "name": "background_color",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Green": "Green",
+                "Yellow": "Yellow",
+                "Black": "Black",
+                "White": "White",
+                "Grey": "Grey",
+                "Light Grey": "Light Grey"
+            },
+            "default_value": "White",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
             "key": "field_680d500858e2a",
             "label": "Subtitle",
             "name": "subtitle",
@@ -232,5 +263,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1745950997
+    "modified": 1746020822
 }

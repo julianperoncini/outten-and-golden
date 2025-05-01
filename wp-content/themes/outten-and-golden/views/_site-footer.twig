@@ -1,21 +1,244 @@
+{% set items = [
+    {
+        image: {
+            url: "/wp-content/themes/outten-and-golden/static/01.jpg",
+            alt: "Book a call"
+        }
+    },
+    {
+        image: {
+            url: "/wp-content/themes/outten-and-golden/static/02.jpg",
+            alt: "Book a call"
+        }
+    },
+    {
+        image: {
+            url: "/wp-content/themes/outten-and-golden/static/03.jpg",
+            alt: "Book a call"
+        }
+    }
+] %}
 
-<footer class="bg-black overflow-hidden text-white js-sfoot">
-    <div class="will-change-transform">
-        {% if footer_menu_1 %}
-            <ul class="">
-                {% for item in footer_menu_1.items %}
-                    <li>
-                        {{ item.title }}
-                        {% if item.children %}
-                            <ul class="ml-20">
-                                {% for child in item.children %}
-                                    <li>{{ child.title }}</li>
+<footer class="relative bg-white js-sfoot">
+    {# <pre>{{ options|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    <div class="site-max pt-160 overflow-hidden">
+        <div class="site-grid">
+            <div class="col-start-1 col-span-full">
+                <div class="relative site-grid py-65 px-32 items-center">
+                    <div class="col-start-1 col-span-4 space-y-24">
+                        <div class="relative">
+                            <a class="w-[19.7rem] h-[2.4rem] flex" href="/">
+                                {% if options.book_a_call and options.book_a_call.logo %}
+                                    {% include "blocks/common/image.twig" with {
+                                        props : {
+                                            data: {
+                                                image : options.book_a_call.logo
+                                            },
+                                            options: {
+                                                container_class: 'w-full overflow-hidden',
+                                                class : 'w-full h-full object-cover',
+                                                aspect_ratio: '102%',
+                                            }
+                                        }
+                                    } %}
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="relative">
+                            <p class="text-green text-16 font-normal leading-[1.32]">{{ options.book_a_call.description }}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-start-14 col-span-3 flex justify-end">
+                        <a 
+                            class="relative w-fit h-48 font-medium text-green py-12 px-16 l:-ml-2 flex items-center border rounded-[0.4rem] text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe bg-white" 
+                            href="{{ options.book_a_call.link.url }}"
+                            target="{{ options.book_a_call.link.target }}"
+                        >
+                            <div class="hidden l:flex items-center">
+                                {% for item in items %}
+                                    <img class="relative size-24 object-cover {{ loop.index == 1 ? '' : '-ml-15' }}" src="{{ item.image.url }}" alt="{{ item.image.alt }}">
+                                {% endfor %}
+                            </div>
+                            <span class="leading-none">{{ options.book_a_call.link.title }}</span>
+                        </a>
+                    </div>
+
+                    <div class="absolute top-0 left-[calc(0%-2.2%)] w-[100vw] h-[0.1rem] bg-grey-taupe"></div>
+                    <div class="absolute bottom-0 left-[calc(0%-2.2%)] w-[100vw] h-[0.1rem] bg-grey-taupe"></div>
+                </div>
+            </div>
+
+            <div class="col-start-1 col-span-full">
+                <div class="site-grid">
+                    <div class="relative col-start-1 col-span-5 pl-32">
+                        <div class="relative space-y-32 pt-65 pb-100">
+                            <div class="relative">
+                                <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">{{ footer_menu_1.name|replace({'Footer - ': ''}) }}</h5>
+                            </div>
+
+                            <ul class="relative text-green space-y-8">
+                                {% for item in footer_menu_1.items %}
+                                    <li class="relative">
+                                        <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                    </li>
                                 {% endfor %}
                             </ul>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+                        </div>
+                        
+                        <div class="absolute top-0 right-[calc(0%-3%)] w-[0.1rem] h-full bg-grey-taupe"></div>
+                    </div>
+
+                    <div class="relative col-start-6 col-span-5 pl-[5.6rem]">
+                        <div class="relative pt-65 flex flex-col items-start justify-start space-y-[7.2rem]">
+                            <div class="relative space-y-32">
+                                <div class="relative">
+                                    <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">{{ footer_menu_2.name|replace({'Footer - ': ''}) }}</h5>
+                                </div>
+                                <ul class="relative text-green space-y-8">
+                                    {% for item in footer_menu_2.items %}
+                                        <li class="relative">
+                                            <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="relative space-y-32">
+                                <div class="relative">
+                                    <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">{{ footer_menu_3.name|replace({'Footer - ': ''}) }}</h5>
+                                </div>
+                                <ul class="relative text-green space-y-8">
+                                    {% for item in footer_menu_3.items %}
+                                        <li class="relative">
+                                            <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="relative space-y-32">
+                                <div class="relative">
+                                    <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">{{ footer_menu_4.name|replace({'Footer - ': ''}) }}</h5>
+                                </div>
+                                <ul class="relative text-green space-y-8">
+                                    {% for item in footer_menu_4.items %}
+                                        <li class="relative">
+                                            <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="absolute top-0 right-[calc(0%-6%)] w-[0.1rem] h-full bg-grey-taupe"></div>
+                    </div>
+
+                    <div class="col-start-11 col-span-6 pb-100 pl-[8rem] pr-32 flex flex-col items-start justify-between">
+                        <div class="relative pt-65 space-y-[3.2rem]">
+                            <div class="relative">
+                                <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">{{ footer_menu_5.name|replace({'Footer - ': ''}) }}</h5>
+                            </div>
+                            
+                            <ul class="relative text-green space-y-8">
+                                {% for item in footer_menu_5.items %}
+                                    <li class="relative">
+                                        <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="relative flex items-end justify-between w-full">
+                            <div class="relative space-y-[3.2rem]">
+                                <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">{{ options.newsletter.subtitle }}</h5>
+
+                                <div class="relative">
+                                    <button class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-green uppercase" type="button">
+                                        <span class="inline-flex">
+                                            {{ options.newsletter.cta_text }}
+                                        </span>
+                                        <span class="inline-flex">
+                                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_5001_23171)">
+                                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="#7A7871" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_5001_23171">
+                                                        <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="relative space-y-[3.2rem]">
+                                <h5 class="text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">Connect With Us</h5>                            
+
+                                <div class="relative">
+                                    <ul class="relative flex space-x-12">
+                                        <li class="relative">
+                                            <a href="{{ options.socials.facebook_url }}" target="_blank" class="relative flex">
+                                                <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9.49986 8.04721H11.2493L11.949 5.24818H9.49986V3.84867C9.49986 3.12792 9.49986 2.44915 10.8994 2.44915H11.949V0.0979661C11.7209 0.0678765 10.8595 0 9.94981 0C8.04997 0 6.70083 1.1595 6.70083 3.28886V5.24818H4.60156V8.04721H6.70083V13.9951H9.49986V8.04721Z" fill="#1E383E"/>
+                                                </svg>
+                                            </a>
+                                        </li>
+
+                                        <li class="relative">
+                                            <a href="{{ options.socials.x_url }}" target="_blank" class="relative flex">
+                                                <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12.7624 0H15.1306L9.9574 5.92764L16.0439 13.9951H11.2788L7.54399 9.10324L3.27529 13.9951H0.904894L6.43765 7.65277L0.601562 0.00110301H5.48795L8.85879 4.47165L12.7624 0ZM11.9296 12.5745H13.2422L4.77099 1.34679H3.36353L11.9296 12.5745Z" fill="#1E383E"/>
+                                                </svg>
+                                            </a>
+                                        </li>
+
+                                        <li class="relative">
+                                            <a href="{{ options.socials.linkedin_url }}" target="_blank" class="relative flex">
+                                                <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4.71142 1.55571C4.71122 1.9681 4.5472 2.36352 4.25544 2.65498C3.96369 2.94644 3.56811 3.11007 3.15572 3.10986C2.74332 3.10965 2.3479 2.94563 2.05644 2.65388C1.76498 2.36213 1.60136 1.96655 1.60156 1.55415C1.60177 1.14176 1.76579 0.746339 2.05754 0.454879C2.34929 0.163419 2.74488 -0.000206002 3.15727 1.94647e-07C3.56966 0.000206391 3.96508 0.164227 4.25654 0.455978C4.548 0.74773 4.71163 1.14331 4.71142 1.55571ZM4.75807 4.26129H1.64821V13.9951H4.75807V4.26129ZM9.67165 4.26129H6.57734V13.9951H9.64055V8.8872C9.64055 6.04168 13.3491 5.77734 13.3491 8.8872V13.9951H16.42V7.82985C16.42 3.03289 10.9311 3.21171 9.64055 5.56743L9.67165 4.26129Z" fill="#1E383E"/>
+                                                </svg>
+                                            </a>
+                                        </li>
+
+                                        <li class="relative">
+                                            <a href="{{ options.socials.tiktok_url }}" target="_blank" class="relative flex">
+                                                <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12.2738 2.19257C11.7424 1.58575 11.4495 0.806586 11.4496 0H9.04711V9.6411C9.02896 10.163 8.80881 10.6574 8.43311 11.02C8.05741 11.3827 7.55553 11.5852 7.03336 11.5849C5.9293 11.5849 5.01184 10.683 5.01184 9.56335C5.01184 8.22604 6.3025 7.22305 7.63204 7.63513V5.1782C4.94964 4.82055 2.60156 6.90427 2.60156 9.56335C2.60156 12.1525 4.74749 13.9951 7.02558 13.9951C9.46696 13.9951 11.4496 12.0125 11.4496 9.56335V4.67282C12.4238 5.37247 13.5935 5.74784 14.7929 5.74579V3.34329C14.7929 3.34329 13.3312 3.41326 12.2738 2.19257Z" fill="#1E383E"/>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative col-start-1 col-span-full py-25 px-32">
+                <div class="absolute top-0 left-[calc(0%-2.2%)] w-[100vw] h-[0.1rem] bg-grey-taupe"></div>
+
+                <div class="site-grid">
+                    <div class="col-start-1 col-span-3">
+                        <p class="text-12 font-normal leading-none">© {{ "now"|date("Y") }} Outten & Golden LLP</p>
+                    </div>
+
+                    <div class="col-start-6 col-span-11">
+                        <ul class="relative flex flex-row items-center justify-end text-green space-x-[2.7rem]">
+                            {% for item in footer_menu_6.items %}
+                                <li class="relative">
+                                    <a class="ulink shrink-0 text-12 font-normal leading-none" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </footer>

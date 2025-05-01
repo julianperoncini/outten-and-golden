@@ -33,7 +33,7 @@
 {% if image %}
 	<div class="relative {{ container_class }}">
 		<div class="aspect" style="--aspect: {{ aspect_ratio }}"></div>
-		<picture class="absolute top-0 left-0 size-full bg-grey">
+		<picture class="absolute top-0 left-0 size-full">
 		{{ image|get_timber_picture_responsive(size, {
 			img_class: class,
 			img_style: style,

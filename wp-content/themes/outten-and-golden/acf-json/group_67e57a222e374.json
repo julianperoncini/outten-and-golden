@@ -59,8 +59,8 @@
                 },
                 {
                     "key": "field_67e5fa91148db",
-                    "label": "Instagram URL",
-                    "name": "instagram_url",
+                    "label": "Tiktok URL",
+                    "name": "tiktok_url",
                     "aria-label": "",
                     "type": "text",
                     "instructions": "",
@@ -324,5 +324,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1743125198
+    "modified": 1746046587
 }
