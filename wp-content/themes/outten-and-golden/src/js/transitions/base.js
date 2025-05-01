@@ -9,11 +9,15 @@ const mask = qs('.js-transition-mask')
 export default class extends Transition {
     onLeave({ from, trigger, done }) {
         evt.emit('menu:close')
+
+        done()
     }
 
     onEnter({ to, trigger, done }) {
         evt.emit('tick:start')
         evt.emit('speed:boost')
         evt.emit('menu:reset')
+
+        done()
     }
 }
