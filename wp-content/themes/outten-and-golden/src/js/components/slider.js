@@ -7,7 +7,7 @@ import { DragHandler } from '@/core/events/dragHandler'
 gsap.registerPlugin(ScrollTrigger)
 
 const { qs, qsa, rect, CS } = utils
-const { device } = store
+const { device, bounds } = store
 const isMobile = device.isMobile
 
 export default function createSlider(config) {
@@ -53,7 +53,6 @@ export default function createSlider(config) {
     const initQuickSetters = () => {
         state.progressX = gsap.quickSetter(elements.progress, 'scaleX')
 
-        // Using GSAP's quickTo for smoother animations
         state.cursorX = gsap.quickTo(elements.cursor, 'x', { duration: 0.5, ease: 'expo' })
         state.cursorY = gsap.quickTo(elements.cursor, 'y', { duration: 0.5, ease: 'expo' })
     }
@@ -70,7 +69,7 @@ export default function createSlider(config) {
     }
 
     const calculateItemPositions = (scrollY) => {
-        const windowWidth = window.innerWidth
+        const windowWidth = bounds.ww
         const areaBounds = rect(elements.container)
         const areaTop = areaBounds.top + scrollY
 
@@ -85,7 +84,6 @@ export default function createSlider(config) {
 
             currentOffset += marginLeft
 
-            // Store item position data
             state.itemPositions[i] = {
                 x: currentOffset,
                 y: areaTop,
@@ -94,7 +92,6 @@ export default function createSlider(config) {
                 marginX: marginLeft
             }
 
-            // Store view position data
             state.viewPositions[i] = {
                 start: currentOffset - windowWidth,
                 end: currentOffset + itemWidth,
@@ -310,7 +307,7 @@ export default function createSlider(config) {
     }
 
     const cache = () => {
-        const windowWidth = window.innerWidth
+        const windowWidth = bounds.ww
         const lastIndex = elements.items.length - 1
         const scrollY = window.scrollY
 
