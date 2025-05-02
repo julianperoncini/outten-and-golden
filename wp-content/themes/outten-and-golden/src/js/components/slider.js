@@ -12,7 +12,7 @@ export default function Carousel(element, options = {}) {
   };
 
   const state = {
-    speed: 3.5,
+    speed: 2,
     ox: 0,
     cx: 0,
     cy: 0,
@@ -62,7 +62,7 @@ export default function Carousel(element, options = {}) {
       state.cache.forEach((c, i) => {
         c.el.style.transform = `translate3d(0, 0, 0)`;
         const { left, right, width } = rect(c.el);
-        c.start = left - window.innerWidth;
+        c.start = left - bounds.ww;
         c.end = right;
         c.left = left;
         c.width = width;
@@ -75,7 +75,7 @@ export default function Carousel(element, options = {}) {
       state.cache = slide.map((elem, i) => {
         elem.style.transform = `translate3d(0, 0, 0)`;
         const { left, right, width } = rect(elem);
-        const start = left - window.innerWidth;
+        const start = left - bounds.ww;
         const end = right;
         snaps.push(left - srect.left);
 
@@ -87,6 +87,8 @@ export default function Carousel(element, options = {}) {
 
     transforms();
     setTimeout(() => (state.resizing = false), 0);
+
+    console.log("state.max:", state.max);
   };
 
   const calcMax = (elem, right, offset) => {
@@ -94,8 +96,6 @@ export default function Carousel(element, options = {}) {
       getComputedStyle(elem).getPropertyValue("margin-right")
     );
     state.max = Math.max(0, right + state.margin - offset);
-
-    console.log("state.margin:", state.margin);
   };
 
   const pos = (e) => {
@@ -135,11 +135,8 @@ export default function Carousel(element, options = {}) {
 
       if (target.dataset.url) {
         window.location.href = target.dataset.url;
-        const event = new CustomEvent('slide:click');
-        window.dispatchEvent(event);
-      } else if (target.dataset.modal) {
-        document.body.classList.add('modal-open');
-      }
+        evt.emit('slide:click');
+      } 
     } else {
       snap();
     }
@@ -152,8 +149,6 @@ export default function Carousel(element, options = {}) {
     state.t = gsap.utils.clamp(0, state.max, clampedT + diff);
 
     state.idx = snaps.indexOf(snap);
-
-    console.log("state.snap:", snap);
   };
 
   const tick = (time) => {
@@ -264,8 +259,7 @@ export default function Carousel(element, options = {}) {
     bindEvents();
     resize();
   };
-
-  // Cleanup (equivalent to onBeforeUnmount in Vue)
+  
   const destroy = () => {
     unbindEvents();
     if (st) {
