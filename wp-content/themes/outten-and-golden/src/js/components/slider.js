@@ -1,382 +1,290 @@
 import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
 import lerp from '@14islands/lerp'
-import { evt, utils, store } from '@/core'
-import { DragHandler } from '@/core/events/dragHandler'
 
-const { device, bounds } = store
-const isMobile = device.isMobile
+import { evt, utils, store } from '../core'
 
-const { qs, qsa, rect, CS } = utils
+const { qs, qsa, rect } = utils
+const { dom, features, bounds } = store
 
-gsap.registerPlugin(ScrollTrigger)
+export default function Carousel(element, options = {}) {
+  const config = {
+    toggle: options.toggle || false
+  };
 
-export default function (config) {
-    const state = {
-        isDragging: false,
-        isDragged: false,
-        down: false,
-        previousX: 0,
-        minScroll: 0,
-        maxScroll: 0,
-        scrollSensitivity: isMobile ? 3 : 2,
-        snapIndex: 0,
-        position: { current: 0, target: 0, previous: 0, start: 0 },
-        bounds: [],
-        itemPositions: [],
-        viewPositions: [],
-        settersX: [],
-        diff: 0,
-        ratio: 1,
-        still: true,
-        progressX: [],
-        cursorX: [],
-        cursorY: []
+  const state = {
+    speed: 3.5,
+    ox: 0,
+    cx: 0,
+    cy: 0,
+    dx: 0,
+    t: 0,
+    tc: 0,
+    max: 0,
+    margin: 0,
+    idx: 0,
+    active: false,
+    resizing: false,
+    run: false,
+    cache: null,
+    events: {}
+  };
+
+  // Elements
+  const elements = {
+    el: element.section,
+    pb: null
+  };
+
+  console.log(elements.el)
+
+  let snaps = [];
+  let st = null;
+  let crect = null;
+
+  const resize = () => {
+    state.resizing = true;
+    
+    const slide = qsa(".js-slide", elements.el);
+    if (!slide.length) return;
+    
+    const slides = elements.el;
+    const srect = rect(slides);
+    crect = rect(elements.el);
+    const total = slide.length - 1;
+    const offset = srect.left;
+    
+    const isSmall = bounds.ww < 768;
+    state.speed = isSmall ? 3.5 : 2;
+    
+    snaps = [];
+    
+    if (state.cache) {
+      state.cache.forEach((c, i) => {
+        c.el.style.transform = `translate3d(0, 0, 0)`;
+        const { left, right, width } = rect(c.el);
+        c.start = left - window.innerWidth;
+        c.end = right;
+        c.left = left;
+        c.width = width;
+        c.out = true;
+        snaps.push(left - srect.left);
+
+        if (i === total) calcMax(c.el, c.end, offset);
+      });
+    } else {
+      state.cache = slide.map((elem, i) => {
+        elem.style.transform = `translate3d(0, 0, 0)`;
+        const { left, right, width } = rect(elem);
+        const start = left - window.innerWidth;
+        const end = right;
+        snaps.push(left - srect.left);
+
+        if (i === total) calcMax(elem, end, offset);
+
+        return { el: elem, start, end, left, width, out: true };
+      });
     }
 
-    const elements = {
-        section: config.section,
-        container: qs('.slider-container', config.section),
-        items: qsa('.slider-item', config.section),
-        progress: qs('.slider-bar', config.section),
-        prevButton: qs('.slider-prev', config.section),
-        nextButton: qs('.slider-next', config.section),
-        cursor: qs('.slider-cursor', config.section)
+    transforms();
+    setTimeout(() => (state.resizing = false), 0);
+  };
+
+  const calcMax = (elem, right, offset) => {
+    state.margin = parseInt(
+      getComputedStyle(elem).getPropertyValue("margin-right")
+    );
+    state.max = Math.max(0, right + state.margin - offset);
+
+    console.log("state.margin:", state.margin);
+  };
+
+  const pos = (e) => {
+    const x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+    return { x, y };
+  };
+
+  const down = (e) => {
+    const { x, y } = pos(e);
+    state.active = true;
+    state.cx = x;
+    state.cy = y;
+    state.dx = x;
+    state.ox = state.t + x * state.speed;
+  };
+
+  const move = (e) => {
+    if (!state.active) return;
+    const { x, y } = pos(e);
+    if (Math.abs(x - state.cx) > Math.abs(y - state.cy) && e.cancelable) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    const newT = state.ox - x * state.speed;
+    state.t = gsap.utils.clamp(0, state.max, newT);
+  };
 
-    const snapConfig = config.snap || { move: true, end: 'max' }
+  const up = (e) => {
+    if (!state.active) return;
+    state.active = false;
+    const { x } = pos(e);
 
-    gsap.set(elements.progress, { scaleX: 0.2 })
-    gsap.set(elements.cursor, { xPercent: -50, yPercent: -50 })
+    if (Math.abs(x - state.dx) < 10) {
+      const target = e.target.closest("[data-url], [data-modal]");
+      if (!target || !element.contains(target)) return;
 
-    const initQuickSetters = () => {
-        state.settersX = elements.items.map(item => gsap.quickSetter(item, 'x', 'px'))
+      if (target.dataset.url) {
+        window.location.href = target.dataset.url;
+        const event = new CustomEvent('slide:click');
+        window.dispatchEvent(event);
+      } else if (target.dataset.modal) {
+        document.body.classList.add('modal-open');
+      }
+    } else {
+      snap();
     }
+  };
 
-    const handleContainerClick = (e) => {
-        if (state.hasDragged) return
+  const snap = () => {
+    const clampedT = gsap.utils.clamp(0, state.max, state.t);
+    const snap = gsap.utils.snap(snaps, clampedT);
+    const diff = snap - clampedT;
+    state.t = gsap.utils.clamp(0, state.max, clampedT + diff);
 
-        const containerBounds = rect(elements.container)
-        const clickX = e.clientX - containerBounds.left
-        const clickZoneSize = containerBounds.width * 0.5
+    state.idx = snaps.indexOf(snap);
 
-        if (clickX < clickZoneSize) {
-            goToPrevious()
-            elements.cursor.classList.add('prev-hover')
-        } else if (clickX > containerBounds.width - clickZoneSize) {
-            goToNext()
-            elements.cursor.classList.add('next-hover')
-        }
+    console.log("state.snap:", snap);
+  };
+
+  const tick = (time) => {
+    if (config.toggle && !state.run) return;
+
+    const ratio = 1;
+
+    state.tc = lerp(state.tc, state.t, 0.1 * ratio);
+    state.tc = Math.round(state.tc * 100) / 100;
+    
+    if (!state.resizing) {
+      transforms();
     }
+    
+    requestAnimationFrame(tick);
+  };
 
-    const updateBounds = () => {
-        const scrollY = window.scrollY
-        const areaBounds = rect(elements.container)
+  const transforms = () => {
+    if (!state.cache) return;
+    
+    state.cache.forEach((c, i) => {
+      const { start, end, left, width, el } = c;
+      const t = gsap.utils.clamp(0, state.max, state.tc);
+      const v = visible(start, end, left, width, t);
 
-        state.bounds = [{
-            top: areaBounds.top + scrollY,
-            bottom: areaBounds.top + areaBounds.height + scrollY,
-            height: areaBounds.height
-        }]
-    }
+      if (v.visible || state.resizing) {
+        c.out && (c.out = false);
+        transform(el, t);
+      } else if (!c.out) {
+        c.out = true;
+        transform(el, t);
+      }
+    });
+  };
 
-    const calculateItemPositions = (scrollY) => {
-        const windowWidth = bounds.ww
-        const areaBounds = rect(elements.container)
-        const areaTop = areaBounds.top + scrollY
+  const transform = (el, transform) => {
+    el.style.transform = `translate3d(${-transform}px, 0, 0)`;
+  };
 
-        let currentOffset = 0
+  const visible = (start, end, t) => {
+    const visible = t > start && t < end;
 
-        state.itemPositions = []
-        state.viewPositions = []
-
-        elements.items.forEach((item, i) => {
-            const itemBounds = rect(item)
-            const marginLeft = CS(item, "marginLeft")
-            const itemWidth = itemBounds.width
-
-            currentOffset += marginLeft
-
-            state.itemPositions[i] = {
-                x: currentOffset,
-                y: areaTop,
-                w: itemWidth,
-                h: itemBounds.height,
-                marginX: marginLeft
-            }
-
-            state.viewPositions[i] = {
-                start: currentOffset - windowWidth,
-                end: currentOffset + itemWidth,
-                out: false
-            }
-
-            currentOffset += itemWidth
-        })
-
-        return currentOffset
-    }
-
-    const snapPositions = (windowWidth, lastIndex) => {
-        let snapLimit = getSnapLimit(windowWidth, lastIndex)
-        let totalPosition = 0
-
-        snapConfig.positions = [0]
-
-        for (let i = 0; i < snapLimit; i++) {
-            totalPosition += state.itemPositions[i].w + state.itemPositions[i + 1].marginX
-            snapConfig.positions.push(totalPosition + 1)
-        }
-
-        state.maxScroll = gsap.utils.clamp(0, Infinity, totalPosition)
-        state.position.target = snapConfig.positions[state.snapIndex]
-    }
-
-    const getSnapLimit = (windowWidth, lastIndex) => {
-        if (snapConfig.end !== 'max') return lastIndex
-
-        let remainingWidth = windowWidth - state.itemPositions[0].marginX
-
-        for (let i = lastIndex; i >= 0; i--) {
-            remainingWidth -= state.itemPositions[i].w + state.itemPositions[i].marginX 
-            if (remainingWidth < 0) return i + 1
-        }
-
-        return lastIndex
-    }
-
-    const tick = () => {
-        state.diff = state.position.target - state.position.current;
-        state.still = Math.abs(state.diff) < 0.05;
-        state.ratio = gsap.ticker.deltaRatio(60)
-
-        if (!state.still) {
-            state.position.current = lerp(state.position.current, state.position.target, isMobile ? 0.15 * state.ratio : 0.135 * state.ratio);
-
-            inView()
-        }
-    }
-
-    const updateAllSlides = () => {
-        const currentX = gsap.utils.clamp(0, Infinity, state.position.current)
-
-        state.viewPositions.forEach((view, i) => {
-            view.out = false
-            state.settersX[i](-currentX)
-        })
-
-        inView()
-    }
-
-    const inView = () => {
-        const threshold = 150;
-        const currentX = gsap.utils.clamp(0, Infinity, state.position.current)
-
-        const targetX = state.position.target
-
-        state.viewPositions.forEach((view, i) => {
-            const currentlyInView = currentX > view.start - threshold && currentX <= view.end + threshold
-            const willBeInView = targetX > view.start - threshold && targetX <= view.end + threshold
-            const isTransitioning = Math.abs(targetX - currentX) > 10
-
-            if (currentlyInView || (willBeInView && isTransitioning)) {
-                view.out = false
-                state.settersX[i](-currentX)
-            } else if (!view.out) {
-                view.out = true
-                state.settersX[i](-currentX)
-            }
-        });
+    return {
+      visible,
     };
+  };
 
-    const down = ({ e, start }) => {
-        if (start.y >= state.bounds[0].top && start.y <= state.bounds[0].bottom) {
-            state.down = true
-            state.hasDragged = false
-            dragInstance.state.start.x = start.x
-            state.position.previous = state.position.target
-        }
+  const setEvents = () => {
+    const isMobile = 'ontouchstart' in window;
+    console.log("isMobile:", isMobile);
+
+    state.events = {
+      move: isMobile ? "touchmove" : "mousemove",
+      down: isMobile ? "touchstart" : "mousedown",
+      up: isMobile ? "touchend" : "mouseup",
+    };
+  };
+
+  const next = () => {
+    if (!state.cache) return;
+    if (state.idx >= state.cache.length - 1) return;
+    const c = state.cache[state.idx];
+    if (!c) return;
+    const left = c.width;
+    const newT = state.t + left + state.margin;
+    state.t = gsap.utils.clamp(0, state.max, newT);
+    state.idx += 1;
+  };
+
+  const previous = () => {
+    if (!state.cache) return;
+    if (state.idx <= 0) return;
+    const c = state.cache[state.idx];
+    if (!c) return;
+    const left = c.width;
+    const newT = state.t - (left + state.margin);
+    state.t = gsap.utils.clamp(0, state.max, newT);
+    state.idx -= 1;
+  };
+
+  const bindEvents = () => {
+    setEvents();
+
+    elements.el.addEventListener(state.events.down, down);
+    elements.el.addEventListener(state.events.move, move);
+    window.addEventListener(state.events.up, up);
+    
+    window.addEventListener('resize', resize);
+    
+    requestAnimationFrame(tick);
+  };
+
+  const unbindEvents = () => {
+    element.removeEventListener(state.events.down, down);
+    element.removeEventListener(state.events.move, move);
+    window.removeEventListener(state.events.up, up);
+    
+    window.removeEventListener('resize', resize);
+  };
+
+  const init = async () => {
+    if (config.toggle) {
+      st = ScrollTrigger.create({
+        trigger: element,
+        onToggle: ({ isActive }) => (state.run = isActive),
+      });
     }
+    bindEvents();
+    resize();
+  };
 
-    const move = ({ e, x, y, axis }) => {
-        const clientX = e.clientX || e.touches?.[0]?.clientX || 0
-        const clientY = e.clientY || e.touches?.[0]?.clientY || 0
-
-        if (state.down && axis === 'x') {
-            e.preventDefault()
-        }
-
-        if (!state.down || axis !== 'x') return
-
-        if (Math.abs(x - dragInstance.state.start.x) > 5 || Math.abs(y - dragInstance.state.start.y) > 5) {
-            state.hasDragged = true
-        }
-
-        if (x > state.previousX && state.position.target === state.minScroll) {
-            dragInstance.state.start.x = x - (state.position.previous - state.minScroll) / state.scrollSensitivity
-        } else if (x < state.previousX && state.position.target === state.maxScroll) {
-            dragInstance.state.start.x = x - (state.position.previous - state.maxScroll) / state.scrollSensitivity
-        }
-
-        state.previousX = x
-
-        const delta = -(x - dragInstance.state.start.x) * state.scrollSensitivity + state.position.previous
-        updateScrollTarget(delta)
+  // Cleanup (equivalent to onBeforeUnmount in Vue)
+  const destroy = () => {
+    unbindEvents();
+    if (st) {
+      st.kill();
     }
+  };
 
-    const trackCurrentIndex = () => {
-        // Find closest index to current position
-        let closestIndex = 0;
-        let closestDistance = Math.abs(state.position.target - snapConfig.positions[0]);
+  init()
 
-        for (let i = 1; i < snapConfig.positions.length; i++) {
-            const distance = Math.abs(state.position.target - snapConfig.positions[i]);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestIndex = i;
-            }
-        }
-
-        // Update the snapIndex without changing position
-        state.snapIndex = closestIndex;
+  return {
+    init,
+    destroy,
+    next,
+    previous,
+    get index() {
+      return state.idx;
+    },
+    get cache() {
+      return state.cache;
     }
-
-    const up = ({ e, x, y, drag }) => {
-        if (!state.down) return
-        state.down = false
-        state.isDragging = false
-
-        const selectedIndex = getSelectedIndex(x, y)
-
-        if (snapConfig.move && drag && snapUp(selectedIndex)) {
-            // After snapping, make sure the index is updated
-            trackCurrentIndex();
-            return;
-        }
-
-        if (snapConfig.click && !drag && selectedIndex !== -1) {
-            state.position.target = snapConfig.positions[selectedIndex]
-            state.snapIndex = selectedIndex
-        }
-
-        updateScrollTarget(state.position.target)
-
-        // Track approximate index after any movement
-        trackCurrentIndex();
-    }
-
-    const getSelectedIndex = (x, y) => {
-        const currentX = x + state.position.current
-        return state.itemPositions.findIndex(item =>
-            currentX >= item.x &&
-            currentX <= item.x + item.w &&
-            y >= item.y &&
-            y <= item.y + item.h
-        )
-    }
-
-    const snapUp = () => {
-        const closestIndex = snapConfig.positions.reduce((closest, pos, i) => {
-            const distance = Math.abs(state.position.target - pos)
-            return distance < Math.abs(state.position.target - snapConfig.positions[closest]) ? i : closest
-        }, 0)
-
-        state.snapIndex = closestIndex
-        state.position.target = snapConfig.positions[closestIndex]
-        return true
-    }
-
-    const goToPrevious = () => {
-        // First ensure we have the right index
-        trackCurrentIndex();
-
-        // Now navigate
-        if (state.snapIndex > 0) {
-            state.snapIndex = state.snapIndex - 1;
-            state.position.target = snapConfig.positions[state.snapIndex];
-            updateScrollTarget(state.position.target);
-        }
-    }
-
-    const goToNext = () => {
-        // First ensure we have the right index
-        trackCurrentIndex();
-
-        // Now navigate
-        if (state.snapIndex < snapConfig.positions.length - 1) {
-            state.snapIndex = state.snapIndex + 1;
-            state.position.target = snapConfig.positions[state.snapIndex];
-            updateScrollTarget(state.position.target);
-        }
-    }
-
-    const updateScrollTarget = (value) => {
-        state.position.target = gsap.utils.clamp(state.minScroll, state.maxScroll, value)
-    }
-
-    const updateAllPositions = (value) => {
-        state.position.current = state.position.target = gsap.utils.clamp(state.minScroll, state.maxScroll, value)
-    }
-
-    const cache = () => {
-        const windowWidth = bounds.ww
-        const lastIndex = elements.items.length - 1
-        const scrollY = window.scrollY
-
-        updateBounds()
-        const totalWidth = calculateItemPositions(scrollY)
-
-        if (snapConfig.move) {
-            snapPositions(windowWidth, lastIndex)
-        } else {
-            const marginRight = CS(elements.items[lastIndex], 'marginRight')
-            state.maxScroll = gsap.utils.clamp(state.minScroll, Infinity, totalWidth - windowWidth + marginRight)
-            snapConfig.positions = [0]
-            snapPositions(windowWidth, lastIndex)
-        }
-
-        updateAllPositions(state.position.target)
-        updateAllSlides()
-    }
-
-    const resize = () => cache()
-
-    let dragInstance
-
-    const setupDragHandler = () => {
-        dragInstance = DragHandler({
-            down,
-            move,
-            up
-        })
-        dragInstance.mount()
-    }
-
-    const mount = () => {
-        initQuickSetters()
-        setupDragHandler()
-
-        evt.on('tick', tick)
-        evt.on('resize', resize)
-
-        !isMobile && elements.container && evt.on('click', elements.container, handleContainerClick)
-        elements.prevButton && evt.on('click', elements.prevButton, goToPrevious)
-        elements.nextButton && evt.on('click', elements.nextButton, goToNext)
-    }
-
-    const unmount = () => {
-        dragInstance?.unmount()
-
-        evt.off('resize', resize)
-        evt.off('tick', tick)
-
-        !isMobile && elements.container && evt.off('click', elements.container, handleContainerClick)
-        elements.prevButton && evt.off('click', elements.prevButton, goToPrevious)
-        elements.nextButton && evt.off('click', elements.nextButton, goToNext)
-    }
-
-    mount()
-    cache()
-
-    return { mount, unmount }
+  };
 }

@@ -47,12 +47,10 @@
         </div>
     </div>
   
-    <div class="relative select-none cursor-grab w-full pb-200 js-slides" data-component="slider(js-slides)">
-            <ul class="slider-container flex relative z-1">
+    <div class="relative site-max site-grid select-none cursor-grab w-full pb-200 js-slides" data-component="slider(js-slides)">
+            <ul class="slider-container col-start-1 col-span-full flex relative w-full z-1 js-carousel">
                 {% for item in item.cases %}
-                    <li class="slider-item relative 
-                        {{ loop.index == 1 ? 'ml-30 min-w-[67rem] max-w-[67rem] 3xl:min-w-[67.7rem] 3xl:max-w-[67.7rem]' 
-                        : 'ml-25 min-w-[41rem] max-w-[41rem] 3xl:min-w-[44.3rem] 3xl:max-w-[44.3rem]' }} js-slide">
+                    <li class="slider-item relative mr-25 min-w-[41rem] max-w-[41rem] 3xl:min-w-[44.3rem] 3xl:max-w-[44.3rem] js-slide">
                         {# Tags #}
                         <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
                             {% include "/views/partials/tag.twig" with {
