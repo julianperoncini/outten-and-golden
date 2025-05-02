@@ -1,7 +1,6 @@
-import gsap from 'gsap'
-import lerp from '@14islands/lerp'
-
+import { animate, inView, spring, wrap, timeline } from 'motion'
 import { evt, utils, store } from '../core'
+import lerp from '@14islands/lerp'
 
 const { qs, qsa, rect } = utils
 const { dom, features, bounds } = store
@@ -9,7 +8,7 @@ const { dom, features, bounds } = store
 export default function Carousel(element, options = {}) {
   const config = {
     toggle: options.toggle || false
-  };
+  }
 
   const state = {
     speed: 2,
@@ -24,248 +23,304 @@ export default function Carousel(element, options = {}) {
     idx: 0,
     active: false,
     resizing: false,
-    run: false,
+    run: true,
     cache: null,
     events: {}
-  };
+  }
 
-  // Elements
   const elements = {
     el: element.section,
     pb: null
-  };
+  }
 
-  console.log(elements.el)
-
-  let snaps = [];
-  let st = null;
-  let crect = null;
+  let snaps = []
+  let observer = null
+  let crect = null
+  let animationFrame = null
 
   const resize = () => {
-    state.resizing = true;
+    state.resizing = true
     
-    const slide = qsa(".js-slide", elements.el);
-    if (!slide.length) return;
+    const slide = qsa(".js-slide", elements.el)
+    if (!slide.length) return
     
-    const slides = elements.el;
-    const srect = rect(slides);
-    crect = rect(elements.el);
-    const total = slide.length - 1;
-    const offset = srect.left;
+    const slides = elements.el
+    const srect = rect(slides)
+    crect = rect(elements.el)
+    const total = slide.length - 1
+    const offset = srect.left
     
-    const isSmall = bounds.ww < 768;
-    state.speed = isSmall ? 3.5 : 2;
+    const isSmall = bounds.ww < 768
+    state.speed = isSmall ? 3.5 : 2
     
-    snaps = [];
+    snaps = []
     
     if (state.cache) {
       state.cache.forEach((c, i) => {
-        c.el.style.transform = `translate3d(0, 0, 0)`;
-        const { left, right, width } = rect(c.el);
-        c.start = left - bounds.ww;
-        c.end = right;
-        c.left = left;
-        c.width = width;
-        c.out = true;
-        snaps.push(left - srect.left);
+        c.el.style.transform = `translate3d(0, 0, 0)`
+        const { left, right, width } = rect(c.el)
+        c.start = left - window.innerWidth
+        c.end = right
+        c.left = left
+        c.width = width
+        c.out = true
+        snaps.push(left - srect.left)
 
-        if (i === total) calcMax(c.el, c.end, offset);
-      });
+        if (i === total) calcMax(c.el, c.end, offset)
+      })
     } else {
       state.cache = slide.map((elem, i) => {
-        elem.style.transform = `translate3d(0, 0, 0)`;
-        const { left, right, width } = rect(elem);
-        const start = left - bounds.ww;
-        const end = right;
-        snaps.push(left - srect.left);
+        elem.style.transform = `translate3d(0, 0, 0)`
+        const { left, right, width } = rect(elem)
+        const start = left - window.innerWidth
+        const end = right
+        snaps.push(left - srect.left)
 
-        if (i === total) calcMax(elem, end, offset);
+        if (i === total) calcMax(elem, end, offset)
 
-        return { el: elem, start, end, left, width, out: true };
-      });
+        return { el: elem, start, end, left, width, out: true }
+      })
     }
 
-    transforms();
-    setTimeout(() => (state.resizing = false), 0);
+    transforms()
 
-    console.log("state.max:", state.max);
-  };
+    requestAnimationFrame(() => (state.resizing = false))
+  }
 
   const calcMax = (elem, right, offset) => {
     state.margin = parseInt(
       getComputedStyle(elem).getPropertyValue("margin-right")
-    );
-    state.max = Math.max(0, right + state.margin - offset);
-  };
+    )
+    state.max = Math.max(0, right + state.margin - offset)
+  }
 
   const pos = (e) => {
-    const x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-    const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-    return { x, y };
-  };
+    const x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX
+    const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY
+    
+    return { x, y }
+  }
 
   const down = (e) => {
-    const { x, y } = pos(e);
-    state.active = true;
-    state.cx = x;
-    state.cy = y;
-    state.dx = x;
-    state.ox = state.t + x * state.speed;
-  };
+    const { x, y } = pos(e)
+    state.active = true
+    state.cx = x
+    state.cy = y
+    state.dx = x
+    state.ox = state.t + x * state.speed
+  }
 
   const move = (e) => {
-    if (!state.active) return;
-    const { x, y } = pos(e);
+    if (!state.active) return
+    const { x, y } = pos(e)
     if (Math.abs(x - state.cx) > Math.abs(y - state.cy) && e.cancelable) {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
     }
-    const newT = state.ox - x * state.speed;
-    state.t = gsap.utils.clamp(0, state.max, newT);
-  };
+    const newT = state.ox - x * state.speed
+    state.t = clamp(0, state.max, newT)
+  }
 
   const up = (e) => {
-    if (!state.active) return;
-    state.active = false;
-    const { x } = pos(e);
+    if (!state.active) return
+    state.active = false
+    const { x } = pos(e)
 
     if (Math.abs(x - state.dx) < 10) {
-      const target = e.target.closest("[data-url], [data-modal]");
-      if (!target || !element.contains(target)) return;
+      const target = e.target.closest("[data-url], [data-modal]")
+      if (!target || !element.contains(target)) return
 
       if (target.dataset.url) {
-        window.location.href = target.dataset.url;
-        evt.emit('slide:click');
-      } 
+        window.location.href = target.dataset.url
+        const event = new CustomEvent('slide:click')
+        window.dispatchEvent(event)
+      }
     } else {
-      snap();
+      snap()
     }
-  };
+  }
 
   const snap = () => {
-    const clampedT = gsap.utils.clamp(0, state.max, state.t);
-    const snap = gsap.utils.snap(snaps, clampedT);
-    const diff = snap - clampedT - state.margin;
-    state.t = gsap.utils.clamp(0, state.max, clampedT + diff);
+    const clampedT = clamp(0, state.max, state.t)
+    const snapValue = findNearestSnap(snaps, clampedT)
+    const diff = snapValue - clampedT - state.margin
+    state.t = clamp(0, state.max, clampedT + diff)
 
-    state.idx = snaps.indexOf(snap);
-  };
+    state.idx = snaps.indexOf(snapValue)
 
-  const tick = (time) => {
-    if (config.toggle && !state.run) return;
+    console.log("state.snap:", snapValue)
+  }
 
-    const ratio = 1;
 
-    state.tc = lerp(state.tc, state.t, 0.1 * ratio);
-    state.tc = Math.round(state.tc * 100) / 100;
+  const findNearestSnap = (snapPoints, value) => {
+    let closest = snapPoints[0]
+    let closestDistance = Math.abs(snapPoints[0] - value)
     
-    if (!state.resizing) {
-      transforms();
+    for (let i = 1; i < snapPoints.length; i++) {
+      const distance = Math.abs(snapPoints[i] - value)
+      if (distance < closestDistance) {
+        closest = snapPoints[i]
+        closestDistance = distance
+      }
     }
     
-    requestAnimationFrame(tick);
-  };
+    return closest
+  }
+
+  const clamp = (min, max, value) => {
+    return Math.min(Math.max(value, min), max)
+  }
+
+  const tick = () => {
+    if (config.toggle && !state.run) return
+    
+    const ratio = 1
+    state.tc = lerp(state.tc, state.t, 0.1 * ratio)
+    state.tc = Math.round(state.tc * 100) / 100
+    
+    if (!state.resizing) {
+      transforms()
+    }
+    
+    animationFrame = requestAnimationFrame(tick)
+  }
 
   const transforms = () => {
-    if (!state.cache) return;
+    if (!state.cache) return
     
-    state.cache.forEach((c, i) => {
-      const { start, end, left, width, el } = c;
-      const t = gsap.utils.clamp(0, state.max, state.tc);
-      const v = visible(start, end, left, width, t);
+    state.cache.forEach((c) => {
+      const { start, end, left, width, el } = c
+      const t = clamp(0, state.max, state.tc)
+      const v = visible(start, end, left, width, t)
 
       if (v.visible || state.resizing) {
-        c.out && (c.out = false);
-        transform(el, t);
+        c.out && (c.out = false)
+        transformElement(el, t)
       } else if (!c.out) {
-        c.out = true;
-        transform(el, t);
+        c.out = true
+        transformElement(el, t)
       }
-    });
-  };
+    })
+  }
 
-  const transform = (el, transform) => {
-    el.style.transform = `translate3d(${-transform}px, 0, 0)`;
-  };
+  const transformElement = (el, transform) => {
+    animate(el, { 
+      x: -transform
+    }, { 
+      duration: 0,
+      easing: [0.17, 0.67, 0.83, 0.67]
+    })
+  }
 
-  const visible = (start, end, t) => {
-    const visible = t > start && t < end;
-
-    return {
-      visible,
-    };
-  };
+  const visible = (start, end, left, width, t) => {
+    const visible = t > start && t < end
+    return { visible }
+  }
 
   const setEvents = () => {
-    const isMobile = 'ontouchstart' in window;
-    console.log("isMobile:", isMobile);
+    const isMobile = 'ontouchstart' in window
+    console.log("isMobile:", isMobile)
 
     state.events = {
       move: isMobile ? "touchmove" : "mousemove",
       down: isMobile ? "touchstart" : "mousedown",
       up: isMobile ? "touchend" : "mouseup",
-    };
-  };
+    }
+  }
 
+  /**
+   * Next & Previous slide
+   */
   const next = () => {
-    if (!state.cache) return;
-    if (state.idx >= state.cache.length - 1) return;
-    const c = state.cache[state.idx];
-    if (!c) return;
-    const left = c.width;
-    const newT = state.t + left + state.margin;
-    state.t = gsap.utils.clamp(0, state.max, newT);
-    state.idx += 1;
-  };
+    if (!state.cache) return
+    if (state.idx >= state.cache.length - 1) return
+    const c = state.cache[state.idx]
+    if (!c) return
+    const left = c.width
+    const newT = state.t + left + state.margin
+    
+    const value = { t: state.t }
+    animate(value, { 
+      t: clamp(0, state.max, newT) 
+    }, {
+      duration: 0.5,
+      easing: spring(),
+      onUpdate: ({ t }) => {
+        state.t = t
+      }
+    })
+    
+    state.idx += 1
+  }
 
   const previous = () => {
-    if (!state.cache) return;
-    if (state.idx <= 0) return;
-    const c = state.cache[state.idx];
-    if (!c) return;
-    const left = c.width;
-    const newT = state.t - (left + state.margin);
-    state.t = gsap.utils.clamp(0, state.max, newT);
-    state.idx -= 1;
-  };
+    if (!state.cache) return
+    if (state.idx <= 0) return
+    const c = state.cache[state.idx]
+    if (!c) return
+    const left = c.width
+    const newT = state.t - (left + state.margin)
+    
+    const value = { t: state.t }
+    animate(value, { 
+      t: clamp(0, state.max, newT) 
+    }, {
+      duration: 0.5,
+      easing: spring(),
+      onUpdate: ({ t }) => {
+        state.t = t
+      }
+    })
+    
+    state.idx -= 1
+  }
 
   const bindEvents = () => {
-    setEvents();
+    setEvents()
 
-    elements.el.addEventListener(state.events.down, down);
-    elements.el.addEventListener(state.events.move, move);
-    window.addEventListener(state.events.up, up);
+    elements.el.addEventListener(state.events.down, down)
+    elements.el.addEventListener(state.events.move, move)
+    window.addEventListener(state.events.up, up)
     
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize)
     
-    requestAnimationFrame(tick);
-  };
+    if (config.toggle) {
+      observer = inView(elements.el, () => {
+        state.run = true
+        return () => {
+          state.run = false
+        }
+      })
+    }
+    
+    animationFrame = requestAnimationFrame(tick)
+  }
 
   const unbindEvents = () => {
-    element.removeEventListener(state.events.down, down);
-    element.removeEventListener(state.events.move, move);
-    window.removeEventListener(state.events.up, up);
+    elements.el.removeEventListener(state.events.down, down)
+    elements.el.removeEventListener(state.events.move, move)
+    window.removeEventListener(state.events.up, up)
     
-    window.removeEventListener('resize', resize);
-  };
+    window.removeEventListener('resize', resize)
+    
+    if (observer) {
+      observer.disconnect()
+    }
+    
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame)
+    }
+  }
 
   const init = async () => {
-    if (config.toggle) {
-      st = ScrollTrigger.create({
-        trigger: element,
-        onToggle: ({ isActive }) => (state.run = isActive),
-      });
-    }
-    bindEvents();
-    resize();
-  };
-  
+    bindEvents()
+    resize()
+  }
+
   const destroy = () => {
-    unbindEvents();
-    if (st) {
-      st.kill();
-    }
-  };
+    unbindEvents()
+    state.cache = null
+  }
 
   init()
 
@@ -275,10 +330,10 @@ export default function Carousel(element, options = {}) {
     next,
     previous,
     get index() {
-      return state.idx;
+      return state.idx
     },
     get cache() {
-      return state.cache;
+      return state.cache
     }
-  };
+  }
 }
