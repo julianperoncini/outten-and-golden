@@ -9,17 +9,11 @@ export default function (el, options = {}) {
   if (!el) return
 
   const trigger = qs('.js-menu-trigger')
-  const menu = qs('.js-menu')
-  const menuInner = qs('.js-menu-inner')
-  const splitEl = qsa('ul', menuInner)
-
-  let splitController = new split()
 
   let isMenuOpen = false
   let previousNavState = ''
 
   gsap.set(el, { yPercent: -100 })
-  gsap.set(menuInner, { yPercent: 100 })
 
   const openMenu = () => {
     if (isMenuOpen) return
@@ -31,25 +25,12 @@ export default function (el, options = {}) {
     dom.body.dataset.nav = 'white'
 
     el.classList.add('is-open')
+    gsap.set(el, { autoAlpha: 1 })
     gsap.to(el, {
       yPercent: 0,
       duration: 1,
       ease: 'expo',
     })
-    gsap.to(menuInner, {
-      yPercent: 0,
-      duration: 1,
-      ease: 'expo',
-    })
-
-    splitController.prepare(splitEl, {
-      autoObserve: false
-    })
-    splitController.animate.in(splitEl, {
-      stagger: 0.04,
-      duration: 0.9,
-    })
-
   }
 
   const closeMenu = () => {
@@ -63,11 +44,6 @@ export default function (el, options = {}) {
     el.classList.remove('is-open')
     gsap.to(el, {
       yPercent: -100,
-      duration: 1,
-      ease: 'expo',
-    })
-    gsap.to(menuInner, {
-      yPercent: 100,
       duration: 1,
       ease: 'expo',
     })
@@ -99,7 +75,6 @@ export default function (el, options = {}) {
   evt.on('resize', onResize)
   document.addEventListener('keydown', onKeyDown)
 
-  // Return cleanup function to handle event removal if needed
   return () => {
     evt.off('click', trigger, toggleMenu)
     evt.off('menu:close', closeMenu)

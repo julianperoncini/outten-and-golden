@@ -126,6 +126,20 @@ main {
     }
 }
 
+.site-grid-10 {
+    --gap: 0rem;
+    --cols: 1;
+
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-column-gap: var(--gap);
+
+    @screen s {
+        --gap: 2.5rem;
+        --cols: 10;
+    }
+}
+
 
 /* ==========================
 	Aspect
@@ -219,4 +233,33 @@ header {
 .js-sop-bar-wrap.is-active {
 	@apply h-[8rem];
 	transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.js-slider-mm-office-progress .js-sop-bar-wrap.is-active {
+	@apply h-[2rem];
+	transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.team-members-list > .team-members-item:nth-child(6n+1) .team-member-contact a {
+	@apply bg-green text-white-smoke;
+}
+
+.team-members-list > .team-members-item:nth-child(6n+2) .team-member-contact a {
+	@apply bg-yellow text-black;
+}
+
+.team-members-list > .team-members-item:nth-child(6n+3) .team-member-contact a {
+	@apply bg-grey text-grey-taupe;
+}
+
+.team-members-list > .team-members-item:nth-child(6n+4) .team-member-contact a {
+	@apply bg-grey-taupe text-grey;
+}
+
+.team-members-list > .team-members-item:nth-child(6n+5) .team-member-contact a {
+	@apply bg-yellow text-black;
+}
+
+.team-members-list > .team-members-item:nth-child(6n+6) .team-member-contact a {
+	@apply bg-green text-white-smoke;
 }

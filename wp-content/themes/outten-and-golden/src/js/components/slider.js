@@ -4,7 +4,7 @@ import lerp from '@14islands/lerp'
 import { evt, utils, store } from '@/core'
 import { DragHandler } from '@/core/events/dragHandler'
 
-const { device } = store
+const { device, bounds } = store
 const isMobile = device.isMobile
 
 const { qs, qsa, rect, CS } = utils
