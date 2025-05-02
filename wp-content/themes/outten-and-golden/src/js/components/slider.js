@@ -148,7 +148,7 @@ export default function Carousel(element, options = {}) {
   const snap = () => {
     const clampedT = gsap.utils.clamp(0, state.max, state.t);
     const snap = gsap.utils.snap(snaps, clampedT);
-    const diff = snap - clampedT;
+    const diff = snap - clampedT - state.margin;
     state.t = gsap.utils.clamp(0, state.max, clampedT + diff);
 
     state.idx = snaps.indexOf(snap);
