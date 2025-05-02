@@ -59,7 +59,7 @@ body {
 html {
 	font-size: clamp(1px, calc(10 * (100vw / var(--size))), var(--clamp));
 	//@include fluid(font-size, 10);
-	font-kerning: none;
+	//font-kerning: none;
 	font-variant-ligatures: common-ligatures;
 	@apply subpixel-antialiased antialiased;
     -webkit-text-size-adjust: none;
@@ -219,4 +219,10 @@ header {
 .js-sop-bar-wrap.is-active {
 	@apply h-[8rem];
 	transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+body.home {
+	.breadcrumbs {
+		@apply -translate-y-full;
+	}
 }
