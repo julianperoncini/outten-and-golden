@@ -36,7 +36,7 @@ export default function (el, options = {}) {
         ease: easeOut
       }],
       [animateIn, {
-        transform: ['translateY(2rem)', 'none'],
+        transform: ['translateY(-2rem)', 'none'],
         opacity: [0, 1],
       }, {
         duration: 1,
@@ -50,7 +50,7 @@ export default function (el, options = {}) {
       }, {
         duration: 2,
         delay: stagger(0.04),
-        at: '<',
+        at: '-1.5',
         ease: easeOut
       }]
     ]
