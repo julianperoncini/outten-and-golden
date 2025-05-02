@@ -102,7 +102,9 @@ export default function Carousel(element, options = {}) {
     state.margin = parseInt(
       getComputedStyle(elem).getPropertyValue("margin-right")
     )
-    state.max = Math.max(0, right + state.margin - offset)
+    const containerWidth = rect(elem).width
+    const lastSlidePosition = right - offset - containerWidth
+    state.max = Math.max(0, lastSlidePosition - state.margin)
   }
 
   const pos = (e) => {
