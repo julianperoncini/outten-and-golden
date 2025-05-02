@@ -3,14 +3,26 @@ import { Transition } from '@unseenco/taxi'
 import { utils, evt } from '@/core'
 
 const { qs, qsa } = utils
-const overlay = qs('.js-transition-overlay')
 const mask = qs('.js-transition-mask')
+
+let tl
 
 export default class extends Transition {
     onLeave({ from, trigger, done }) {
         evt.emit('menu:close')
 
-        done()
+		tl?.kill()
+		tl = gsap.timeline()
+			.fromTo(mask, { 
+				autoAlpha: 0
+			}, {
+				autoAlpha: 1,
+				duration: .5,
+				ease: 'power1'
+			})
+			.add(() => done())
+
+		evt.emit('leave')
     }
 
     onEnter({ to, trigger, done }) {
@@ -18,6 +30,19 @@ export default class extends Transition {
         evt.emit('speed:boost')
         evt.emit('menu:reset')
 
-        done()
+		window.scrollTo(0, 0)
+		done()
+
+		tl?.kill()
+		tl = gsap.timeline({
+			paused: true,
+			defaults: {
+				duration: .75,
+				ease: 'power1'
+			}
+		})
+			.to(mask, { autoAlpha: 0 })
+
+		tl.play()
     }
 }

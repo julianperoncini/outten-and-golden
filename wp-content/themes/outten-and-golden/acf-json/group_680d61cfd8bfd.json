@@ -39,7 +39,7 @@
                 {
                     "key": "field_681190276bca2",
                     "label": "Image",
-                    "name": "featured_image",
+                    "name": "image",
                     "aria-label": "",
                     "type": "image",
                     "instructions": "",
@@ -134,6 +134,23 @@
                     "placeholder": "",
                     "prepend": "",
                     "append": ""
+                },
+                {
+                    "key": "field_6814459735102",
+                    "label": "Linkedin",
+                    "name": "linkedin",
+                    "aria-label": "",
+                    "type": "link",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "url",
+                    "allow_in_bindings": 0
                 }
             ]
         }
@@ -143,7 +160,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "team"
+                "value": "team-member"
             }
         ]
     ],
@@ -156,5 +173,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1745981520
+    "modified": 1746159026
 }

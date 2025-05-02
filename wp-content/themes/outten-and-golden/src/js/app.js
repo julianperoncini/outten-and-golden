@@ -21,7 +21,7 @@ const initResize = ev.resize()
 const initScroll = ev.scroll()
 const initMouse = ev.mouse()
 
-// menu(qs('.js-menu'))
+menu(qs('.js-menu'))
 
 // Update admin bar actions
 const updateWpAdminBar = (page = document) => {

@@ -270,6 +270,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
     public function add_base_timber_context($context) {
         $context['site']    = $this;
         $context['menu']    = Timber::get_menu('main-menu');
+        $context['menu_1']    = Timber::get_menu('menu-1');
+        $context['menu_2']    = Timber::get_menu('menu-2');
         $context['footer_menu_1'] = Timber::get_menu('footer-menu-1');
         $context['footer_menu_2'] = Timber::get_menu('footer-menu-2');
         $context['footer_menu_3'] = Timber::get_menu('footer-menu-3');

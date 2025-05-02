@@ -578,6 +578,38 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_68142a9ca93af": {
+                    "key": "layout_68142a9ca93af",
+                    "name": "layout_large_content_and_image",
+                    "label": "Layout Large Content and Image",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68142aa3a93b2",
+                            "label": "Layout Large Content and Image",
+                            "name": "layout_large_content_and_image",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68142a5fd585a"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             },
             "min": "",
@@ -588,9 +620,14 @@
     "location": [
         [
             {
-                "param": "post_type",
+                "param": "post_template",
                 "operator": "==",
-                "value": "page"
+                "value": "default"
+            },
+            {
+                "param": "post_template",
+                "operator": "==",
+                "value": "templates\/team-template.php"
             }
         ]
     ],
@@ -603,5 +640,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746049286
+    "modified": 1746153247
 }

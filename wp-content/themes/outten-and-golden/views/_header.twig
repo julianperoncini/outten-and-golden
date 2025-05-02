@@ -40,7 +40,7 @@
 	{{ function('wp_body_open') }}
 
 	{# Transition mask #}
-	<div class="mask fixed top-0 left-0 w-full h-full bg-black z-[9] pointer-events-none js-transition-mask"></div>
+	<div class="fixed inset-0 bg-white z-[99999] invisible js-transition-mask"></div>
 
 	{% include './_site_grid.twig' %}
 	

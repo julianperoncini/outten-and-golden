@@ -4,7 +4,7 @@ import lerp from '@14islands/lerp'
 import { evt, utils, store } from '@/core'
 import { DragHandler } from '@/core/events/dragHandler'
 
-const { device } = store
+const { device, bounds } = store
 const isMobile = device.isMobile
 
 const { qs, qsa, rect, CS } = utils
@@ -81,7 +81,7 @@ export default function (config) {
     }
 
     const calculateItemPositions = (scrollY) => {
-        const windowWidth = window.innerWidth
+        const windowWidth = bounds.ww
         const areaBounds = rect(elements.container)
         const areaTop = areaBounds.top + scrollY
 
@@ -319,7 +319,7 @@ export default function (config) {
     }
 
     const cache = () => {
-        const windowWidth = window.innerWidth
+        const windowWidth = bounds.ww
         const lastIndex = elements.items.length - 1
         const scrollY = window.scrollY
 

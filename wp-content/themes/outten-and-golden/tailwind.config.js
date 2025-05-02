@@ -32,7 +32,8 @@ export default {
         taupe: '#DEDAD3',
       },
       green: {
-        DEFAULT: '#1E383E'
+        DEFAULT: '#1E383E',
+        lemon: '#E5F291',
       },
       yellow: {
         DEFAULT: '#FCDC9B'

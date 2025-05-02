@@ -1,25 +1,21 @@
-import gsap from 'gsap'
 import { evt, utils, store } from '@/core'
 import split from './split'
+import { motion, animate, stagger, transform, scroll, cubicBezier } from 'motion'
 
 const { qs, qsa } = utils
 const { device, dom } = store
+
+const easeOut = cubicBezier(0.19, 1, 0.22, 1)
 
 export default function (el, options = {}) {
   if (!el) return
 
   const trigger = qs('.js-menu-trigger')
-  const menu = qs('.js-menu')
-  const menuInner = qs('.js-menu-inner')
-  const splitEl = qsa('ul', menuInner)
-
-  let splitController = new split()
+  const boxes = qsa('.js-menu-box img', el)
+  const animateIn = qsa('[data-animate-in]', el)
 
   let isMenuOpen = false
   let previousNavState = ''
-
-  gsap.set(el, { yPercent: -100 })
-  gsap.set(menuInner, { yPercent: 100 })
 
   const openMenu = () => {
     if (isMenuOpen) return
@@ -31,25 +27,35 @@ export default function (el, options = {}) {
     dom.body.dataset.nav = 'white'
 
     el.classList.add('is-open')
-    gsap.to(el, {
-      yPercent: 0,
-      duration: 1,
-      ease: 'expo',
-    })
-    gsap.to(menuInner, {
-      yPercent: 0,
-      duration: 1,
-      ease: 'expo',
-    })
 
-    splitController.prepare(splitEl, {
-      autoObserve: false
-    })
-    splitController.animate.in(splitEl, {
-      stagger: 0.04,
-      duration: 0.9,
-    })
+    const sequence = [
+      [el, {
+        transform: 'translateY(0%)',
+      }, {
+        duration: 1,
+        ease: easeOut
+      }],
+      [animateIn, {
+        transform: ['translateY(2rem)', 'none'],
+        opacity: [0, 1],
+      }, {
+        duration: 1,
+        delay: stagger(0.04),
+        at: '-0.75',
+        ease: easeOut
+      }],
+      [boxes, {
+        scale: [1.025, 1],
+        opacity: [0, 1],
+      }, {
+        duration: 2,
+        delay: stagger(0.04),
+        at: '<',
+        ease: easeOut
+      }]
+    ]
 
+    animate(sequence)
   }
 
   const closeMenu = () => {
@@ -61,16 +67,16 @@ export default function (el, options = {}) {
     dom.body.classList.remove('overflow-hidden')
 
     el.classList.remove('is-open')
-    gsap.to(el, {
-      yPercent: -100,
-      duration: 1,
-      ease: 'expo',
-    })
-    gsap.to(menuInner, {
-      yPercent: 100,
-      duration: 1,
-      ease: 'expo',
-    })
+    const sequence = [
+      [el, {
+        transform: 'translateY(-100%)',
+      }, {
+        duration: 1,
+        ease: easeOut
+      }]
+    ]
+
+    animate(sequence)
   }
 
   const toggleMenu = () => {
@@ -99,7 +105,6 @@ export default function (el, options = {}) {
   evt.on('resize', onResize)
   document.addEventListener('keydown', onKeyDown)
 
-  // Return cleanup function to handle event removal if needed
   return () => {
     evt.off('click', trigger, toggleMenu)
     evt.off('menu:close', closeMenu)
