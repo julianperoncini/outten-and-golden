@@ -64,7 +64,7 @@ export default function Carousel(element, options = {}) {
       state.cache.forEach((c, i) => {
         c.el.style.transform = `translate3d(0, 0, 0)`
         const { left, right, width } = rect(c.el)
-        c.start = left - window.innerWidth
+        c.start = left - bounds.ww
         c.end = right
         c.left = left
         c.width = width
@@ -80,7 +80,7 @@ export default function Carousel(element, options = {}) {
       state.cache = slide.map((elem, i) => {
         elem.style.transform = `translate3d(0, 0, 0)`
         const { left, right, width } = rect(elem)
-        const start = left - window.innerWidth
+        const start = left - bounds.ww
         const end = right
         
         // Calculate snap position relative to container
