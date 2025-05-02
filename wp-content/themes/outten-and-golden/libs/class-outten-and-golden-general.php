@@ -95,6 +95,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('admin_init', [$this, 'disable_content_editor']);
         add_action('do_meta_boxes', [$this, 'remove_featured_image_metabox']);
         add_filter('show_admin_bar',     '__return_false');
+        add_filter('taxi_namespace', [ $this, 'taxi_namespace' ] );
     }
 
     public function allow_svg_upload($mimes) {
@@ -306,6 +307,24 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
     public function remove_featured_image_metabox() {
         remove_meta_box('postimagediv', 'page', 'side');
     }
+
+/**
+     * Sets the correct highway namespace depending on
+     * what page the user is on.
+     * @param  string $ns
+     * @return string
+     */
+	public function taxi_namespace( $ns ) {
+		if ( is_page() ) {
+			$ns = 'page';
+		}
+
+		if ( is_front_page() ) {
+			$ns = 'home';
+		}
+
+		return $ns;
+	}
 }
 
 new OUTTEN_AND_GOLDEN_Theme_General;
