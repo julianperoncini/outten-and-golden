@@ -10,6 +10,8 @@ export default function Carousel(element, options = {}) {
     toggle: options.toggle || false
   }
 
+  const carousel = qs('.js-carousel')
+
   const state = {
     speed: 3.5,
     ox: 0,
@@ -55,6 +57,9 @@ export default function Carousel(element, options = {}) {
     
     snaps = []
     
+    // Get container rect for alignment
+    const containerRect = rect(elements.el)
+    
     if (state.cache) {
       state.cache.forEach((c, i) => {
         c.el.style.transform = `translate3d(0, 0, 0)`
@@ -64,7 +69,10 @@ export default function Carousel(element, options = {}) {
         c.left = left
         c.width = width
         c.out = true
-        snaps.push(left - srect.left)
+        
+        // Calculate snap position relative to container
+        const snapPosition = left - containerRect.left
+        snaps.push(snapPosition)
 
         if (i === total) calcMax(c.el, c.end, offset)
       })
@@ -74,7 +82,10 @@ export default function Carousel(element, options = {}) {
         const { left, right, width } = rect(elem)
         const start = left - window.innerWidth
         const end = right
-        snaps.push(left - srect.left)
+        
+        // Calculate snap position relative to container
+        const snapPosition = left - containerRect.left
+        snaps.push(snapPosition)
 
         if (i === total) calcMax(elem, end, offset)
 
@@ -142,16 +153,15 @@ export default function Carousel(element, options = {}) {
   }
 
   const snap = () => {
+    const sliderRect = rect(carousel).x
     const clampedT = clamp(0, state.max, state.t)
     const snapValue = findNearestSnap(snaps, clampedT)
-    const diff = snapValue - clampedT - state.margin
+    const diff = snapValue - clampedT - sliderRect
+    
     state.t = clamp(0, state.max, clampedT + diff)
-
+    
     state.idx = snaps.indexOf(snapValue)
-
-    console.log("state.snap:", snapValue)
   }
-
 
   const findNearestSnap = (snapPoints, value) => {
     let closest = snapPoints[0]
