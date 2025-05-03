@@ -1,35 +1,37 @@
-<aside class="site-menu fixed inset-0 bg-white z-[9998] js-menu">
-    <div class="relative w-full h-full flex items-center justify-center">
-        <div class="site-max pt-120 pb-32">
-            <div class="site-grid jus">
-                <div class="col-start-1 col-span-10">
-                    <ul class="site-grid-10 gap-24">
+<aside class="site-menu fixed w-full h-full bg-white z-[9998] overflow-y-auto pt-100 pb-40 flex flex-col items-center js-menu" data-lenis-prevent>
+    <div class="relative w-full flex items-center justify-center my-auto">
+        <div class="site-max pb-32 overflow-y-auto">
+            <div class="site-grid gap-y-40">
+                <div class="col-span-4 s:col-span-16 l:col-span-10">
+                    <ul class="site-grid !gap-10 l:!gap-24">
                         {% for item in menu.items %}  
-                            <li class="col-span-5 js-menu-box">
+                            <li class="col-span-2 s:col-span-8 js-menu-box">
                                 <a 
-                                    class="flex relative w-full h-[32rem]" 
+                                    class="flex relative w-full group" 
                                     href="{{ item.link }}" 
                                     aria-label="Menu {{ item.title }}"
                                 >
-                                    <div class="relative w-full h-full">
-                                        <div class="absolute top-24 left-24 z-2">
-                                            <h5 class="font-sans text-24 leading-none font-normal text-white tracking-[-0.024rem]">{{ item.title }}</h5>
-                                        </div>
 
                                         <figure class="relative overflow-hidden w-full h-full z-1">
+                                        
+                                            <div class="pt-[85.50%]"></div>
+
                                             {% include "blocks/common/image.twig" with {
                                                 props : {
                                                     data: {
-                                                        image : item.image,
-                                                    },
-                                                    options: {
-                                                        container_class: 'w-full h-full overflow-hidden select-none pointer-events-none',
-                                                        class : 'w-full h-full object-cover select-none pointer-events-none will-change-transform',
-                                                        size: 'small'
-                                                    }
+                                                    image : item.image,
+                                                },
+                                                options: {
+                                                    container_class: 'w-full h-full overflow-hidden select-none pointer-events-none absolute top-0 left-0',
+                                                    class : 'w-full h-full object-cover select-none will-change-transform group-hover:scale-105 transition-all duration-[1s]',
+                                                    size: 'small'
                                                 }
-                                            } %}
+                                            }
+                                        } %}
                                         </figure>
+
+                                    <div class="absolute top-0 left-0 p-24 z-2  w-full h-full">
+                                         <h5 class="font-sans text-24 leading-none font-normal text-white tracking-[-0.024rem]">{{ item.title }}</h5>
                                     </div>
                                 </a>
                             </li>
@@ -37,7 +39,7 @@
                     </ul>
                 </div>
 
-                <div class="col-start-12 col-span-5">
+                <div class="l:col-start-12 col-span-4 s:col-span-5">
                     <div class="relative w-full h-full flex flex-col items-start justify-between">
                         <div class="flex flex-col items-start space-y-[4.8rem]">
                             <div class="relative space-y-32">

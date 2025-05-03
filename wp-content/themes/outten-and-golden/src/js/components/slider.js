@@ -250,7 +250,7 @@ export default function Carousel(element, options = {}) {
     const sliderRect = rect(carousel).x;
     const clampedT = clamp(0, state.max, state.t);
     const snapValue = findNearestSnap(snaps, clampedT);
-    const diff = snapValue - clampedT - sliderRect;
+    const diff = snapValue - clampedT - state.margin;
   
     state.t = clamp(0, state.max, clampedT + diff);
     

@@ -30,12 +30,6 @@ Imports - Must be first!
 	}
 }
 
-@screen 3xl {
-	:root {
-		--size: 1920;
-	}
-}
-
 /**
 * Mixin
 */
@@ -96,11 +90,15 @@ main {
 	========================== */
 
 .site-max {
-	padding-left: 2rem;
-	padding-right: 2rem;
+    --padding: 2rem;
+
+    padding-left: var(--padding);
+    padding-right: var(--padding);
 	margin-left: auto;
 	margin-right: auto;
 	width: 100%;
+
+	max-width: 144rem;
 
 	.site-max {
 		padding-left: 0rem;
@@ -108,8 +106,7 @@ main {
 	}
 
 	@screen l {
-		padding-left: 3rem;
-		padding-right: 3rem;
+		--padding: 3rem;
 	}
 }
 
@@ -146,6 +143,10 @@ main {
 	========================== */
 .site-menu {
 	clip-path: inset(0 0 100% 0);
+
+	&::-webkit-scrollbar { 
+		display: none;  /* Safari and Chrome */
+	}
 }
 
 

@@ -27,11 +27,11 @@
 {% set tabindex = options.tabindex|default(null) %}
 {% set aspect_ratio = options.aspect_ratio|default('62.5%') %}
 {% set size = options.size|default('large') %}
-{% set container_class = options.container_class|default('') %}
+{% set container_class = options.container_class|default('relative') %}
 {% set lazy_load = options.lazy_load|default(false) %}
 
 {% if image %}
-	<div class="relative {{ container_class }}">
+	<div class="{{ container_class }}">
 		<div class="aspect" style="--aspect: {{ aspect_ratio }}"></div>
 		<picture class="absolute top-0 left-0 size-full">
 		{{ image|get_timber_picture_responsive(size, {

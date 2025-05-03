@@ -3,7 +3,7 @@
  * Performance optimized with improved structure and memory management
  */
 import { evt, utils, store } from '@/core'
-import { animate, clamp, stagger, cubicBezier } from 'motion'
+import { animate, press, clamp, stagger, cubicBezier } from 'motion'
 
 const { qs, qsa } = utils
 const { device, dom } = store
@@ -32,8 +32,10 @@ export default function menuController(el, options = {}) {
   const elements = {
     trigger: qs('.js-menu-trigger'),
     boxes: qsa('.js-menu-box', el),
-    animateIn: qsa('[data-animate-in]', el)
+    animateIn: qsa('[data-animate-in]', el),
   }
+
+  const span = qsa('span', elements.trigger)
 
   elements.animateIn.forEach((item) => {
     item.style.opacity = '0'
@@ -92,6 +94,21 @@ export default function menuController(el, options = {}) {
     dom.body.dataset.nav = 'white'
     el.classList.add('is-open')
 
+    animate(span[0], {
+      rotate: [0, 45],
+      y: [2, 2],
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+    animate(span[1], {
+      y: [-2, -3],
+      rotate: [0, -45]
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+
     animate(el, {
       clipPath: ['inset(0% 0% 100% 0%)', 'inset(0% 0% 0% 0%)']
     }, {
@@ -128,6 +145,21 @@ export default function menuController(el, options = {}) {
     dom.body.dataset.nav = state.previousNavState
     dom.body.classList.remove('overflow-hidden')
     el.classList.remove('is-open')
+
+    animate(span[0], {
+      rotate: 0,
+      y: 0,
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+    animate(span[1], {
+      y: 0,
+      rotate: 0
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
     
     animate(el, {
       clipPath: 'inset(0 0 100% 0)'
@@ -164,7 +196,8 @@ export default function menuController(el, options = {}) {
   
   // Return cleanup function
   return () => {
-    evt.off('click', elements.trigger, toggleMenu)
+    cancelPress()
+
     evt.off('menu:close', closeMenu)
     evt.off('resize', handlers.resize)
     document.removeEventListener('keydown', handlers.keydown)

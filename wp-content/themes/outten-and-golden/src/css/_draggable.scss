@@ -27,6 +27,14 @@
     }
 }
 
+.slider-container {
+    .slider-item {
+        &:last-child {
+            @apply mr-30;
+        }
+    }
+}
+
 .slider-item {
     flex: 0 0 auto;
 }
