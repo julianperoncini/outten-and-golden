@@ -5,7 +5,7 @@
             <div class="relative pb-70 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:ap-y-40 mx-auto s:sticky s:top-250">
                 {% if item.subtitle %}
                     <div class="relative">
-                        <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
+                        <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
                     </div>
                 {% endif %}
 
@@ -37,6 +37,7 @@
                             container_class: 'w-full h-full overflow-hidden',
                             class : 'w-full h-full object-cover',
                             aspect_ratio: '76.38%',
+                            size: 'full',
                         }
                     }
                 } %}

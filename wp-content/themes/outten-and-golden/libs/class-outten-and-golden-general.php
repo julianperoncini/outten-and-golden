@@ -193,10 +193,17 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
                 'srcset' => array( array( 720 ) ),
             ),
             'large' => array(
-                'resize' => array( 1920 ),
+                'resize' => array( 1440 ),
                 'srcset' => array(
                     array( 370 ),
                     array( 570 ),
+                    array( 1440 ),
+                )
+            ),
+            'full' => array(
+                'resize' => array( 1920 ),
+                'srcset' => array(
+                    array( 1440 ),
                     array( 1920 ),
                 )
             )
