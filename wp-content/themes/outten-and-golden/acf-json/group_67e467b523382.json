@@ -227,16 +227,16 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_681298ecc3b49": {
-                    "key": "layout_681298ecc3b49",
-                    "name": "feature_claim_content",
-                    "label": "Feature Claim Content",
+                "layout_68162426399c1": {
+                    "key": "layout_68162426399c1",
+                    "name": "feature_client_stories",
+                    "label": "Feature Client Stories",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_681298f1c3b4c",
-                            "label": "Feature Claim Content",
-                            "name": "feature_claim_content",
+                            "key": "field_6816242b399c4",
+                            "label": "Feature Client Stories",
+                            "name": "feature_client_stories",
                             "aria-label": "",
                             "type": "clone",
                             "instructions": "",
@@ -248,7 +248,39 @@
                                 "id": ""
                             },
                             "clone": [
-                                "group_6812989445e07"
+                                "group_6816239f00e7e"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_681675a72e5bd": {
+                    "key": "layout_681675a72e5bd",
+                    "name": "feature_pre_footer",
+                    "label": "Feature Pre Footer",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_681675aa2e5c0",
+                            "label": "Feature Pre Footer",
+                            "name": "feature_pre_footer",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6815a0a74bf8c"
                             ],
                             "display": "seamless",
                             "layout": "block",
@@ -610,6 +642,70 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_681620a20d03d": {
+                    "key": "layout_681620a20d03d",
+                    "name": "layout_content_and_media_column",
+                    "label": "Layout Content and Media Column",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_681620a70d040",
+                            "label": "Layout Content and Media Column",
+                            "name": "layout_content_and_media_column",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68161f70a47e7"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_681627203cdd1": {
+                    "key": "layout_681627203cdd1",
+                    "name": "layout_newsroom_posts",
+                    "label": "Layout Newsroom Posts",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_681627263cdd4",
+                            "label": "Layout Newsroom Posts",
+                            "name": "layout_newsroom_posts",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6816269e51bfc"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             },
             "min": "",
@@ -623,11 +719,6 @@
                 "param": "post_template",
                 "operator": "==",
                 "value": "default"
-            },
-            {
-                "param": "post_template",
-                "operator": "==",
-                "value": "templates\/team-template.php"
             }
         ]
     ],
@@ -640,5 +731,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746153247
+    "modified": 1746302408
 }

@@ -1,9 +1,9 @@
 {
-    "key": "group_67fab540e43cf",
-    "title": "Case Content - Page",
+    "key": "group_6815a566d795d",
+    "title": "Issues Content - Page",
     "fields": [
         {
-            "key": "field_67fab5c64585f",
+            "key": "field_6815a5665014f",
             "label": "Feature Content",
             "name": "",
             "aria-label": "",
@@ -21,7 +21,7 @@
             "selected": 0
         },
         {
-            "key": "field_67fab6a24f717",
+            "key": "field_6815a58e50150",
             "label": "",
             "name": "feature_content",
             "aria-label": "",
@@ -37,28 +37,7 @@
             "layout": "block",
             "sub_fields": [
                 {
-                    "key": "field_68159d589ecc8",
-                    "label": "Title",
-                    "name": "title",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": "",
-                    "allow_in_bindings": 0,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                },
-                {
-                    "key": "field_67fab6c44f718",
+                    "key": "field_6815a5b850152",
                     "label": "Feature Image",
                     "name": "feature_image",
                     "aria-label": "",
@@ -80,11 +59,11 @@
                     "max_height": "",
                     "max_size": "",
                     "mime_types": "",
-                    "allow_in_bindings": 0,
+                    "allow_in_bindings": 1,
                     "preview_size": "medium"
                 },
                 {
-                    "key": "field_681190cd32044",
+                    "key": "field_6815a5d550153",
                     "label": "Background Color",
                     "name": "background_color",
                     "aria-label": "",
@@ -114,9 +93,9 @@
                     "placeholder": ""
                 },
                 {
-                    "key": "field_68159d789ecc9",
-                    "label": "Case Number",
-                    "name": "case_number",
+                    "key": "field_6815a5a750151",
+                    "label": "Title",
+                    "name": "title",
                     "aria-label": "",
                     "type": "text",
                     "instructions": "",
@@ -135,11 +114,11 @@
                     "append": ""
                 },
                 {
-                    "key": "field_68159d8f9ecca",
-                    "label": "Date",
-                    "name": "date",
+                    "key": "field_6815a5ff50154",
+                    "label": "Description",
+                    "name": "description",
                     "aria-label": "",
-                    "type": "date_picker",
+                    "type": "textarea",
                     "instructions": "",
                     "required": 1,
                     "conditional_logic": 0,
@@ -148,15 +127,17 @@
                         "class": "",
                         "id": ""
                     },
-                    "display_format": "d\/m\/Y",
-                    "return_format": "d\/m\/Y",
-                    "first_day": 1,
-                    "allow_in_bindings": 1
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 1,
+                    "rows": 6,
+                    "placeholder": "",
+                    "new_lines": ""
                 }
             ]
         },
         {
-            "key": "field_68159d029ecc3",
+            "key": "field_6815a644af463",
             "label": "Builder",
             "name": "",
             "aria-label": "",
@@ -174,7 +155,7 @@
             "selected": 0
         },
         {
-            "key": "field_68159d0d9ecc4",
+            "key": "field_6815a659af464",
             "label": "Content Builder",
             "name": "content_builder",
             "aria-label": "",
@@ -188,14 +169,46 @@
                 "id": ""
             },
             "layouts": {
-                "layout_68159e0170f84": {
-                    "key": "layout_68159e0170f84",
+                "layout_6815a7f200124": {
+                    "key": "layout_6815a7f200124",
+                    "name": "feature_pre_footer",
+                    "label": "Feature Pre Footer",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6815a81400127",
+                            "label": "Feature Pre Footer",
+                            "name": "feature_pre_footer",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6815a0a74bf8c"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_6815a667328de": {
+                    "key": "layout_6815a667328de",
                     "name": "layout_title_and_text_summary",
                     "label": "Layout Title and Text Summary",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_68159ef3cf150",
+                            "key": "field_6815a679af465",
                             "label": "Layout Title and Text Summary",
                             "name": "layout_title_and_text_summary",
                             "aria-label": "",
@@ -220,14 +233,14 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_68159f566b7a1": {
-                    "key": "layout_68159f566b7a1",
+                "layout_6815a7ba00120": {
+                    "key": "layout_6815a7ba00120",
                     "name": "layout_full_screen_image",
                     "label": "Layout Full Screen Image",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_68159f5d6b7a4",
+                            "key": "field_6815a7cc00123",
                             "label": "Layout Full Screen Image",
                             "name": "layout_full_screen_image",
                             "aria-label": "",
@@ -252,16 +265,16 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_6815a041706ed": {
-                    "key": "layout_6815a041706ed",
-                    "name": "layout_team_members",
-                    "label": "Layout Team Members",
+                "layout_68161c9e82b00": {
+                    "key": "layout_68161c9e82b00",
+                    "name": "layout_carousel_text",
+                    "label": "Layout Carousel Text",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_6815a046706f0",
-                            "label": "Layout Team Members",
-                            "name": "layout_team_members",
+                            "key": "field_68161ca382b03",
+                            "label": "Layout Carousel Text",
+                            "name": "layout_carousel_text",
                             "aria-label": "",
                             "type": "clone",
                             "instructions": "",
@@ -273,7 +286,7 @@
                                 "id": ""
                             },
                             "clone": [
-                                "group_68159fb6a2dda"
+                                "group_68161c0fcdff5"
                             ],
                             "display": "seamless",
                             "layout": "block",
@@ -284,16 +297,16 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_6815a0f2a0807": {
-                    "key": "layout_6815a0f2a0807",
-                    "name": "feature_pre_footer",
-                    "label": "Feature Pre Footer",
+                "layout_68161d6a19a5b": {
+                    "key": "layout_68161d6a19a5b",
+                    "name": "layout_related_large_image_billboard",
+                    "label": "Layout Related Large Image Billboard",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_6815a0ffa080a",
-                            "label": "Feature Pre Footer",
-                            "name": "feature_pre_footer",
+                            "key": "field_68161d744d668",
+                            "label": "Layout Related Large Image Billboard",
+                            "name": "layout_related_large_image_billboard",
                             "aria-label": "",
                             "type": "clone",
                             "instructions": "",
@@ -305,7 +318,39 @@
                                 "id": ""
                             },
                             "clone": [
-                                "group_6815a0a74bf8c"
+                                "group_68161cd62eba1"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68161e3d21882": {
+                    "key": "layout_68161e3d21882",
+                    "name": "layout_related_slider",
+                    "label": "Layout Related Slider",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68161e4b21885",
+                            "label": "Layout Related Slider",
+                            "name": "layout_related_slider",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68161db9581e3"
                             ],
                             "display": "seamless",
                             "layout": "block",
@@ -327,7 +372,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "cases"
+                "value": "issues"
             }
         ]
     ],
@@ -340,5 +385,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746249121
+    "modified": 1746280038
 }
