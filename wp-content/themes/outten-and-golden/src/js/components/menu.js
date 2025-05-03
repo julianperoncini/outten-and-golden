@@ -3,13 +3,13 @@
  * Performance optimized with improved structure and memory management
  */
 import { evt, utils, store } from '@/core'
-import { animate, stagger, cubicBezier } from 'motion'
+import { animate, clamp, stagger, cubicBezier } from 'motion'
 
 const { qs, qsa } = utils
 const { device, dom } = store
 
 // Constants
-const ANIMATION_EASING = [cubicBezier(0.19, 1, 0.22, 1), cubicBezier(0.19, 1, 0.22, 1)]
+const ANIMATION_EASING = [0.19, 1, 0.22, 1]
 const ANIMATION_CONFIG = {
   menu: {
     duration: 1,
@@ -25,12 +25,6 @@ const ANIMATION_CONFIG = {
   }
 }
 
-/**
- * Menu Animation Controller
- * @param {HTMLElement} el - Menu container element
- * @param {Object} options - Configuration options
- * @returns {Function} Cleanup function
- */
 export default function menuController(el, options = {}) {
   if (!el) return () => {}
   
@@ -40,6 +34,10 @@ export default function menuController(el, options = {}) {
     boxes: qsa('.js-menu-box', el),
     animateIn: qsa('[data-animate-in]', el)
   }
+
+  elements.animateIn.forEach((item) => {
+    item.style.opacity = '0'
+  })
   
   // State
   const state = {
@@ -93,8 +91,30 @@ export default function menuController(el, options = {}) {
     dom.body.classList.add('overflow-hidden')
     dom.body.dataset.nav = 'white'
     el.classList.add('is-open')
+
+    animate(el, {
+      clipPath: ['inset(0% 0% 100% 0%)', 'inset(0% 0% 0% 0%)']
+    }, {
+      duration: 1,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+  
+    animate(elements.animateIn, {
+      y: [-20, 0],
+      opacity: [0, 1]
+    }, {
+      duration: 1,
+      delay: stagger(0.04),
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
     
-    animate(animations.open)
+    animate(elements.boxes, {
+      opacity: [0, 1]
+    }, {
+      duration: 1,
+      delay: stagger(-0.1),
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
   }
   
   /**
@@ -109,7 +129,13 @@ export default function menuController(el, options = {}) {
     dom.body.classList.remove('overflow-hidden')
     el.classList.remove('is-open')
     
-    animate(animations.close)
+    animate(el, {
+      clipPath: 'inset(0 0 100% 0)'
+    }, {
+      duration: 1,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+    
   }
   
   /**

@@ -1,7 +1,7 @@
 <section class="relative bg-white-smoke overflow-hidden ">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
     
-    <div class="site-max site-grid py-120">
+    <div class="site-max site-grid pt-120">
         <div class="relative col-start-1 col-span-8 space-y-40 pb-40">
             <div class="relative">
                 <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
@@ -48,9 +48,18 @@
     </div>
   
     <div class="relative site-max site-grid select-none cursor-grab w-full pb-200 js-slides" data-component="slider(js-slides)">
-            <ul class="slider-container col-start-1 col-span-full flex relative w-full z-1 js-carousel">
+
+        <ul class="slider-container col-span-full flex w-full js-fake-slider">
+            {% for item in item.cases %}
+                <li  class="slider-item relative mr-25 origin-[top_left] bg-red min-w-[41rem] max-w-[41rem] h-1 js-fake-slide">
+                    
+                </li>
+            {% endfor %}
+        </ul>
+
+            <ul class="slider-container col-start-1 col-span-full flex w-full z-1 min-h-[48rem] js-carousel">
                 {% for item in item.cases %}
-                    <li class="slider-item relative mr-25 min-w-[41rem] max-w-[41rem] 3xl:min-w-[44.3rem] 3xl:max-w-[44.3rem] js-slide">
+                    <li class="slider-item relative mr-25 origin-[top_left] {{ loop.first ? 'min-w-[67rem] max-w-[67rem]' : 'min-w-[41rem] max-w-[41rem]' }} 3xl:min-w-[44.3rem] 3xl:max-w-[44.3rem] js-slide active">
                         {# Tags #}
                         <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
                             {% include "/views/partials/tag.twig" with {
@@ -62,14 +71,15 @@
                         </div>
 
                         <figure class="relative overflow-hidden w-full">
+                            <div class="pt-[67%]"></div>
                             <img
-                                class="h-full w-full object-cover select-none pointer-events-none"
+                                class="h-full w-full absolute top-0 left-0 object-cover select-none pointer-events-none origin-top-left"
                                 src="https://placehold.co/600x400"
                                 alt=""
                             />
                         </figure>
 
-                        <div class="relative pt-32 space-y-40">
+                        <div class="absolute w-full pt-32 space-y-40">
                             <div class="flex flex-wrap items-center gap-4">
                                 {# Category #}
                                 {% include "/views/partials/category.twig" with {

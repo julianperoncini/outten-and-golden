@@ -2,7 +2,7 @@
 
 {% block content %}
 	<article data-taxi-view>
-		<div class="app">
+		<div class="app" data-taxi-namespace="{{ taxi_namespace }}">
 			{% include 'blocks/builder/index.twig' with {
 				props: {
 					data: {

@@ -79,10 +79,10 @@
                                 <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ footer_menu_1.name|replace({'Footer - ': ''}) }}</h5>
                             </div>
 
-                            <ul class="relative text-green space-y-8">
+                            <ul class="relative text-green space-y-8 leading-[1.36]">
                                 {% for item in footer_menu_1.items %}
                                     <li class="relative">
-                                        <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                        <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -97,10 +97,10 @@
                                 <div class="relative">
                                     <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ footer_menu_2.name|replace({'Footer - ': ''}) }}</h5>
                                 </div>
-                                <ul class="relative text-green space-y-8">
+                                <ul class="relative text-green space-y-8 leading-[1.36]">
                                     {% for item in footer_menu_2.items %}
                                         <li class="relative">
-                                            <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                            <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -110,10 +110,10 @@
                                 <div class="relative">
                                     <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ footer_menu_3.name|replace({'Footer - ': ''}) }}</h5>
                                 </div>
-                                <ul class="relative text-green space-y-8">
+                                <ul class="relative text-green space-y-8 leading-[1.36]">
                                     {% for item in footer_menu_3.items %}
                                         <li class="relative">
-                                            <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                            <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -123,10 +123,10 @@
                                 <div class="relative">
                                     <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ footer_menu_4.name|replace({'Footer - ': ''}) }}</h5>
                                 </div>
-                                <ul class="relative text-green space-y-8">
+                                <ul class="relative text-green space-y-8 leading-[1.36]">
                                     {% for item in footer_menu_4.items %}
                                         <li class="relative">
-                                            <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                            <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -142,10 +142,10 @@
                                 <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ footer_menu_5.name|replace({'Footer - ': ''}) }}</h5>
                             </div>
                             
-                            <ul class="relative text-green space-y-8">
+                            <ul class="relative text-green space-y-8 leading-[1.36]">
                                 {% for item in footer_menu_5.items %}
                                     <li class="relative">
-                                        <a class="ulink text-14 font-normal leading-[1.36]" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+                                        <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -220,16 +220,16 @@
                 </div>
             </div>
 
-            <div class="relative col-start-1 col-span-full py-25 px-32">
+            <div class="relative col-start-1 col-span-full py-20 px-32">
                 <div class="absolute top-0 left-[calc(0%-2.2%)] w-[100vw] h-[0.1rem] bg-grey-taupe"></div>
 
-                <div class="site-grid">
+                <div class="site-grid items-center">
                     <div class="col-start-1 col-span-3">
                         <p class="text-12 font-normal leading-none">© {{ "now"|date("Y") }} Outten & Golden LLP</p>
                     </div>
 
                     <div class="col-start-6 col-span-11">
-                        <ul class="relative flex flex-row items-center justify-end text-green space-x-[2.7rem]">
+                        <ul class="relative flex flex-row items-center justify-end text-green gap-x-27">
                             {% for item in footer_menu_6.items %}
                                 <li class="relative">
                                     <a class="ulink shrink-0 text-12 font-normal leading-none" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>

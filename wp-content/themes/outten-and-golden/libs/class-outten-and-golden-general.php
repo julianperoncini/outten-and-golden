@@ -279,6 +279,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
         $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
 
+        $context['taxi_namespace'] = apply_filters('taxi_namespace', 'default');
+
         $context['options'] = get_fields('option');
         $args = array(
             'post_type' => 'post',
@@ -308,7 +310,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         remove_meta_box('postimagediv', 'page', 'side');
     }
 
-/**
+    /**
      * Sets the correct highway namespace depending on
      * what page the user is on.
      * @param  string $ns
