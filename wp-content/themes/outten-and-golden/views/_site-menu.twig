@@ -110,50 +110,55 @@
                         </div>
                     </div>
 
-                    <div class="relative w-full">
-                        <div class="relative flex items-start gap-25 js-slider-office" data-component="sliderOffice(js-slider-office)">
-                            <div class="absolute top-1/2 right-24 -translate-y-1/2 flex flex-col gap-y-8 z-2 js-slider-mm-office-progress js-slider-office-progress">
-                                {% for item in options.offices.locations %}
-                                    <span class="cursor-pointer inline-flex w-[0.1rem] h-[1rem] bg-grey-taupe js-sop-bar-wrap">
-                                        <span class="w-full h-full bg-green origin-top scale-y-0 js-slider-office-progress-bar"></span>
-                                    </span>
-                                {% endfor %}
-                            </div>
+                    {% if options.offices.locations|length > 1 %}
+                        <div class="relative w-full">
+                            <div class="relative flex items-start gap-25 js-slider-office" data-component="sliderOffice(js-slider-office)">
+                                <div class="absolute top-1/2 right-24 -translate-y-1/2 flex flex-col gap-y-8 z-2 js-slider-mm-office-progress js-slider-office-progress">
+                                    {% for item in options.offices.locations %}
+                                        <span class="cursor-pointer inline-flex w-[0.1rem] h-[1rem] bg-grey-taupe js-sop-bar-wrap">
+                                            <span class="w-full h-full bg-green origin-top scale-y-0 js-slider-office-progress-bar"></span>
+                                        </span>
+                                    {% endfor %}
+                                </div>
 
-                            <div class="relative w-full flex overflow-hidden bg-white-smoke p-24 z-1 js-slider-office-container">
-                                {% for item in options.offices.locations %}
-                                    <article class="{% if loop.first %}relative{% else %}absolute top-24 left-24{% endif %} flex flex-row items-center gap-x-16 js-slide-office">
-                                        <div class="relative w-48 h-48">
-                                            <figure class="relative overflow-hidden w-full h-full ">
-                                                {% include "blocks/common/image.twig" with {
-                                                    props : {
-                                                        data: {
-                                                            image : item.image
-                                                        },
-                                                        options: {
-                                                            container_class: 'w-full h-full overflow-hidden select-none pointer-events-none',
-                                                            class : 'w-full h-full object-cover select-none pointer-events-none',
-                                                            aspect_ratio: '100%',
+                                <div class="relative w-full flex overflow-hidden bg-white-smoke p-24 z-1 js-slider-office-container">
+                                    {% for item in options.offices.locations %}
+                                        <article class="{% if loop.first %}relative{% else %}absolute top-24 left-24{% endif %} flex flex-row items-center gap-x-16 js-slide-office">
+                                            <div class="relative w-48 h-48">
+                                                <figure class="relative overflow-hidden w-full h-full ">
+                                                    {% include "blocks/common/image.twig" with {
+                                                        props : {
+                                                            data: {
+                                                                image : item.image
+                                                            },
+                                                            options: {
+                                                                container_class: 'w-full h-full overflow-hidden select-none pointer-events-none',
+                                                                class : 'w-full h-full object-cover select-none pointer-events-none',
+                                                                aspect_ratio: '100%',
+                                                            }
                                                         }
-                                                    }
-                                                } %}
-                                            </figure>
-                                        </div>
+                                                    } %}
+                                                </figure>
+                                            </div>
 
-                                        <div class="flex flex-col gap-y-10">
-                                            <h4 class="font-sans text-12 font-medium leading-[1.04] tracking-[0.12rem] uppercase text-green">
-                                                {{ item.city }}
-                                            </h4>
+                                            <div class="flex flex-col gap-y-10">
+                                                <h4 class="font-sans text-12 font-medium leading-[1.04] tracking-[0.12rem] uppercase text-green">
+                                                    {{ item.city }}
+                                                </h4>
 
-                                            <p class="inline-flex w-full text-12 font-normal leading-[1.4] text-grey">
-                                                {{ item.address }}
-                                            </p>
-                                        </div>
-                                    </article> 
-                                {% endfor %}   
+                                                <p class="inline-flex w-full text-12 font-normal leading-[1.4] text-grey">
+                                                    {{ item.address }}
+                                                </p>
+                                            </div>
+                                        </article> 
+                                    {% endfor %}   
+                                </div>
+                                
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
+
+
                 </div>
             </div>
         </div>
