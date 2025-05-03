@@ -3,13 +3,13 @@
  * Performance optimized with improved structure and memory management
  */
 import { evt, utils, store } from '@/core'
-import { animate, stagger, cubicBezier } from 'motion'
+import { animate, press, clamp, stagger, cubicBezier } from 'motion'
 
 const { qs, qsa } = utils
 const { device, dom } = store
 
 // Constants
-const ANIMATION_EASING = [cubicBezier(0.19, 1, 0.22, 1), cubicBezier(0.19, 1, 0.22, 1)]
+const ANIMATION_EASING = [0.19, 1, 0.22, 1]
 const ANIMATION_CONFIG = {
   menu: {
     duration: 1,
@@ -25,12 +25,6 @@ const ANIMATION_CONFIG = {
   }
 }
 
-/**
- * Menu Animation Controller
- * @param {HTMLElement} el - Menu container element
- * @param {Object} options - Configuration options
- * @returns {Function} Cleanup function
- */
 export default function menuController(el, options = {}) {
   if (!el) return () => {}
   
@@ -38,8 +32,14 @@ export default function menuController(el, options = {}) {
   const elements = {
     trigger: qs('.js-menu-trigger'),
     boxes: qsa('.js-menu-box', el),
-    animateIn: qsa('[data-animate-in]', el)
+    animateIn: qsa('[data-animate-in]', el),
   }
+
+  const span = qsa('span', elements.trigger)
+
+  elements.animateIn.forEach((item) => {
+    item.style.opacity = '0'
+  })
   
   // State
   const state = {
@@ -93,8 +93,43 @@ export default function menuController(el, options = {}) {
     dom.body.classList.add('overflow-hidden')
     dom.body.dataset.nav = 'white'
     el.classList.add('is-open')
+
+    animate(span[0], {
+      transform: ['translateX(0.5rem) translateY(-0.35rem) rotate(45deg)'],
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+    animate(span[1], {
+      transform: ['translateX(0.4rem) translateY(0.35rem) rotate(-45deg)'],
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+
+    animate(el, {
+      clipPath: ['inset(0% 0% 100% 0%)', 'inset(0% 0% 0% 0%)']
+    }, {
+      duration: 1,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+  
+    animate(elements.animateIn, {
+      transform: ['translateY(-20%)', 'none'],
+      opacity: [0, 1]
+    }, {
+      duration: 1,
+      delay: stagger(0.04),
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
     
-    animate(animations.open)
+    animate(elements.boxes, {
+      opacity: [0, 1]
+    }, {
+      duration: 1,
+      delay: stagger(-0.1),
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
   }
   
   /**
@@ -108,8 +143,27 @@ export default function menuController(el, options = {}) {
     dom.body.dataset.nav = state.previousNavState
     dom.body.classList.remove('overflow-hidden')
     el.classList.remove('is-open')
+
+    animate(span[0], {
+      transform: 'none',
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+    animate(span[1], {
+      transform: 'none',
+    }, {
+      duration: 0.3,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
     
-    animate(animations.close)
+    animate(el, {
+      clipPath: 'inset(0 0 100% 0)'
+    }, {
+      duration: 1,
+      ease: cubicBezier(0.19, 1, 0.22, 1)
+    })
+    
   }
   
   /**
@@ -138,7 +192,8 @@ export default function menuController(el, options = {}) {
   
   // Return cleanup function
   return () => {
-    evt.off('click', elements.trigger, toggleMenu)
+    cancelPress()
+
     evt.off('menu:close', closeMenu)
     evt.off('resize', handlers.resize)
     document.removeEventListener('keydown', handlers.keydown)

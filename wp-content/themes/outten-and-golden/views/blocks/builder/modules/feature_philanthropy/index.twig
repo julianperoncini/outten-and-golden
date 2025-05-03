@@ -1,23 +1,23 @@
 <section class="relative" style="background-color: {{ item.background_color }};">
-    <div class="site-max">
-        <div class="site-grid">
-            <div class="relative col-start-1 col-span-8 ml-[-6.3rem]">
-                <div class="relative w-full">
-                    {% include "blocks/common/image.twig" with {
-                        props : {
-                            data: {
-                                image : item.image
-                            },
-                            options: {
-                                container_class: 'w-full overflow-hidden',
-                                class : 'w-full h-full object-cover',
-                                aspect_ratio: '102%',
-                            }
-                        }
-                    } %}
-                </div>
-            </div>
+    <div class="site-grid">
+        <div class="col-span-8">
+            {% include "blocks/common/image.twig" with {
+                props : {
+                    data: {
+                        image : item.image
+                    },
+                    options: {
+                        container_class: 'w-full relative',
+                        class : 'w-full relative h-full object-cover',
+                        aspect_ratio: '102%',
+                    }
+                }
+            } %}
+        </div>
+    </div>
 
+    <div class="absolute top-0 left-0 w-full h-full">
+        <div class="site-max w-full h-full site-grid">
             <div class="relative col-start-9 col-span-8 flex flex-col items-start justify-between py-32">
                 <div class="relative text-black space-y-40">
                     <h5 class="font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>

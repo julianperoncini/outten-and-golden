@@ -1,4 +1,4 @@
-import { animate, inView, spring, wrap, timeline } from 'motion'
+import { animate, clamp, inView, spring, wrap, timeline } from 'motion'
 import { evt, utils, store } from '../core'
 import lerp from '@14islands/lerp'
 
@@ -11,9 +11,11 @@ export default function Carousel(element, options = {}) {
   }
 
   const carousel = qs('.js-carousel')
+  const fakeSlider = qs('.js-fake-slider')
+  const fakeSlides = qsa('.js-fake-slide', fakeSlider)
 
   const state = {
-    speed: 2,
+    speed: 2.5,
     ox: 0,
     cx: 0,
     cy: 0,
@@ -27,7 +29,9 @@ export default function Carousel(element, options = {}) {
     resizing: false,
     run: true,
     cache: null,
-    events: {}
+    events: {},
+    lastActiveUpdate: 0,
+    currentIdx: 0
   }
 
   const elements = {
@@ -40,10 +44,45 @@ export default function Carousel(element, options = {}) {
   let crect = null
   let animationFrame = null
 
+  // Function to reset everything
+  const resetCarousel = () => {
+    // Clear current state
+    state.t = 0
+    state.tc = 0
+    state.max = 0
+    state.margin = 0
+    state.idx = 0
+    state.cache = null
+    
+    // Clear snaps array
+    snaps = []
+    
+    // Reinitialize
+    resize()
+    
+    // Reset active slide to first slide
+    requestAnimationFrame(() => {
+      if (state.cache && state.cache.length > 0) {
+        updateActiveSlide(0)
+      }
+    })
+  }
+
+  const getFakeSlidePositions = () => {
+    const fakePositions = []
+    fakeSlides.forEach((fakeSlide, i) => {
+      const { left, width } = rect(fakeSlide)
+      const right = left + width
+      fakePositions.push({ left, right, width })
+    })
+    return fakePositions
+  }
+
   const resize = () => {
     state.resizing = true
     
     const slide = qsa(".js-slide", elements.el)
+
     if (!slide.length) return
     
     const slides = elements.el
@@ -57,20 +96,21 @@ export default function Carousel(element, options = {}) {
     
     snaps = []
     
-    // Get container rect for alignment
     const containerRect = rect(elements.el)
+    const currentIdx = state.idx || 0;
+    
+    const fakePositions = getFakeSlidePositions()
     
     if (state.cache) {
       state.cache.forEach((c, i) => {
         c.el.style.transform = `translate3d(0, 0, 0)`
-        const { left, right, width } = rect(c.el)
-        c.start = left - bounds.ww
-        c.end = right
-        c.left = left
-        c.width = width
-        c.out = true
+
+        const position = fakePositions[i] || rect(c.el)
+        const { left, right, width } = position
         
-        // Calculate snap position relative to container
+        c.start = left - window.innerWidth
+        c.end = right || left + width
+        
         const snapPosition = left - containerRect.left
         snaps.push(snapPosition)
 
@@ -79,11 +119,14 @@ export default function Carousel(element, options = {}) {
     } else {
       state.cache = slide.map((elem, i) => {
         elem.style.transform = `translate3d(0, 0, 0)`
-        const { left, right, width } = rect(elem)
-        const start = left - bounds.ww
+
+        const position = fakePositions[i] || rect(elem)
+        const { left, width } = position
+        const right = left + width
+        
+        const start = left - window.innerWidth
         const end = right
         
-        // Calculate snap position relative to container
         const snapPosition = left - containerRect.left
         snaps.push(snapPosition)
 
@@ -92,16 +135,48 @@ export default function Carousel(element, options = {}) {
         return { el: elem, start, end, left, width, out: true }
       })
     }
+    
+    requestAnimationFrame(() => {
+      state.resizing = false
+      
+      snap()
+    })
+  }
 
-    transforms()
+  const updateActiveSlide = (activeIndex) => {
+    if (!state.cache || state.resizing) return
 
-    requestAnimationFrame(() => (state.resizing = false))
+    state.cache.forEach((item, i) => {
+      item.el.classList.remove('active')
+
+      animate(item.el, {
+        maxWidth: '41rem',
+        minWidth: '41rem',
+      }, { 
+        duration: 0.35,
+      })
+    })
+    
+    if (state.cache[activeIndex]) {
+      const activeSlide = state.cache[activeIndex].el
+      activeSlide.classList.add('active')
+      
+      animate(activeSlide, {
+        maxWidth: '67rem',
+        minWidth: '67rem',
+      }, {
+        duration: 0.35,
+      })
+    }
+    
+    state.idx = activeIndex
   }
 
   const calcMax = (elem, right, offset) => {
     state.margin = parseInt(
       getComputedStyle(elem).getPropertyValue("margin-right")
     )
+
     const containerWidth = rect(elem).width
     const lastSlidePosition = right - offset - containerWidth
     state.max = Math.max(0, lastSlidePosition - state.margin)
@@ -126,12 +201,27 @@ export default function Carousel(element, options = {}) {
   const move = (e) => {
     if (!state.active) return
     const { x, y } = pos(e)
+
     if (Math.abs(x - state.cx) > Math.abs(y - state.cy) && e.cancelable) {
       e.preventDefault()
       e.stopPropagation()
     }
+
     const newT = state.ox - x * state.speed
     state.t = clamp(0, state.max, newT)
+    
+    const now = Date.now()
+
+    if (now - state.lastActiveUpdate > 100) {
+      const nearestSnap = findNearestSnap(snaps, state.t)
+      const currentIdx = snaps.indexOf(nearestSnap)
+      
+      if (currentIdx !== state.idx) {
+        updateActiveSlide(currentIdx)
+      }
+      
+      state.lastActiveUpdate = now
+    }
   }
 
   const up = (e) => {
@@ -154,14 +244,19 @@ export default function Carousel(element, options = {}) {
   }
 
   const snap = () => {
-    const sliderRect = rect(carousel).x
-    const clampedT = clamp(0, state.max, state.t)
-    const snapValue = findNearestSnap(snaps, clampedT)
-    const diff = snapValue - clampedT - sliderRect
+    if (state.resizing) return;
+  
+    const sliderRect = rect(carousel).x;
+    const clampedT = clamp(0, state.max, state.t);
+    const snapValue = findNearestSnap(snaps, clampedT);
+    const diff = snapValue - clampedT - state.margin;
+  
+    state.t = clamp(0, state.max, clampedT + diff);
     
-    state.t = clamp(0, state.max, clampedT + diff)
+    const newIdx = snaps.indexOf(snapValue);
     
-    state.idx = snaps.indexOf(snapValue)
+    updateActiveSlide(newIdx)
+    transforms()
   }
 
   const findNearestSnap = (snapPoints, value) => {
@@ -179,15 +274,11 @@ export default function Carousel(element, options = {}) {
     return closest
   }
 
-  const clamp = (min, max, value) => {
-    return Math.min(Math.max(value, min), max)
-  }
-
   const tick = () => {
     if (config.toggle && !state.run) return
     
     const ratio = 1
-    state.tc = lerp(state.tc, state.t, 0.1 * ratio)
+    state.tc = lerp(state.tc, state.t, 0.125 * ratio)
     state.tc = Math.round(state.tc * 100) / 100
     
     if (!state.resizing) {
@@ -200,27 +291,30 @@ export default function Carousel(element, options = {}) {
   const transforms = () => {
     if (!state.cache) return
     
-    state.cache.forEach((c) => {
+    state.cache.forEach((c, i) => {
       const { start, end, left, width, el } = c
       const t = clamp(0, state.max, state.tc)
       const v = visible(start, end, left, width, t)
+      const isActive = i === state.idx
 
       if (v.visible || state.resizing) {
         c.out && (c.out = false)
-        transformElement(el, t)
+        transformElement(el, t, isActive)
       } else if (!c.out) {
         c.out = true
-        transformElement(el, t)
+        transformElement(el, t, false)
       }
     })
   }
 
-  const transformElement = (el, transform) => {
-    animate(el, { 
-      x: -transform
-    }, { 
+  const transformElement = (el, transform, isActive = false) => {
+    const animationOptions = {
+      x: -transform,
+    }
+    
+    animate(el, animationOptions, { 
       duration: 0,
-      easing: [0.17, 0.67, 0.83, 0.67]
+      preserve: true
     })
   }
 
@@ -231,7 +325,6 @@ export default function Carousel(element, options = {}) {
 
   const setEvents = () => {
     const isMobile = 'ontouchstart' in window
-    console.log("isMobile:", isMobile)
 
     state.events = {
       move: isMobile ? "touchmove" : "mousemove",
@@ -256,9 +349,11 @@ export default function Carousel(element, options = {}) {
       t: clamp(0, state.max, newT) 
     }, {
       duration: 0.5,
-      easing: spring(),
       onUpdate: ({ t }) => {
         state.t = t
+      },
+      onComplete: () => {
+        updateActiveSlide(state.idx);
       }
     })
     
@@ -278,9 +373,11 @@ export default function Carousel(element, options = {}) {
       t: clamp(0, state.max, newT) 
     }, {
       duration: 0.5,
-      easing: spring(),
       onUpdate: ({ t }) => {
         state.t = t
+      },
+      onComplete: () => {
+        updateActiveSlide(state.idx);
       }
     })
     
@@ -294,7 +391,9 @@ export default function Carousel(element, options = {}) {
     elements.el.addEventListener(state.events.move, move)
     window.addEventListener(state.events.up, up)
     
-    window.addEventListener('resize', resize)
+    evt.on('resize', () => {
+      resetCarousel()
+    })
     
     if (config.toggle) {
       observer = inView(elements.el, () => {
@@ -313,7 +412,7 @@ export default function Carousel(element, options = {}) {
     elements.el.removeEventListener(state.events.move, move)
     window.removeEventListener(state.events.up, up)
     
-    window.removeEventListener('resize', resize)
+    evt.off('resize', resetCarousel)
     
     if (observer) {
       observer.disconnect()
@@ -326,7 +425,7 @@ export default function Carousel(element, options = {}) {
 
   const init = async () => {
     bindEvents()
-    resize()
+    resetCarousel()
   }
 
   const destroy = () => {
@@ -339,6 +438,7 @@ export default function Carousel(element, options = {}) {
   return {
     init,
     destroy,
+    reset: resetCarousel,
     next,
     previous,
     get index() {

@@ -719,6 +719,16 @@
                 "param": "post_template",
                 "operator": "==",
                 "value": "default"
+<<<<<<< HEAD
+=======
+            }
+        ],
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "111"
+>>>>>>> e7ba6979310755ce90325cdf3d9a6490fc324f0e
             }
         ]
     ],
@@ -731,5 +741,9 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
+<<<<<<< HEAD
     "modified": 1746302408
+=======
+    "modified": 1746242743
+>>>>>>> e7ba6979310755ce90325cdf3d9a6490fc324f0e
 }
