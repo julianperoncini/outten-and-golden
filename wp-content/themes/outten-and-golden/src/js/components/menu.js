@@ -95,15 +95,13 @@ export default function menuController(el, options = {}) {
     el.classList.add('is-open')
 
     animate(span[0], {
-      rotate: [0, 45],
-      y: [2, 2],
+      transform: ['translateX(0.5rem) translateY(-0.35rem) rotate(45deg)'],
     }, {
       duration: 0.3,
       ease: cubicBezier(0.19, 1, 0.22, 1)
     })
     animate(span[1], {
-      y: [-2, -3],
-      rotate: [0, -45]
+      transform: ['translateX(0.4rem) translateY(0.35rem) rotate(-45deg)'],
     }, {
       duration: 0.3,
       ease: cubicBezier(0.19, 1, 0.22, 1)
@@ -117,7 +115,7 @@ export default function menuController(el, options = {}) {
     })
   
     animate(elements.animateIn, {
-      y: [-20, 0],
+      transform: ['translateY(-20%)', 'none'],
       opacity: [0, 1]
     }, {
       duration: 1,
@@ -147,15 +145,13 @@ export default function menuController(el, options = {}) {
     el.classList.remove('is-open')
 
     animate(span[0], {
-      rotate: 0,
-      y: 0,
+      transform: 'none',
     }, {
       duration: 0.3,
       ease: cubicBezier(0.19, 1, 0.22, 1)
     })
     animate(span[1], {
-      y: 0,
-      rotate: 0
+      transform: 'none',
     }, {
       duration: 0.3,
       ease: cubicBezier(0.19, 1, 0.22, 1)
