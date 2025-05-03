@@ -185,6 +185,7 @@ export default function Carousel(element, options = {}) {
   const pos = (e) => {
     const x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX
     const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY
+    
     return { x, y }
   }
 
@@ -236,8 +237,6 @@ export default function Carousel(element, options = {}) {
         window.location.href = target.dataset.url
         const event = new CustomEvent('slide:click')
         window.dispatchEvent(event)
-      } else if (target.dataset.modal) {
-        document.body.classList.add('modal-open')
       }
     } else {
       snap()

@@ -1,9 +1,9 @@
 {
-    "key": "group_67e46818e4085",
-    "title": "Feature - About",
+    "key": "group_68161cd62eba1",
+    "title": "Layout - Related Large Image Billboard",
     "fields": [
         {
-            "key": "field_67e468194282d",
+            "key": "field_68161cd64e649",
             "label": "Subtitle",
             "name": "subtitle",
             "aria-label": "",
@@ -24,11 +24,11 @@
             "append": ""
         },
         {
-            "key": "field_67e5cd37a5608",
+            "key": "field_68161d084e64a",
             "label": "Title",
             "name": "title",
             "aria-label": "",
-            "type": "wysiwyg",
+            "type": "text",
             "instructions": "",
             "required": 1,
             "conditional_logic": 0,
@@ -38,33 +38,41 @@
                 "id": ""
             },
             "default_value": "",
+            "maxlength": "",
             "allow_in_bindings": 1,
-            "tabs": "all",
-            "toolbar": "full",
-            "media_upload": 1,
-            "delay": 0
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
-            "key": "field_67e5cd4aa5609",
-            "label": "Link",
-            "name": "link",
+            "key": "field_68161d164e64b",
+            "label": "Related Content",
+            "name": "related_content",
             "aria-label": "",
-            "type": "clone",
+            "type": "post_object",
             "instructions": "",
-            "required": 0,
+            "required": 1,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
-            "clone": [
-                "group_67e464c49e5c8"
+            "post_type": [
+                "post",
+                "newsroom",
+                "cases",
+                "issues"
             ],
-            "display": "seamless",
-            "layout": "block",
-            "prefix_label": 0,
-            "prefix_name": 0
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "object",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -72,7 +80,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "page"
+                "value": "post"
             }
         ]
     ],
@@ -85,5 +93,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746281769
+    "modified": 1746279778
 }
