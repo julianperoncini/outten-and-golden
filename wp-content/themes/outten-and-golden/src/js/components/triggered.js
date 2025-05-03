@@ -4,6 +4,26 @@ import { evt, utils, store } from '@/core'
 const { device } = store
 const { qs, qsa, rect, wrapLines } = utils
 
+const bgSwitcher = (el) => {
+  const bg = qs('.js-bg-switcher', el);
+  const text = qsa('.js-bg-switcher-text', el);
+
+  if(bg && text) {
+    const timeline = [
+      [bg, {
+        backgroundColor: ['#7a7871', '#FCDC9B', '#6da479',  '#7a7871'],
+      }],
+      [text, {
+        color: ['#fff', '#292929', '#fff',  '#fff'],
+      }, {
+        at: '<'
+      }],
+    ]
+
+    scroll(animate(timeline), { target: bg, offset: ['start start', 'end end'] })
+  }
+}
+
 // Desktop animation
 const homeTriggeredDesktop = (el) => {
   const tracker = qs('.js-st-hero');
@@ -97,8 +117,10 @@ const homeTriggered = (el) => {
 
 export default function initializeAnimations(el = document.body) {
   homeTriggered(el)
+  bgSwitcher(el)
 
   evt.on('resize', () => {
     homeTriggered(el);
+
   })
 }
