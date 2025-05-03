@@ -6,13 +6,16 @@ const { qs, qsa, rect } = utils
 const { dom, features, bounds } = store
 
 export default function Carousel(element, options = {}) {
+  const sliderAttribute = element.section.getAttribute('data-slider') || 'normal'
+  
   const config = {
-    toggle: options.toggle || false
+    toggle: options.toggle || false,
+    sliderType: options.sliderType || sliderAttribute
   }
 
   const carousel = qs('.js-carousel')
-  const fakeSlider = qs('.js-fake-slider')
-  const fakeSlides = qsa('.js-fake-slide', fakeSlider)
+  const fakeSlider = config.sliderType === 'fake' ? qs('.js-fake-slider') : null
+  const fakeSlides = fakeSlider ? qsa('.js-fake-slide', fakeSlider) : []
 
   const state = {
     speed: 2.5,
@@ -44,9 +47,7 @@ export default function Carousel(element, options = {}) {
   let crect = null
   let animationFrame = null
 
-  // Function to reset everything
   const resetCarousel = () => {
-    // Clear current state
     state.t = 0
     state.tc = 0
     state.max = 0
@@ -54,13 +55,10 @@ export default function Carousel(element, options = {}) {
     state.idx = 0
     state.cache = null
     
-    // Clear snaps array
     snaps = []
     
-    // Reinitialize
     resize()
     
-    // Reset active slide to first slide
     requestAnimationFrame(() => {
       if (state.cache && state.cache.length > 0) {
         updateActiveSlide(0)
@@ -69,6 +67,10 @@ export default function Carousel(element, options = {}) {
   }
 
   const getFakeSlidePositions = () => {
+    if (config.sliderType !== 'fake' || !fakeSlider || fakeSlides.length === 0) {
+      return []
+    }
+    
     const fakePositions = []
     fakeSlides.forEach((fakeSlide, i) => {
       const { left, width } = rect(fakeSlide)
@@ -97,7 +99,7 @@ export default function Carousel(element, options = {}) {
     snaps = []
     
     const containerRect = rect(elements.el)
-    const currentIdx = state.idx || 0;
+    const currentIdx = state.idx || 0
     
     const fakePositions = getFakeSlidePositions()
     
@@ -105,7 +107,8 @@ export default function Carousel(element, options = {}) {
       state.cache.forEach((c, i) => {
         c.el.style.transform = `translate3d(0, 0, 0)`
 
-        const position = fakePositions[i] || rect(c.el)
+        // Use fake positions if using 'fake' slider type, otherwise calculate from the element
+        const position = (config.sliderType === 'fake' && fakePositions[i]) ? fakePositions[i] : rect(c.el)
         const { left, right, width } = position
         
         c.start = left - window.innerWidth
@@ -120,7 +123,7 @@ export default function Carousel(element, options = {}) {
       state.cache = slide.map((elem, i) => {
         elem.style.transform = `translate3d(0, 0, 0)`
 
-        const position = fakePositions[i] || rect(elem)
+        const position = (config.sliderType === 'fake' && fakePositions[i]) ? fakePositions[i] : rect(elem)
         const { left, width } = position
         const right = left + width
         
@@ -149,24 +152,28 @@ export default function Carousel(element, options = {}) {
     state.cache.forEach((item, i) => {
       item.el.classList.remove('active')
 
-      animate(item.el, {
-        maxWidth: '41rem',
-        minWidth: '41rem',
-      }, { 
-        duration: 0.35,
-      })
+      if (config.sliderType === 'fake') {
+        animate(item.el, {
+          maxWidth: '41rem',
+          minWidth: '41rem',
+        }, { 
+          duration: 0.35,
+        })
+      }
     })
     
     if (state.cache[activeIndex]) {
       const activeSlide = state.cache[activeIndex].el
       activeSlide.classList.add('active')
       
-      animate(activeSlide, {
-        maxWidth: '67rem',
-        minWidth: '67rem',
-      }, {
-        duration: 0.35,
-      })
+      if (config.sliderType === 'fake') {
+        animate(activeSlide, {
+          maxWidth: '67rem',
+          minWidth: '67rem',
+        }, {
+          duration: 0.35,
+        })
+      }
     }
     
     state.idx = activeIndex
@@ -174,7 +181,7 @@ export default function Carousel(element, options = {}) {
 
   const calcMax = (elem, right, offset) => {
     state.margin = parseInt(
-      getComputedStyle(elem).getPropertyValue("margin-right")
+      getComputedStyle(elem).getPropertyValue('margin-right')
     )
 
     const containerWidth = rect(elem).width
@@ -246,7 +253,6 @@ export default function Carousel(element, options = {}) {
   const snap = () => {
     if (state.resizing) return;
   
-    const sliderRect = rect(carousel).x;
     const clampedT = clamp(0, state.max, state.t);
     const snapValue = findNearestSnap(snaps, clampedT);
     const diff = snapValue - clampedT - state.margin;

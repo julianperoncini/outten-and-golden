@@ -47,13 +47,11 @@
         </div>
     </div>
   
-    <div class="relative site-max site-grid select-none cursor-grab w-full pb-200 js-slides" data-component="slider(js-slides)">
+    <div class="relative site-max site-grid select-none cursor-grab w-full pb-200 js-slides" data-component="slider(js-slides)" data-slider="fake">
 
         <ul class="slider-container col-span-full flex w-full js-fake-slider">
             {% for item in item.cases %}
-                <li  class="slider-item relative mr-25 origin-[top_left] bg-red min-w-[41rem] max-w-[41rem] h-1 js-fake-slide">
-                    
-                </li>
+                <li  class="slider-item relative mr-25 origin-[top_left] bg-red min-w-[41rem] max-w-[41rem] h-1 js-fake-slide"></li>
             {% endfor %}
         </ul>
 
