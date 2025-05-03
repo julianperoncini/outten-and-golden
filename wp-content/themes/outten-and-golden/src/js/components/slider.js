@@ -62,6 +62,10 @@ export default function Carousel(element, options = {}) {
     requestAnimationFrame(() => {
       if (state.cache && state.cache.length > 0) {
         updateActiveSlide(0)
+
+        setTimeout(() => {
+          resize()
+        }, 500)
       }
     })
   }
