@@ -1,0 +1,12 @@
+<div class="relative space-y-32">
+    <div class="relative">
+        <p class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ menu.name|replace({'Footer - ': ''}) }}</p>
+    </div>
+    <ul class="relative text-green space-y-8 leading-[1.36]">
+        {% for item in menu.items %}
+            <li class="relative">
+                <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

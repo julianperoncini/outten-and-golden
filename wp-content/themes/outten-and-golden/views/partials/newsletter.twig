@@ -1,0 +1,31 @@
+{# cta-button.twig #}
+<div class="relative space-y-[3.2rem]">
+    <p class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ subtitle }}</p>
+
+    <div class="relative">
+        <button class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] {{ text_color|default('text-green') }} uppercase" type="button" {{ button_attributes|default('') }}>
+            <span class="inline-flex">
+                {{ cta_text }}
+            </span>
+            {% if show_arrow|default(true) %}
+                <span class="inline-flex">
+                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_5001_23171)">
+                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="{{ arrow_color|default('#7A7871') }}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_5001_23171">
+                                <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </span>
+            {% endif %}
+            {% if custom_icon is defined %}
+                <span class="inline-flex">
+                    {{ custom_icon|raw }}
+                </span>
+            {% endif %}
+        </button>
+    </div>
+</div>
