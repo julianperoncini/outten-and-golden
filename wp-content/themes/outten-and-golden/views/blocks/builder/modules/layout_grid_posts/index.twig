@@ -1,0 +1,55 @@
+
+<section class="site-max py-160">
+    <div class="col-span-16 pb-50">
+        <h3 class="text-40 text-green font-normal leading-[1.32]">All Employees</h3>
+    </div>
+
+    <div class="site-grid gap-y-20">
+        {% for item in issues %}
+
+            {% set image = item.fields.feature_content.feature_image %}
+            {% set bg = item.fields.feature_content.background_color %}
+            {% set description = item.fields.feature_content.description %}
+
+            <div class="column h-full relative group">
+                <a href="{{ item.link }}" class="column-inner overflow-hidden block w-full relative {{ bg ? 'text-white bg-' ~ bg|lower }}">
+                    {% if image %}
+                        {% include "blocks/common/image.twig" with {
+                            props : {
+                                data: {
+                                    image : image
+                                },
+                                options: {
+                                    container_class: 'w-full overflow-hidden',
+                                    class : 'w-full h-full object-cover group-hover:scale-105 transition-all duration-[1s]',
+                                    size: 'large',
+                                    aspect_ratio: '0%',
+                                }
+                            }
+                        } %}
+                    {% endif %}
+
+                    <div class="absolute top-0 left-0 w-full h-full p-16 l:p-24">
+                        <span class="text-12 font-medium leading-none tracking-[0.12rem] uppercase">Issue</span>
+                    </div>
+
+                    <div class="absolute z-1 bottom-0 left-0 w-full p-16 l:p-24 leading-none flex justify-between items-center s:items-end">
+                        
+                        <p class="column-title">{{ item.title }}</p>
+                        <p class="column-link text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center">
+                            <span class="column-link-text hidden">
+                                See more
+                            </span>
+                            <span class="inline-flex">
+                                <svg class="w-6 h-10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 0.999999L4.5 4.5L1 8" stroke="currentColor" stroke-width="1.01111" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+</section>

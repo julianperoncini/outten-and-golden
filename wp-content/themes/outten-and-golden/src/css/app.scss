@@ -8,6 +8,7 @@ Imports - Must be first!
 @use 'vimeo';
 @use 'draggable';
 @use 'form';
+@use 'grid-layout';
 
 /* ==========================
 	Tailwind
@@ -32,7 +33,7 @@ Imports - Must be first!
 
 @screen 3xl {
 	:root {
-		--size: 1800;
+		--size: 1680;
 	}
 }
 
