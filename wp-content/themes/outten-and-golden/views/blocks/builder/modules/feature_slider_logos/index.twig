@@ -1,16 +1,16 @@
 <section class="relative bg-white">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-    <div class="site-max py-160">
+    <div class="site-max py-60 s:py-160">
         
-            <div class="site-grid gap-y-40 pb-95 items-end">
+            <div class="site-grid gap-y-40 pb-40 s:pb-95 items-end">
                 <div class="col-span-8 flex flex-col gap-y-20">
                     <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
-                    <h2 class="text-green font-sans text-40 font-normal leading-[1.16] tracking-[-0.04rem]">{{ item.title }}</h2>
+                    <h2 class="text-green font-sans text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem]">{{ item.title }}</h2>
                 </div>
 
                 <div class="col-span-8 relative flex flex-col">
-                    <div class="relative flex ml-auto">
+                    <div class="relative flex s:ml-auto">
                         <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid" type="button">
                             <span class="inline-flex">
                                 <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -29,14 +29,12 @@
                     </div>
                 </div>
             </div>
-
-        <div class="site-grid">
-
-            <div class="relative col-start-1 col-span-full">
+    
+            <div class="relative site-grid col-span-full">
                 <div class="relative select-none cursor-grab w-full js-slides" data-component="slider(js-slides)">
                         <ul class="slider-container flex relative z-1">
                             {% for item in item.logos %}
-                                <li class="slider-item-logo relative min-w-[15rem] max-w-[15rem] mr-95 {{ loop.last ? '!mr-0' }} js-slide">
+                                <li class="slider-item-logo relative border border-grey-taupe border-solid min-w-[15rem] max-w-[15rem] mr-40 s:mr-95 {{ loop.last ? '!mr-0' }} js-slide">
                                     <figure class="relative overflow-hidden w-full">
                                         {% include "blocks/common/image.twig" with {
                                             props : {
@@ -57,6 +55,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
     </div>
 </section>

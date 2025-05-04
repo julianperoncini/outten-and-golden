@@ -84,13 +84,23 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_filter('timmy/sizes',       [$this, 'get_image_sizes']);
         add_filter('acf/load_field/type=image', [$this, 'get_id_images']);
         add_filter('wpseo_image_sizes', [$this, 'filter_image_sizes']);
-        add_filter( 'timmy/sizes',      [$this, 'add_og_image_size']);
+        add_filter('timmy/sizes',      [$this, 'add_og_image_size']);
         add_action('wp_enqueue_scripts', [$this, 'remove_gravity_forms_css'], 20);
         add_filter('upload_mimes', [$this, 'allow_svg_upload']);
         add_action('admin_init', [$this, 'disable_content_editor']);
         add_action('do_meta_boxes', [$this, 'remove_featured_image_metabox']);
         add_filter('show_admin_bar',     '__return_false');
         add_filter('taxi_namespace', [ $this, 'taxi_namespace' ] );
+
+        add_filter( 'timmy/sizes', function( $sizes ) {
+            return array_map( function( $size ) {
+                if ( ! isset( $size['webp'] ) ) {
+                    $size['webp'] = true;
+                }
+        
+                return $size;
+            }, $sizes );
+        }, 50 );
     }
 
     public function allow_svg_upload($mimes) {

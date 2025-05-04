@@ -32,7 +32,9 @@
 
 {% if image %}
 	<div class="{{ container_class }}">
-		<div class="aspect" style="--aspect: {{ aspect_ratio }}"></div>
+		{% if aspect_ratio %}
+			<div class="aspect" style="--aspect: {{ aspect_ratio }}"></div>
+		{% endif %}
 		<picture class="absolute top-0 left-0 size-full">
 		{{ image|get_timber_picture_responsive(size, {
 			img_class: class,
@@ -42,7 +44,7 @@
 			img_tabindex: tabindex,
 			lazy_srcset: lazy_load,
 			lazy_src: lazy_load,
-			lazy_sizes: lazy_load
+			lazy_sizes: lazy_load,
 		}) }}
 		</picture>
 	</div>
