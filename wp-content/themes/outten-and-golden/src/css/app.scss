@@ -21,20 +21,14 @@ Imports - Must be first!
 * Root Variables
 */
 :root {
-	--size: 393;
-	--clamp: 16px;
+	--size: 390;
+	--clamp: 12px;
 }
 
-@screen l {
-	:root {
-		--size: 1440;
-	}
-}
-
-@screen 3xl {
-	:root {
-		--size: 1680;
-	}
+@media (min-width: 650px) {
+    :root {
+        --size: 1440;
+    }
 }
 
 /**
@@ -91,6 +85,21 @@ main {
 	background-color: #F7F5F2;
 }
 
+.app {
+	@apply pt-60 l:pt-80;
+}
+
+.st-hero {
+	@apply -mt-60 l:-mt-80;
+}
+
+/*
+body.home {
+	.app {
+		@apply pt-0;
+	}
+}
+*/
 
 /* ==========================
 	Grid

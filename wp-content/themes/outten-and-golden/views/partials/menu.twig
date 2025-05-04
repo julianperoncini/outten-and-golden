@@ -1,10 +1,18 @@
-<div class="relative space-y-32">
-    <div class="relative">
-        <p class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ menu.name|replace({'Footer - ': ''}) }}</p>
-    </div>
-    <ul class="relative text-green space-y-8 leading-[1.36]">
+<div class="relative flex flex-col {{ open ? '' : 'border-b' }} s:border-none w-full border-grey-taupe s:gap-y-30">
+
+    <button class="relative text-left flex items-center justify-between py-20 px-20 s:px-0 s:py-0 cursor-pointer s:cursor-text pointer-events-auto s:pointer-events-none">
+        <span class="font-sans {{ open ? 'text-grey' :  'text-black s:text-grey' }} text-12 font-medium leading-none tracking-[0.12rem] uppercase pointer-events-auto">{{ menu.name|replace({'Footer - ': ''}) }}</span>
+        {% if not open %}
+            <svg class="fill-current text-green size-9 block s:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.2 12.2">
+                <path d="M6.78,6.78v4.74c0,.18-.07.33-.21.47-.14.14-.29.21-.47.21s-.33-.07-.47-.21c-.14-.14-.21-.29-.21-.47v-4.74H.68c-.18,0-.33-.07-.47-.21C.07,6.43,0,6.28,0,6.1c0-.18.07-.33.21-.47.14-.14.29-.21.47-.21h4.74V.68c0-.18.07-.33.21-.47.14-.14.29-.21.47-.21.18,0,.33.07.47.21.14.14.21.29.21.47v4.74h4.74c.18,0,.33.07.47.21.14.14.21.29.21.47s-.07.33-.21.47c-.14.14-.29.21-.47.21h-4.74Z"/>
+            </svg>
+        {% endif %}
+    
+    </button>
+
+    <ul class="relative overflow-hidden {{ open ? 'h-auto' : 'h-0 s:h-auto' }} text-green flex flex-col gap-y-8 leading-[1.36]">
         {% for item in menu.items %}
-            <li class="relative">
+            <li class="relative px-20 s:px-0">
                 <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
             </li>
         {% endfor %}

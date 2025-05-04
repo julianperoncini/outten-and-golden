@@ -7,14 +7,14 @@
 
     <div class="relative border-t {{ isLight ? 'border-grey-taupe border-opacity-20' : 'border-white-smoke border-opacity-20' }}">
         <div class="site-max site-grid relative pt-120 pb-95">
-            <div class="sticky top-160 h-fit pb-32 col-start-2 col-span-6 flex flex-col gap-y-25">
+            <div class="s:sticky s:top-160 h-fit pb-32 col-span-16 s:col-start-2 s:col-span-6 flex flex-col gap-y-25">
                 <h2 class="{{ isLight ? 'text-green' : 'text-white-smoke' }} text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase js-bg-switcher-text">{{ item.subtitle }}</h2>
                 <h3 class="text-32 font-normal leading-[1.16] tracking-[-0.032rem] {{ isLight ? 'text-green' : 'text-white-smoke' }} js-bg-switcher-text">{{ item.description }}</h3>
             </div>
 
-            <div class="col-start-9 col-span-8">
+            <div class="col-span-16 s:col-start-9 s:col-span-8">
                 {% for item in item.card %}
-                    <article class="relative flex flex-col items-start {% if loop.first %}pt-0{% else %}pt-85{% endif %} pb-32 pl-22 pr-12 space-y-65">
+                    <article class="relative flex flex-col items-start {% if loop.first %}pt-0{% else %}pt-85{% endif %} pb-32 s:pl-22 s:pr-12 space-y-65">
                         <div class="relative max-w-[22.6rem] w-full mx-auto">
                             {% include "blocks/common/image.twig" with {
                                 props : {
@@ -41,7 +41,7 @@
                 {% endfor %}
             </div>
 
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-current opacity-20 js-bg-switcher-text"></div>
+            <div class="absolute hidden s:block top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-current opacity-20 js-bg-switcher-text"></div>
         </div>
     </div>
 </section>
