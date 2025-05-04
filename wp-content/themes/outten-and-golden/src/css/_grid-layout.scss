@@ -7,7 +7,7 @@
 }
 
 .column {
-    @apply col-span-8 l:col-span-4;
+    @apply col-span-16 m:col-span-8 l:col-span-4;
     overflow: hidden;
 
 	&:nth-child(12n+1),
@@ -17,11 +17,11 @@
         @apply col-span-16 l:col-span-8;
 
         .column-title {
-            @apply  s:text-24 l:text-32;
+            @apply text-18 m:text-24 l:text-32 font-normal leading-[1.04] tracking-[-0.032rem];
         }
 
         .column-link-text {
-            @apply block;
+            @apply m:block;
         }
 	}
 
