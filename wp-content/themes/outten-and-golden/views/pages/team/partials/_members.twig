@@ -41,10 +41,10 @@
             </div>
 
             <div class="relative col-start-1 col-span-full z-1">
-                <ul class="team-members-list flex flex-wrap gap-x-24 gap-y-[6.4rem]">
+                <ul class="team-members-list grid grid-cols-6 s:gap-x-24 gap-y-[6.4rem]">
                     {% for member in team_members %}
-                        <li class="team-members-item relative w-full max-w-[44.4rem]">
-                            <div class="team-member w-full h-full flex flex-col items-start gap-y-32">
+                        <li class="team-members-item relative w-full col-span-6 s:col-span-3 l:col-span-2">
+                            <div class="team-member w-full flex flex-col gap-y-32">
                                 {% if member.featured_image %}
                                     <figure class="relative w-full h-full">
                                         {% include "blocks/common/image.twig" with {

@@ -84,18 +84,23 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_filter('timmy/sizes',       [$this, 'get_image_sizes']);
         add_filter('acf/load_field/type=image', [$this, 'get_id_images']);
         add_filter('wpseo_image_sizes', [$this, 'filter_image_sizes']);
-        add_filter( 'timmy/sizes',      [$this, 'add_og_image_size']);
-        add_action('init', [$this, 'disable_post_permalinks']);
-        add_filter('post_type_link', [$this, 'remove_post_permalink'], 10, 2);
-        add_action('template_redirect', [$this, 'redirect_all_posts']);
-        add_action('wp_head', [$this, 'noindex_posts_only']);
-        add_filter('get_sample_permalink_html', [$this, 'remove_admin_permalink'], 10, 2);
+        add_filter('timmy/sizes',      [$this, 'add_og_image_size']);
         add_action('wp_enqueue_scripts', [$this, 'remove_gravity_forms_css'], 20);
         add_filter('upload_mimes', [$this, 'allow_svg_upload']);
         add_action('admin_init', [$this, 'disable_content_editor']);
         add_action('do_meta_boxes', [$this, 'remove_featured_image_metabox']);
         add_filter('show_admin_bar',     '__return_false');
         add_filter('taxi_namespace', [ $this, 'taxi_namespace' ] );
+
+        add_filter( 'timmy/sizes', function( $sizes ) {
+            return array_map( function( $size ) {
+                if ( ! isset( $size['webp'] ) ) {
+                    $size['webp'] = true;
+                }
+        
+                return $size;
+            }, $sizes );
+        }, 50 );
     }
 
     public function allow_svg_upload($mimes) {
@@ -114,48 +119,6 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         wp_deregister_style('gforms_browsers_css');
 
         add_filter('gform_disable_css', '__return_true');
-    }
-
-    // Step 1: Remove permalink generation (frontend)
-    public function remove_post_permalink($permalink, $post) {
-        if ($post->post_type === 'post') {
-            return ''; // Empty permalink
-        }
-        return $permalink;
-    }
-
-    // Step 2: Disable permalinks at a core level
-    public function disable_post_permalinks() {
-        global $wp_post_types;
-        if (isset($wp_post_types['post'])) {
-            $wp_post_types['post']->publicly_queryable = false; // Prevent frontend queries
-            $wp_post_types['post']->rewrite = false; // No permalinks
-            $wp_post_types['post']->has_archive = false; // No archives
-        }
-    }
-
-    // Step 3: Redirect if someone tries to access a post directly
-    public function redirect_all_posts() {
-        if (is_single() && get_post_type() === 'post') {
-            wp_redirect(home_url(), 301);
-            exit;
-        }
-    }
-
-    // Step 4: Add noindex for extra SEO safety
-    public function noindex_posts_only() {
-        if (is_single() && get_post_type() === 'post') {
-            echo '<meta name="robots" content="noindex, nofollow">';
-        }
-    }
-
-    // Step 5: Remove the permalink inside the admin panel
-    public function remove_admin_permalink($return, $post_id) {
-        $post = get_post($post_id);
-        if ($post->post_type === 'post') {
-            return ''; // Remove permalink UI in admin
-        }
-        return $return;
     }
 
     public function add_og_image_size( $sizes ) {
@@ -193,10 +156,18 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
                 'srcset' => array( array( 720 ) ),
             ),
             'large' => array(
-                'resize' => array( 1920 ),
+                'resize' => array( 1440 ),
                 'srcset' => array(
                     array( 370 ),
                     array( 570 ),
+                    array( 1440 ),
+                )
+            ),
+            'hero' => array(
+                'resize' => array( 1920 ),
+                'srcset' => array(
+                    array( 1200 ),
+                    array( 1440 ),
                     array( 1920 ),
                 )
             )

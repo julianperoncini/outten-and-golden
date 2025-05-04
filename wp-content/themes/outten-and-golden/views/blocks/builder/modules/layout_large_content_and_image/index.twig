@@ -2,9 +2,9 @@
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
     <div class="site-max py-32">
-        <div class="site-grid">
-            <div class="col-start-1 col-span-9 flex flex-col items-start justify-between">
-                <div class="relative flex flex-col items-start space-y-40">
+        <div class="site-grid gap-y-60">
+            <div class="col-span-16 l:col-span-9 flex flex-col items-start gap-y-40 justify-between">
+                <div class="relative flex flex-col items-start gap-y-40">
                     {% if item.subtitle %}
                         <div class="relative">
                             <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
@@ -13,7 +13,7 @@
 
                     {% if item.title %}
                         <div class="relative">
-                            <h1 class="text-48 font-normal leading-[1.12] tracking-[-0.096rem] text-green">{{ item.title }}</h1>
+                            <h1 class="text-26 s:text-32 l:text-48 font-normal leading-[1.12] tracking-[-0.096rem] text-green">{{ item.title }}</h1>
                         </div>
                     {% endif %}
                 </div>
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="col-start-11 col-span-6">
+            <div class="l:col-start-11 col-span-16 l:col-span-6">
                 <figure class="relative w-full h-full">
                     {% include "blocks/common/image.twig" with {
                         props : {

@@ -16,17 +16,23 @@ $context = Timber::context();
 $context['post'] = Timber::get_post();
 $context['content_builder'] = get_fields($context['post']->ID)['content_builder'] ?? null;
 
-$post_types = ['cases', 'newsroom', 'client-stories', 'team-member', 'issues'];
+// Get issues posts
+$issues_posts = Timber::get_posts([
+     'post_type' => 'issues',
+     'posts_per_page' => -1,
+     'orderby' => 'date',
+     'order' => 'DESC',
+ ]);
+ 
+ // Get ACF fields for each issue
+ $issues_with_fields = [];
+ foreach ($issues_posts as $issue) {
+     $issue_fields = get_fields($issue->ID);
+     
+     $issue->fields = $issue_fields;
+     $issues_with_fields[] = $issue;
+ }
+ 
+ $context['issues'] = $issues_with_fields;
 
-foreach ($post_types as $post_type) {
-    $context_key = str_replace('-', '_', $post_type);
-    
-    $args = [
-        'post_type' => $post_type,
-        'posts_per_page' => -1,
-    ];
-    
-    $context[$context_key] = Timber::get_posts($args);
-}
-
-Timber::render('views/page.twig', $context);
+Timber::render( 'views/page.twig', $context );

@@ -1,17 +1,12 @@
-<section class="relative">
+<section class="relative h-screen sticky top-80 {{ item.background_color ? 'bg-' ~ item.background_color|lower : 'bg-yellow' }}">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-    <div class="site-max {{ item.background_color ? 'bg-' ~ item.background_color|lower : 'bg-yellow' }}">
-        <div class="site-grid">
-            <div class="col-start-1 col-span-5 py-65 pl-32 flex flex-col items-start justify-between">
-                <div class="relative flex flex-col space-y-40">
-                    <div class="relative">
-                        <h5 class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
-                    </div>
-
-                    <div class="relative">
-                        <h2 class="text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h2>
-                    </div>
+    <div class="site-max site-grid h-full">
+        
+            <div class="col-start-1 col-span-5 py-65 pl-32 flex flex-col items-start justify-between h-[calc(100vh-8rem)]">
+                <div class="relative flex flex-col mb-20 space-y-40">
+                    <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
+                    <h2 class="text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h2>
                 </div>
                 
                 <div class="relative space-y-40">
@@ -51,12 +46,13 @@
                             options: {
                                 container_class: 'w-full h-full overflow-hidden',
                                 class : 'w-full h-full object-cover',
-                                aspect_ratio: '100%',
+                                size: 'full',
+                                lazy: true
                             }
                         }
                     } %}
                 </figure>
             </div>
         </div>
-    </div>
+    
 </section>

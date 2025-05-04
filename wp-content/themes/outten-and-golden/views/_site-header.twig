@@ -22,7 +22,8 @@
 <header class="fixed top-0 border-b overflow-hidden pb-15 border-grey-taupe bg-white left-0 w-full z-[9999]">
     <div class="site-max flex flex-col px-20 pt-15 bg-white relative overflow-hidden z-2">
         <div class="relative w-full flex justify-between items-center z-2">
-            <div class="w-full gap-x-10 hidden l:flex items-center justify-center predictive-search z-2 pointer-events-none js-search" data-component="search(js-search)">
+
+            <div class="w-full gap-x-10 hidden s:flex items-center justify-center predictive-search z-2 pointer-events-none js-search" data-component="search(js-search)">
                 <button class="flex items-center justify-center transition-opacity duration-300 size-48 rounded-[0.4rem] border border-grey-taupe text-12 font-medium leading-[1.32] bg-white text-green predictive-search-close">
                     <svg class="size-11" width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M5.5 6.6711L1.40114 10.77C1.24778 10.9233 1.0526 11 0.815589 11C0.57858 11 0.383396 10.9233 0.230038 10.77C0.076679 10.6166 0 10.4214 0 10.1844C0 9.9474 0.076679 9.75222 0.230038 9.59886L4.3289 5.5L0.230038 1.40114C0.076679 1.24778 0 1.0526 0 0.815589C0 0.57858 0.076679 0.383396 0.230038 0.230038C0.383396 0.076679 0.57858 0 0.815589 0C1.0526 0 1.24778 0.076679 1.40114 0.230038L5.5 4.3289L9.59886 0.230038C9.75222 0.076679 9.9474 0 10.1844 0C10.4214 0 10.6166 0.076679 10.77 0.230038C10.9233 0.383396 11 0.57858 11 0.815589C11 1.0526 10.9233 1.24778 10.77 1.40114L6.6711 5.5L10.77 9.59886C10.9233 9.75222 11 9.9474 11 10.1844C11 10.4214 10.9233 10.6166 10.77 10.77C10.6166 10.9233 10.4214 11 10.1844 11C9.9474 11 9.75222 10.9233 9.59886 10.77L5.5 6.6711Z" fill="#1E383E"/>
@@ -54,7 +55,7 @@
                 </div>
             </div>
             
-            <div class="relative l:absolute left-0 flex items-center predictive-search-hidden">
+            <div class="relative s:absolute left-0 flex items-center predictive-search-hidden">
                 <button class="flex flex-col outline-none gap-y-4 p-16 -ml-16 js-menu-trigger">
                     <span class="w-18 h-[1px] origin-top-left will-change-transform bg-green"></span>
                     <span class="w-18 h-[1px] origin-top-left will-change-transform bg-green"></span>
@@ -82,14 +83,14 @@
 
             <div class="absolute h-full right-0 flex border border-grey-taupe rounded-[0.4rem] overflow-hidden uppercase predictive-search-hidden">
                 <div class="relative rounded-[0.4rem] flex">
-                    <button class="font-medium h-full text-green py-12 px-16 uppercase hidden l:flex items-center gap-x-8 text-12 h-48">
+                    <button class="font-medium h-full text-green py-12 px-16 uppercase hidden s:flex items-center gap-x-8 text-12 h-48">
                         <svg class="w-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.35 14.7">
                             <path d="M7.53,14.7H2.82c-1.56,0-2.82-1.27-2.82-2.82V2.82C0,1.27,1.27,0,2.82,0h4.71c1.56,0,2.82,1.27,2.82,2.82v9.05c0,1.56-1.27,2.82-2.82,2.82ZM2.82,1.3c-.84,0-1.52.68-1.52,1.52v9.05c0,.84.68,1.52,1.52,1.52h4.71c.84,0,1.52-.68,1.52-1.52V2.82c0-.84-.68-1.52-1.52-1.52H2.82ZM5.9,12.16h-1.45c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h1.45c.36,0,.65.29.65.65s-.29.65-.65.65Z"/>
                         </svg>
                         <span class="tracking-[0.1em] leading-none">877-468-8836</span>
                     </button>
-                    <button class="font-medium h-full text-green py-12 px-16 l:-ml-2 flex items-center l:border-l text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
-                        <div class="hidden l:flex items-center">
+                    <button class="font-medium h-full text-green py-12 px-16 s:-ml-2 flex items-center s:border-l text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
+                        <div class="hidden s:flex items-center">
                             {% for item in items %}
                                 <img class="relative size-24 object-cover {{ loop.index == 1 ? '' : '-ml-15' }}" src="{{ item.image.url }}" alt="{{ item.image.alt }}">
                             {% endfor %}
@@ -104,14 +105,14 @@
 
         <div class="predictive-search-results site-max h-0">
 
-                <div class="hidden absolute top-0 l:flex h-full pointer-events-none z-1 w-[15rem] l:w-[30rem] right-0 transition-opacity duration-300 js-scrollboost-gradient">
+                <div class="hidden absolute top-0 s:flex h-full pointer-events-none z-1 w-[15rem] s:w-[30rem] right-0 transition-opacity duration-300 js-scrollboost-gradient">
                     <div class="from-transparent to-white bg-gradient-to-r w-[calc(100%-6.9rem)]"></div>
                     <div class="absolute top-0 right-0 h-full bg-white w-[7rem] bg-white"></div>
                 </div>
 
             <div class="relative flex items-center -mx-20 s:-mx-30 pt-15  px-20 s:px-30">
 
-                <button class="absolute right-20 s:right-30 z-2 size-30 bg-white-smoke rounded-[0.4rem] hidden l:flex items-center justify-center transition-opacity duration-300 js-scrollboost-next">
+                <button class="absolute right-20 s:right-30 z-2 size-30 bg-white-smoke rounded-[0.4rem] hidden s:flex items-center justify-center transition-opacity duration-300 js-scrollboost-next">
                     <svg class="size-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
                         <path d="M.65,10.3c-.17,0-.33-.06-.46-.19-.25-.25-.25-.67,0-.92l4.04-4.04L.19,1.11C-.06.86-.06.44.19.19S.86-.06,1.11.19l4.5,4.5c.25.25.25.67,0,.92L1.11,10.11c-.13.13-.29.19-.46.19Z"/>
                     </svg>

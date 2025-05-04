@@ -2,6 +2,8 @@ import { qs, qsa } from './utils'
 
 const dom = {
   	body: document.body,
+	overlay: qs('.js-overlay-mask'),
+	mask: qs('.js-transition-mask'),
 }
 
 const bounds = {
