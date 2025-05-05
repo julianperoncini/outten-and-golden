@@ -3,7 +3,30 @@
 {% block content %}
 	<article data-taxi-view>
 		<div class="app">
-			<h2>legals</h2>
+			<section class="relative">				
+				<div class="site-max pt-65 s:pt-135 pb-80 s:pb-160">
+					<div class="site-grid">
+						<div class="relative flex flex-col items-center justify-center col-span-full s:col-span-8 col-start-1 s:col-start-5 space-y-40 pb-80 s:pb-160">
+							<div class="relative">
+								<h1 class="text-60 s:text-120 text-green text-center font-normal leading-none tracking-[-0.024rem]">
+									{{ item.content.title }}
+								</h1>
+							</div>
+							<div class="relative s:max-w-[80%]">
+								<p class="text-16 text-green text-center font-normal leading-[1.32]">
+									{{ item.content.description }}
+								</p>
+							</div>
+						</div>
+
+						<div class="relative col-span-full s:col-span-8 col-start-1 s:col-start-5">
+							<div class="relative text-16 text-green font-normal leading-[1.32]">
+								{{ item.content.content }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 
 		{% include '_site-footer.twig' %}
