@@ -291,6 +291,102 @@
                     "min": "",
                     "max": ""
                 },
+                "layout_6817dc3644e2a": {
+                    "key": "layout_6817dc3644e2a",
+                    "name": "feature_newsroom_slider",
+                    "label": "Feature Newsroom Slider",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6817dc4244e2d",
+                            "label": "Feature Newsroom Slider",
+                            "name": "feature_newsroom_slider",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6817db7cbec55"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_6817fc47b9cca": {
+                    "key": "layout_6817fc47b9cca",
+                    "name": "feature_credentials_slider",
+                    "label": "Feature Credentials Slider",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6817fc57b9ccd",
+                            "label": "Feature Credentials Slider",
+                            "name": "feature_credentials_slider",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6817df99d8fa3"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_6817fc775f6b4": {
+                    "key": "layout_6817fc775f6b4",
+                    "name": "feature_notable_cases_slider",
+                    "label": "Feature Notable Cases Slider",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6817fc865f6b7",
+                            "label": "Feature Notable Cases Slider",
+                            "name": "feature_notable_cases_slider",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_6817e0a8c6a15"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
                 "layout_68097320ccee2": {
                     "key": "layout_68097320ccee2",
                     "name": "layout_highlight_numbers",
@@ -834,102 +930,6 @@
                     ],
                     "min": "",
                     "max": ""
-                },
-                "layout_6817dc3644e2a": {
-                    "key": "layout_6817dc3644e2a",
-                    "name": "feature_newsroom_slider",
-                    "label": "Feature Newsroom Slider",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_6817dc4244e2d",
-                            "label": "Feature Newsroom Slider",
-                            "name": "feature_newsroom_slider",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_6817db7cbec55"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                "layout_6817fc47b9cca": {
-                    "key": "layout_6817fc47b9cca",
-                    "name": "feature_credentials_slider",
-                    "label": "Feature Credentials Slider",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_6817fc57b9ccd",
-                            "label": "Feature Credentials Slider",
-                            "name": "feature_credentials_slider",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_6817df99d8fa3"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                "layout_6817fc775f6b4": {
-                    "key": "layout_6817fc775f6b4",
-                    "name": "feature_notable_cases_slider",
-                    "label": "Feature Notable Cases Slider",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_6817fc865f6b7",
-                            "label": "Feature Notable Cases Slider",
-                            "name": "feature_notable_cases_slider",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_6817e0a8c6a15"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
                 }
             },
             "min": "",
@@ -955,5 +955,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746402464
+    "modified": 1746460891
 }
