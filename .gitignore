@@ -1,1 +1,34 @@
-uploads
+# WordPress config file
+wp-config.php
+
+# Environment files
+.env
+.env.*
+
+# Uploads directory
+/wp-content/uploads/
+
+# Plugins and themes managed by Composer
+/wp-content/plugins/*
+/wp-content/themes/*
+
+# But keep custom plugins/themes
+!/wp-content/plugins/my-custom-plugin/
+!/wp-content/themes/my-custom-theme/
+
+# Cache files
+/wp-content/cache/
+/wp-content/advanced-cache.php
+
+# Debug logs
+/wp-content/debug.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Ignore all files in the uploads directory
+uploads/*
+
+# Ignore all files in the uploads directory
+uploads/*
