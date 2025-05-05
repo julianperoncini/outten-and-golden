@@ -10,7 +10,7 @@
     
     </button>
 
-    <ul class="relative overflow-hidden {{ open ? 'h-auto' : 'h-0 s:h-auto' }} text-green flex flex-col gap-y-8 leading-[1.36]">
+    <ul class="relative overflow-hidden {{ open ? 'h-auto' : 'h-0 s:h-auto' }} text-green flex flex-col gap-y-8 leading-[1.36] s:pb-5">
         {% for item in menu.items %}
             <li class="relative px-20 s:px-0">
                 <a class="ulink text-14 font-normal" href="{{ item.url }}" target="{{ item.target }}">{{ item.title }}</a>
