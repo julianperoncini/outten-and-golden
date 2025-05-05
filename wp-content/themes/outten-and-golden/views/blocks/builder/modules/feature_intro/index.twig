@@ -1,50 +1,53 @@
-<section class="relative st-hero js-st-hero">
+<div class="w-full relative h-[300vh] -mt-60 s:-mt-80">
 
-    <div class="site-max pt-130 m:pt-0 m:h-screen flex m:sticky m:top-0 left-0 w-full h-full items-center justify-center js-t-text">
-        <div class="mx-auto">
-            <div class="relative pb-70 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:ap-y-40 mx-auto s:sticky s:top-250">
-                {% if item.subtitle %}
-                    <div class="relative">
-                        <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
-                    </div>
-                {% endif %}
+    <div class="js-tracker flex items-center justify-center size-full">
 
-                {% if item.title %}
-                    <div class="relative s:max-w-[102.6rem]">
-                        <h1 class="text-center text-32 s:text-76 font-normal leading-[1.1] tracking-[-0.152rem] text-green">{{ item.title }}</h1>
-                    </div>
-                {% endif %}
+        <div class="left-0 w-full h-full items-center justify-center fixed top-0 left-0 right-0">
+            <div class="mx-auto relative">
+                <div class="pt-230 relative pb-70 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:gap-y-40 mx-auto js-t-text">
+                    {% if item.subtitle %}
+                        <div class="relative">
+                            <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
+                        </div>
+                    {% endif %}
 
-                {% if item.link %}
-                    <div class="relative">
-                        <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">{{ item.link.title }}</a>
+                    {% if item.title %}
+                        <div class="relative s:max-w-[102.6rem]">
+                            <h1 class="text-center text-32 s:text-76 font-normal leading-[1.1] tracking-[-0.152rem] text-green">{{ item.title }}</h1>
+                        </div>
+                    {% endif %}
+
+                    {% if item.link %}
+                        <div class="relative">
+                            <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">{{ item.link.title }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="w-full flex items-center absolute top-full mx-auto left-0 right-0 justify-center h-[calc(100vh-8rem)] js-t-screen">
+                    <div class="w-full h-full mx-auto w-full">
+                        <div class="absolute top-0 left-0 w-full h-[105%] flex items-center justify-center js-t-hero-content origin-top-center">
+                            {% include "blocks/common/image.twig" with {
+                                props : {
+                                    data: {
+                                        image : item.image
+                                    },
+                                    options: {
+                                        container_class: 'w-full h-full overflow-hidden',
+                                        class : 'w-full h-full object-cover',
+                                        aspect_ratio: '76.38%',
+                                        size: 'full',
+                                    }
+                                }
+                            } %}
+                        </div>
                     </div>
-                {% endif %}
+                </div>
+
             </div>
+
         </div>
+
     </div>
 
-    <div class="m:fixed m:px-0 m:pb-0 w-full top-0 flex items-center justify-center m:h-screen js-t-screen pointer-events-none">
-        <div class="w-full h-full [clip-path:inset(0_0_0_0_round_1.4rem)] m:[clip-path:inset(0_0_0_0_round_3.2rem)] m:[clip-path:inset(0_0_0_0_round_6.4rem)] mx-auto w-full js-t-hero m:sticky top-0">
-            <div class="pt-[100%]"></div>
-            <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center js-t-hero-content">
-                {% include "blocks/common/image.twig" with {
-                    props : {
-                        data: {
-                            image : item.image
-                        },
-                        options: {
-                            container_class: 'w-full h-full overflow-hidden',
-                            class : 'w-full h-full object-cover',
-                            aspect_ratio: '76.38%',
-                            size: 'full',
-                        }
-                    }
-                } %}
-            </div>
-        </div>
-    </div>
-
-    <div class="m:h-[200vh] w-full"></div>
-
-</section>
+</div>
