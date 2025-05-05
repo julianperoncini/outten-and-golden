@@ -22,7 +22,7 @@
             {% set description = item.fields.feature_content.description %}
 
             <div class="column h-full w-full relative group overflow-hidden">
-                <a href="{{ item.link }}" class="column-inner overflow-hidden block w-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
+                <a href="{{ item.link }}" data-transition="child" class="column-inner overflow-hidden block w-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
                     {% if image %}
                         {% include "blocks/common/image.twig" with {
                             props : {

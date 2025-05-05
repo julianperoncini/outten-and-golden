@@ -45,6 +45,7 @@ const initTaxi = new Taxi.Core({
 	},
 	transitions: {
 		default: T.Base,
+		child: T.Child,
 	},
 })
 
