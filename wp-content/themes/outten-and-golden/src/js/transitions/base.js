@@ -27,13 +27,16 @@ export default class extends Transition {
     }
 
     onEnter({ to, trigger, done }) {
-		window.scrollTo(0, 0);
-		document.body.scrollTop = 0;
-		document.documentElement.scrollTop = 0;
-
         //evt.emit('tick:start');
         //evt.emit('speed:boost');
 		done()
+
+        // Reset scroll
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+
+        evt.emit('scroll:reset');
 
         evt.emit('menu:reset');
 
