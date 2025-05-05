@@ -4,7 +4,7 @@
 
         <div class="left-0 w-full h-full items-center justify-center fixed top-0 left-0 right-0">
             <div class="mx-auto relative">
-                <div class="pt-230 relative pb-70 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:gap-y-40 mx-auto js-t-text">
+                <div class="pt-180 s:pt-230 relative pb-70 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:gap-y-40 mx-auto js-t-text">
                     {% if item.subtitle %}
                         <div class="relative">
                             <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
@@ -12,7 +12,7 @@
                     {% endif %}
 
                     {% if item.title %}
-                        <div class="relative s:max-w-[102.6rem]">
+                        <div class="relative max-w-[40rem] s:max-w-[102.6rem]">
                             <h1 class="text-center text-32 s:text-76 font-normal leading-[1.1] tracking-[-0.152rem] text-green">{{ item.title }}</h1>
                         </div>
                     {% endif %}
@@ -24,7 +24,7 @@
                     {% endif %}
                 </div>
 
-                <div class="w-full flex items-center absolute top-full mx-auto left-0 right-0 justify-center h-[calc(100vh-8rem)] js-t-screen">
+                <div class="w-full flex items-center absolute top-full mx-auto left-0 right-0 justify-center h-[calc(100vh-6rem)] s:h-[calc(100vh-8rem)] mt-[-1.25rem] s:mt-0 js-t-screen">
                     <div class="w-full h-full mx-auto w-full">
                         <div class="absolute top-0 left-0 w-full h-[105%] flex items-center justify-center js-t-hero-content origin-top-center">
                             {% include "blocks/common/image.twig" with {

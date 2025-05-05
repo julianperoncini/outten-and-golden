@@ -1,27 +1,54 @@
+{% set unique_categories = [] %}
+{% for item in issues %}
+    {% if item.categories %}
+        {% for category in item.categories %}
+            {% if category.name not in unique_categories %}
+                {% set unique_categories = unique_categories|merge([category.name]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
 
-<section class="site-max py-160">
-
-    <div class="col-span-16 pb-80">
-        <div class="col-start-6 col-span-7 flex items-center justify-center flex-wrap text-green">
-            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">All</button>
-            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">All Employees</button>
-            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">Executives & Professionals</button>
-            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">Whistleblowers</button>
+<section class="py-60 s:py-160" data-component="listGrid(js-list-grid)">
+    <div class="site-max site-grid pb-80">
+        <div class="col-span-3">
+            <div class="flex relative js-list-filter">
+                <div class="w-[6rem] h-full bg-white-smoke absolute top-0 left-0 z-0 js-list-filter-bg"></div>
+                <button class="overflow-hidden py-14 border border-solid border-grey-taupe relative z-1 w-[6rem] flex items-center justify-center" type="button" aria-label="Filter by grid">
+                    <svg class="size-14 relative z-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
+                        <path d="M6.5,6.5H0V0h6.5v6.5ZM14,6.5h-6.5V0h6.5v6.5ZM6.5,14H0v-6.5h6.5v6.5ZM14,14h-6.5v-6.5h6.5v6.5Z"/>
+                    </svg>
+                </button>
+                <button class="overflow-hidden py-16 border border-solid border-grey-taupe relative z-1 ml-[-1px] w-[6rem] flex items-center justify-center" type="button" aria-label="Filter by list">
+                   
+                    <svg class="size-18 relative z-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 10">
+                        <path d="M0,6h2v-2H0v2ZM0,10h2v-2H0v2ZM0,2h2V0H0v2ZM4,6h14v-2H4v2ZM4,10h14v-2H4v2ZM4,0v2h14V0H4ZM0,6h2v-2H0v2ZM0,10h2v-2H0v2ZM0,2h2V0H0v2ZM4,6h14v-2H4v2ZM4,10h14v-2H4v2ZM4,0v2h14V0H4Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-span-10 flex items-center justify-center flex-wrap text-green">
+            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">All</button>
+            {% for category_name in unique_categories %}
+                <button class="relative -ml-1 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">{{ category_name }}</button>
+            {% endfor %}
         </div>
     </div>
-    
-    <div class="col-span-16 pb-50">
+
+    <div class="site-max pb-50">
         <h3 class="text-40 text-green font-normal leading-[1.32]">All Employees</h3>
     </div>
 
-    <div class="site-grid gap-y-20">
+    <div class="site-max site-grid items-start gap-y-20 grid-layout js-list-grid">
+
         {% for item in issues %}
 
             {% set image = item.fields.feature_content.feature_image %}
             {% set bg = item.fields.feature_content.background_color %}
             {% set description = item.fields.feature_content.description %}
 
-            <div class="column h-full w-full relative group overflow-hidden">
+            <div class="column w-full relative group overflow-hidden">
                 <a href="{{ item.link }}" data-transition="child" class="column-inner overflow-hidden block w-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
                     {% if image %}
                         {% include "blocks/common/image.twig" with {
@@ -30,7 +57,7 @@
                                     image : image
                                 },
                                 options: {
-                                    container_class: 'w-full overflow-hidden',
+                                    container_class: 'column-image w-full overflow-hidden',
                                     class : 'w-full h-full object-cover group-hover:scale-105 transition-all duration-[1s]',
                                     size: 'large',
                                     aspect_ratio: '0%',
@@ -39,14 +66,13 @@
                         } %}
                     {% endif %}
 
-                    <div class="absolute top-0 left-0 w-full h-full p-16 l:p-24">
+                    <div class="column-category absolute top-0 left-0 w-full p-16 l:p-24">
                         <span class="text-12 font-medium leading-none tracking-[0.12rem] uppercase">Issue</span>
                     </div>
 
-                    <div class="absolute z-1 bottom-0 left-0 w-full p-16 l:p-24 leading-none flex justify-between items-center s:items-end">
-                        
+                    <div class="column-title absolute z-1 bottom-0 left-0 w-full p-16 l:p-24 leading-none flex justify-between items-center s:items-end">
                         <p class="column-title max-w-[31rem]">{{ item.title }}</p>
-                        <p class="column-link text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center">
+                        <p class="column-link text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center whitespace-nowrap">
                             <span class="column-link-text hidden">
                                 See more
                             </span>

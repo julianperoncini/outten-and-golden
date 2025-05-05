@@ -7,10 +7,12 @@ import triggered from './triggered'
 import slider from './slider'
 import sliderOffice from './slider-office'
 import lazy from './lazy'
+import listGrid from './listGrid'
 
 export {
     search,
     slider,
     triggered,
-    sliderOffice
+    sliderOffice,
+    listGrid
 }

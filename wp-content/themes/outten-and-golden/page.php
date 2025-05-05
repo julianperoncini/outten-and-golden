@@ -25,14 +25,24 @@ $issues_posts = Timber::get_posts([
  ]);
  
  // Get ACF fields for each issue
- $issues_with_fields = [];
- foreach ($issues_posts as $issue) {
-     $issue_fields = get_fields($issue->ID);
-     
-     $issue->fields = $issue_fields;
-     $issues_with_fields[] = $issue;
- }
- 
- $context['issues'] = $issues_with_fields;
+// Get ACF fields and categories for each issue
+$issues_with_fields = [];
+foreach ($issues_posts as $issue) {
+    $issue_fields = get_fields($issue->ID);
+    
+    // Get categories for this issue
+    // Replace 'category' with your actual taxonomy name if it's different
+    $categories = get_the_terms($issue->ID, 'categories-issues');
+    
+    // If you're using a custom taxonomy for your issues, use that instead
+    // For example, if you have a taxonomy called 'issue_category':
+    // $categories = get_the_terms($issue->ID, 'issue_category');
+    
+    $issue->fields = $issue_fields;
+    $issue->categories = $categories;
+    $issues_with_fields[] = $issue;
+}
+
+$context['issues'] = $issues_with_fields;
 
 Timber::render( 'views/page.twig', $context );

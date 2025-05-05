@@ -4,20 +4,71 @@
 
 :root {
 	--aspect: 68.63%;
+    --aspect-listed: 0%;
+}
+
+.grid-layout {
+    &.is-listed {
+        @apply gap-y-20 s:gap-y-60;
+        
+        @screen s {
+            --cols: 15;
+            --gap: 6.8rem;
+        }
+
+        .column {
+            @apply col-span-6 s:col-span-5 overflow-hidden;
+            @apply border-b border-solid border-grey-taupe px-0 h-full;
+
+            a  {
+                @apply h-full;
+            }
+
+            &-image {
+                @apply hidden;
+            }
+
+            &-inner {
+                padding-top: var(--aspect-listed);
+                @apply flex flex-col justify-end bg-white text-green pb-25;
+            }
+
+            &-category {
+                @apply relative p-0 pb-25;
+            }
+
+            &-title {
+                @apply relative p-0;
+            }
+            
+
+            &:nth-child(6n) {
+                @apply m-0;
+            }
+        }
+
+        .column-title {
+            @apply text-24 !important;
+        }
+
+        .column-link-text {
+            @apply m:block;
+        }
+    }
 }
 
 .column {
-    @apply col-span-16 m:col-span-8 l:col-span-4;
+    @apply col-span-16 s:col-span-4;
     overflow: hidden;
 
 	&:nth-child(12n+1),
 	&:nth-child(12n+6),
 	&:nth-child(12n+7),
 	&:nth-child(12n+12) {
-        @apply col-span-16 l:col-span-8;
+        @apply col-span-16 s:col-span-8;
 
         .column-title {
-            @apply text-18 m:text-24 l:text-32 font-normal leading-[1.04] tracking-[-0.032rem];
+            @apply text-18 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem];
         }
 
         .column-link-text {

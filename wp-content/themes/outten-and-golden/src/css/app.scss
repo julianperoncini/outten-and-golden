@@ -86,11 +86,11 @@ main {
 }
 
 .app {
-	@apply pt-60 l:pt-80;
+	@apply pt-[6.8rem] l:pt-80;
 }
 
 .st-hero {
-	@apply -mt-60 l:-mt-80;
+	@apply mt-[-6.8rem] l:-mt-80;
 }
 
 /*
