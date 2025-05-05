@@ -27,12 +27,15 @@ export default class extends Transition {
     }
 
     onEnter({ to, trigger, done }) {
+		window.scrollTo(0, 0);
+		document.body.scrollTop = 0;
+		document.documentElement.scrollTop = 0;
+
         //evt.emit('tick:start');
         //evt.emit('speed:boost');
 		done()
 
         evt.emit('menu:reset');
-        window.scrollTo(0, 0);
 
         let tl = animate(mask, {
 			opacity: [1, 0]
