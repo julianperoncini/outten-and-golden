@@ -930,6 +930,15 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_68233be9b00f3": {
+                    "key": "layout_68233be9b00f3",
+                    "name": "layout_grid_posts",
+                    "label": "Layout Grid Posts",
+                    "display": "block",
+                    "sub_fields": [],
+                    "min": "",
+                    "max": ""
                 }
             },
             "min": "",
@@ -955,5 +964,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746460891
+    "modified": 1747139575
 }
