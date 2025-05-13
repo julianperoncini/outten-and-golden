@@ -10,7 +10,9 @@
 	#---- @param {Boolean}   draggable                     - Image's draggable
 	#---- @param {String}    decoding                      - Image's decoding
 	#---- @param {Number}    tabindex                      - Image's tabindex
-	#---- @param {String}    aspect_ratio                  - Image's aspect ratio (default: '62.5%')
+	#---- @param {String}    aspect_ratio                  - Image's aspect ratio for desktop (default: '62.5%')
+	#---- @param {String}    aspect_ratio_mobile           - Image's aspect ratio for mobile (default: same as desktop)
+	#---- @param {String}    mobile_breakpoint             - Breakpoint for mobile devices (default: '768px')
 	#---- @param {String}    size                          - Timber image size (default: 'large')
 	#---- @param {String}    container_class               - Additional container classes
 	#---- @param {Boolean}   lazy_load                     - Enable lazy loading (default: true)
@@ -26,6 +28,8 @@
 {% set decoding = options.decoding|default('async') %}
 {% set tabindex = options.tabindex|default(null) %}
 {% set aspect_ratio = options.aspect_ratio|default('62.5%') %}
+{% set aspect_ratio_mobile = options.aspect_ratio_mobile|default(aspect_ratio) %}
+{% set mobile_breakpoint = options.mobile_breakpoint|default('650px') %}
 {% set size = options.size|default('large') %}
 {% set container_class = options.container_class|default('relative') %}
 {% set lazy_load = options.lazy_load|default(false) %}
@@ -33,7 +37,18 @@
 {% if image %}
 	<div class="{{ container_class }}">
 		{% if aspect_ratio %}
-			<div class="aspect" style="--aspect: {{ aspect_ratio }}"></div>
+			<style>
+				.responsive-aspect {
+					position: relative;
+					padding-bottom: {{ aspect_ratio }};
+				}
+				@media (max-width: {{ mobile_breakpoint }}) {
+					.responsive-aspect {
+						padding-bottom: {{ aspect_ratio_mobile }};
+					}
+				}
+			</style>
+			<div class="responsive-aspect"></div>
 		{% endif %}
 		<picture class="absolute top-0 left-0 size-full">
 		{{ image|get_timber_picture_responsive(size, {

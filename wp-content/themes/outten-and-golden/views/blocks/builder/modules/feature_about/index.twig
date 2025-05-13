@@ -1,14 +1,14 @@
 <section class="relative bg-grey">
-    <div class="site-max py-120">
-        <div class="site-grid gap-y-40">
+    <div class="site-max py-60 s:py-120">
+        <div class="site-grid gap-y-32 s:gap-y-40">
 
 
-            <div class="relative flex flex-col gap-y-40 col-span-6 s:col-start-2 s:col-span-14">
+            <div class="relative flex flex-col gap-y-40 col-span-full s:col-start-2 s:col-span-14">
                 <h2 class="text-grey-taupe font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
                 <h3 class="h2 text-white-smoke/30 font-disp text-26 s:text-48 font-normal leading-[1.2] tracking-[-0.096rem]">{{ item.title }}</h3>
             </div>
 
-            <div class="relative col-span-6 s:col-start-2 s:col-span-3">
+            <div class="relative col-span-full s:col-start-2 s:col-span-3">
                 <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-grey py-15 px-25 bg-white-smoke uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
                     <span class="inline-flex">
                         {{ item.link.title }}

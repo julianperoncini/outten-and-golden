@@ -67,17 +67,17 @@
 
     <div class="site-grid max-w-[144rem] mx-auto s:px-60">
     
-        <div class="col-span-5 s:border-r border-grey-taupe s:pt-60 s:pb-90">
+        <div class="col-span-full s:col-span-5 s:border-r border-grey-taupe s:pt-60 s:pb-90">
             {% include 'partials/menu.twig' with { 'menu': footer_menu_1 } %}
         </div>
 
-        <div class="col-span-5 flex flex-col s:gap-y-70 s:pl-40 s:pt-60 s:pb-90">
+        <div class="col-span-full s:col-span-5 flex flex-col s:gap-y-70 s:pl-40 s:pt-60 s:pb-90">
             {% include 'partials/menu.twig' with { 'menu': footer_menu_2 } %}
             {% include 'partials/menu.twig' with { 'menu': footer_menu_3 } %}
             {% include 'partials/menu.twig' with { 'menu': footer_menu_4, 'open': true } %}
         </div>
         
-        <div class="col-span-6 s:pl-60 s:border-l s:border-grey-taupe s:ml-20 s:pt-60 s:pb-90 flex flex-col justify-between">
+        <div class="col-span-full s:col-span-6 s:pl-60 s:border-l s:border-grey-taupe s:ml-20 s:pt-60 s:pb-90 flex flex-col justify-between">
             {% include 'partials/menu.twig' with { 'menu': footer_menu_5, 'open': true } %}
 
             <div class="flex justify-between py-40 s:py-0 px-20 s:px-0 gap-x-20">

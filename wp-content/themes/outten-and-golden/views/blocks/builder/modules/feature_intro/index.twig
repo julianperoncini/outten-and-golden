@@ -1,10 +1,10 @@
-<div class="w-full relative h-[300vh] -mt-60 s:-mt-80">
+<div class="w-full relative h-auto s:h-[300vh] s:-mt-80">
 
     <div class="js-tracker flex items-center justify-center size-full">
 
-        <div class="left-0 w-full h-full items-center justify-center fixed top-0 left-0 right-0">
-            <div class="mx-auto relative">
-                <div class="pt-180 s:pt-230 relative pb-70 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:gap-y-40 mx-auto js-t-text">
+        <div class="w-full h-full items-center justify-center relative s:fixed s:top-0 s:left-0 s:right-0">
+            <div class="mx-auto relative max-w-[35rem] s:max-w-[inherit]">
+                <div class="pt-65 s:pt-230 relative pb-65 m:pb-95 flex flex-col items-center justify-center gap-y-30 s:gap-y-40 mx-auto js-t-text">
                     {% if item.subtitle %}
                         <div class="relative">
                             <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
@@ -24,9 +24,9 @@
                     {% endif %}
                 </div>
 
-                <div class="w-full flex items-center absolute top-full mx-auto left-0 right-0 justify-center h-[calc(100vh-6rem)] s:h-[calc(100vh-8rem)] mt-[-1.25rem] s:mt-0 js-t-screen">
-                    <div class="w-full h-full mx-auto w-full">
-                        <div class="absolute top-0 left-0 w-full h-[105%] flex items-center justify-center js-t-hero-content origin-top-center">
+                <div class="w-full flex items-center s:absolute s:top-full s:mx-auto s:left-0 s:right-0 s:justify-center s:h-[calc(100vh-6rem)] s:h-[calc(100vh-8rem)] s:mt-[-1.25rem] s:mt-0 js-t-screen">
+                    <div class="w-full h-full mx-auto">
+                        <div class="relative s:absolute s:top-0 s:left-0 w-full h-[50rem] rounded-[2.4rem] s:rounded-none overflow-hidden s:overflow-visible mb-80 s:mb-0 flex items-center justify-center js-t-hero-content s:origin-top-center">
                             {% include "blocks/common/image.twig" with {
                                 props : {
                                     data: {

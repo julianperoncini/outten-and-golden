@@ -74,6 +74,7 @@ const homeTriggered = (el) => {
 }
 
 export default function initializeAnimations(el = document.body) {
+  if(window.innerWidth < 1024) return
   homeTriggered(el)
   bgSwitcher(el)
 

@@ -1,10 +1,10 @@
 <aside class="site-menu fixed w-full max-h-[100%] overflow-y-auto bg-white z-[9998] js-menu" data-lenis-prevent>
     <div class="site-max w-full pt-110 pb-32">
         <div class="site-grid gap-y-40">
-            <div class="col-span-4 s:col-span-16 l:col-span-10">
+            <div class="col-span-full s:col-span-16 l:col-span-10">
                 <ul class="site-grid !gap-10 l:!gap-24">
                     {% for item in menu.items %}  
-                        <li class="col-span-2 s:col-span-8 js-menu-box">
+                        <li class="col-span-4 s:col-span-8 js-menu-box">
                             <a 
                                 class="flex relative w-full group" 
                                 href="{{ item.link }}" 
@@ -29,8 +29,8 @@
                                     } %}
                                     </figure>
 
-                                <div class="absolute top-0 left-0 p-24 z-2  w-full h-full">
-                                    <p class="font-sans text-24 leading-none font-normal text-white tracking-[-0.024rem]">{{ item.title }}</p>
+                                <div class="absolute top-0 left-0 p-16 s:p-24 flex items-end s:items-start justify-start z-2 w-full h-full">
+                                    <p class="font-sans text-20 s:text-24 leading-none font-normal text-white tracking-[-0.024rem]">{{ item.title }}</p>
                                 </div>
                             </a>
                         </li>
@@ -38,9 +38,9 @@
                 </ul>
             </div>
 
-            <div class="l:col-start-12 col-span-4 s:col-span-5">
+            <div class="l:col-start-12 col-span-full s:col-span-5">
                 <div class="relative w-full h-full flex flex-col items-start justify-between">
-                    <div class="flex flex-col items-start space-y-[4.8rem]">
+                    <div class="relative w-full s:w-[inherit] pb-60 s:pb-0 flex flex-col items-start space-y-[4.8rem]">
                         <div class="relative space-y-32">
                             <div class="relative">
                                 <p class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase" data-animate-in>{{ menu_1.name|replace({'Menu - ': ''}) }}</p>
