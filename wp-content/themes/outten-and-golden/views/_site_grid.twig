@@ -1,5 +1,5 @@
 <div class="fixed site-grid site-max inset-0 pointer-events-none flex z-[9999] js-template-grid">
     {% for i in 0..15 %}
-        <div class="col-span-1 bg-black"></div>
+        <div class="col-span-1 h-screen bg-black{% if i >= 8 %}hidden md:block{% endif %}"></div>
     {% endfor %} 
 </div>

@@ -3,7 +3,7 @@ import { evt, utils, store } from '../core'
 import lerp from '@14islands/lerp'
 
 const { qs, qsa, rect } = utils
-const { dom, features, bounds } = store
+const { dom, features, bounds, device } = store
 
 export default function Carousel(element, options = {}) {
     const sliderAttribute = element.section.getAttribute('data-slider') || 'normal'
@@ -162,8 +162,8 @@ export default function Carousel(element, options = {}) {
 
             if (config.sliderType === 'fake') {
                 animate(item.el, {
-                    maxWidth: '41rem',
-                    minWidth: '41rem',
+                    maxWidth: device.isSmall ? '100%' : '41rem',
+                    minWidth: device.isSmall ? '100%' : '41rem',
                 }, { 
                     duration: 0.35,
                 })
@@ -176,8 +176,8 @@ export default function Carousel(element, options = {}) {
             
             if (config.sliderType === 'fake') {
                 animate(activeSlide, {
-                    maxWidth: '67rem',
-                    minWidth: '67rem',
+                    maxWidth: device.isSmall ? '100%' : '67rem',
+                    minWidth: device.isSmall ? '100%' : '67rem',
                 }, {
                     duration: 0.35,
                 })

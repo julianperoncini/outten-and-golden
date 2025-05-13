@@ -1,28 +1,49 @@
 <section class="relative bg-white">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-    <div class="site-max py-160">
+    <div class="site-max py-80 s:py-160">
         <div class="site-grid space-y-[9.5rem]">
             <div class="col-span-full">
                 <div class="site-grid items-end">
-                    <div class="col-span-4 space-y-40">
+                    <div class="col-start-1 col-span-full s:col-span-4 space-y-32 s:space-y-40 pb-65 s:pb-0">
+
                         <div class="relative">
-                            <h2 class="font-sans text-grey text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
+                            <h2 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
                         </div>
 
                         <div class="relative">
                             <h3 class="font-sans text-green text-40 font-normal leading-[1.16] tracking-[-0.04rem]">{{ item.title }}</h3>
                         </div>
+
+                        <div class="relative block s:hidden">
+                            <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                                <span class="inline-flex">
+                                    See all
+                                </span>
+                                <span class="inline-flex">
+                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_5001_23171)">
+                                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="#7A7871" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_5001_23171">
+                                                <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="col-start-6 col-span-7 flex items-center justify-center flex-wrap text-green">
-                        <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">Blogs</button>
-                        <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">Whistleblower Blog</button>
-                        <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">News</button>
-                        <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">Events</button>
+                    <div class="s:col-start-6 col-span-full s:col-span-7 flex items-start s:items-center justify-start s:justify-center flex-nowrap s:flex-wrap text-green">
+                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">Blogs</button>
+                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">Whistleblower Blog</button>
+                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">News</button>
+                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by all">Events</button>
                     </div>
 
-                    <div class="col-start-15 col-span-2 flex justify-end">
+                    <div class="col-start-15 col-span-2 hidden s:flex justify-end">
                         <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
                             <span class="inline-flex">
                                 See all
@@ -82,27 +103,30 @@
                                     <div class="relative flex items-end justify-between w-full">
                                         <div class="relative">
                                             {% if loop.index == 1 %}
-                                                <h4 class="font-sans max-w-[35rem] text-32 font-normal leading-[1.04] tracking-[-0.032rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
+                                                <h4 class="font-sans max-w-[35rem] text-24 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
                                             {% elseif loop.index == 2 %}
                                                 <h4 class="font-sans max-w-[90%] text-20 font-normal leading-[1.04] tracking-[-0.02rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
                                             {% elseif loop.index == 3 %}
-                                                <h4 class="font-sans max-w-[90%] text-20 font-normal leading-[1.04] tracking-[-0.02rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
+                                                <h4 class="font-sans max-w-[90%] text-24 s:text-20 font-normal leading-[1.04] tracking-[-0.02rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
                                             {% else %}
-                                                <h4 class="font-sans max-w-[35rem] text-32 font-normal leading-[1.04] tracking-[-0.032rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
+                                                <h4 class="font-sans max-w-[35rem] text-20 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem]">Mastercard agrees to settle pay discrimination lawsuit</h4>
                                             {% endif %}
                                         </div>
                                         
                                         <div class="relative top-15 left-25">
                                         {% if loop.index == 1 or loop.index == 4 %}
                                             <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
-                                                <span class="inline-flex">
+                                                <span class="hidden s:inline-flex">
                                                     See more
                                                 </span>
-                                                <span class="inline-flex">
+                                                <span class="hidden s:inline-flex">
                                                     <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                                                     </svg>
                                                 </span>
+                                                <svg class="block s:hidden w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
                                             </a>
                                             {% else %}
                                                 <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
