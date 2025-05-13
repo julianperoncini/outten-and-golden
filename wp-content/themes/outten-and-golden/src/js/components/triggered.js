@@ -37,24 +37,32 @@ const homeTriggered = (el) => {
     [screen, {
       top: ['calc(100% + 0rem)', 'calc(0% + 8rem)'],
       clipPath: ['inset(0% 20% 20% 20% round 6.4rem)', 'inset(15% 15% 15% 15% round 3.2rem)'],
+    }, {
+      duration: 0.5,
+      ease: 'linear'
     }],
     [text, {
       transform: ['none', 'translateY(-25%)'],
       opacity: [1, 0],
     }, {
+      duration: 0.5,
+      ease: 'linear',
       at: '<'
     }],
     [screen, {
-      clipPath: ['inset(15% 15% 15% 15% round 3.2rem)', 'inset(10% 10% 10% 10% round 3.2rem)'],
-    }],
-    [screen, {
-      clipPath: ['inset(10% 10% 10% 10% round 3.2rem)', 'inset(0% 0% 0% 0% round 0rem)'],
+      clipPath: ['inset(15% 15% 15% 15% round 3.2rem)', 'inset(0% 0% 0% 0% round 0rem)'],
+    }, {
+      duration: 0.5,
+      ease: 'linear'
     }],
   ];
 
   const timeline2 = [
     [content, {
       transform: ['translateY(-5%) scale(0.9)', 'translateY(0) scale(1)'],
+    }, {
+      duration: 0.5,
+      ease: 'linear'
     }],
   ];
   
