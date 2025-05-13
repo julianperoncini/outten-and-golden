@@ -26,7 +26,12 @@
                 </div>
 
                 <div class="relative">
-                    <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-yellow py-15 px-25 bg-black uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                    <a 
+                        class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 bg-black uppercase" 
+                        href="{{ item.link.url }}" 
+                        target="{{ item.link.target }}"
+                        style="color: {{ item.background_color }};"
+                    >
                         <span class="inline-flex">
                             {{ item.link.title }}
                         </span>
