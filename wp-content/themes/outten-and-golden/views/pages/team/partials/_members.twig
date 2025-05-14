@@ -1,21 +1,33 @@
 {% set team_members = props.team_members %}
 
 <section class="relative">
-    <div class="site-max py-120">
-        <div class="site-grid space-y-80">
+    <div class="site-max s:pt-120 pb-80 s:pb-120">
+        <div class="site-grid space-y-60 s:space-y-80">
             <div class="relative col-start-1 col-span-full z-2">
                 <div class="site-grid">
-                    <div class="col-start-1 col-span-10 flex flex-wrap items-center text-green">
-                        <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">All</button>
+                    <div class="relative order-2 s:order-none col-start-1 col-span-full s:col-span-10">
+                        <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex flex-nowrap s:flex-wrap items-center text-green">
+                            <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">All</button>
 
-                        {% for category in all_categories %}
-                            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}">
-                                {{ category.name }}
+                            {% for category in all_categories %}
+                                <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}">
+                                    {{ category.name }}
+                                </button>
+                            {% endfor %}
+                        </div>
+
+                        <div class="newsroom-gradient select-none pointer-events-none absolute top-0 -right-20 w-[15rem] h-full block s:hidden"></div>
+
+                        <div class="absolute top-1/2 -translate-y-1/2 -right-10 block s:hidden select-none pointer-events-none">
+                            <button class="relative pointer-events-auto flex items-center justify-center bg-white-smoke p-8 rounded-[0.4rem]" type="button" aria-label="Button to scroll the filters">
+                                <svg class="w-[0.7rem] h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.57813 1L6.07813 5.5L1.57812 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </button>
-                        {% endfor %}
+                        </div>
                     </div>
 
-                    <div class="relative col-start-14 col-span-3 flex justify-end">
+                    <div class="relative order-1 s:order-none s:col-start-14 col-span-full s:col-span-3 flex justify-center s:justify-end pb-80">
                         <div class="relative w-fit">
                             <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center space-x-12 border-[0.1rem] border-solid border-grey-taupe">
                                 <span class="inline-flex">Select a location</span>
@@ -41,9 +53,9 @@
             </div>
 
             <div class="relative col-start-1 col-span-full z-1">
-                <ul class="team-members-list grid grid-cols-6 s:gap-x-24 gap-y-[6.4rem]">
+                <ul class="team-members-list grid grid-cols-8 s:grid-cols-6 s:gap-x-24 gap-y-32 s:gap-y-[6.4rem]">
                     {% for member in team_members %}
-                        <li class="team-members-item relative w-full col-span-6 s:col-span-3 l:col-span-2">
+                        <li class="team-members-item relative w-full col-span-full s:col-span-3 l:col-span-2">
                             <div class="team-member w-full flex flex-col gap-y-32">
                                 {% if member.featured_image %}
                                     <figure class="relative w-full h-full">
@@ -56,6 +68,7 @@
                                                     container_class: 'w-full overflow-hidden',
                                                     class : 'w-full h-full object-cover',
                                                     aspect_ratio: '112%',
+                                                    aspect_ratio_mobile: '113%',
                                                 }
                                             }
                                         } %}
