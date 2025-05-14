@@ -23,8 +23,8 @@
     {# <pre>{{ options|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
     <div class="border-t border-grey-taupe border-b">
         <div class="site-max">
-            <div class="relative site-grid site-max gap-y-25 py-65 !px-30 items-center">
-                <div class="col-span-16 s:col-span-4 gap-y-24 flex flex-col text-center s:text-left">
+            <div class="relative site-grid site-max gap-y-25 py-35 s:py-65 !px-30 items-center">
+                <div class="col-span-full s:col-span-4 gap-y-24 flex flex-col text-center s:text-left">
                     <a class="w-[19.6rem] flex items-center justify-center s:justify-start mx-auto s:mx-0" href="/">
                         <svg class="w-135 fill-green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135.98 16.58">
                             <path d="M71.88,7.06l-1.45.59c.58.77.97,1.67.97,2.81,0,2.53-2.05,4.59-4.58,4.59s-4.58-2.06-4.58-4.59c0-1.53.9-2.68,2.3-3.98l1.28,1.12c-1.02.93-1.6,1.86-1.6,2.96,0,1.44,1.17,2.6,2.6,2.6s2.6-1.17,2.6-2.6c0-1.25-.78-2.26-1.46-2.91,1.1-1.03,2.73-2.58,2.73-4.94,0-.68-.11-1.33-.32-1.94h-1.65c.28.59.43,1.25.43,1.94,0,1.53-.9,2.68-2.3,3.98l-1.28-1.12c1.02-.93,1.6-1.86,1.6-2.96,0-1.44-1.17-2.6-2.6-2.6s-2.6,1.17-2.6,2.6c0,1.25.78,2.26,1.46,2.91-1.1,1.03-2.73,2.58-2.73,4.94,0,3.38,2.74,6.12,6.11,6.12s6.11-2.75,6.11-6.12c0-1.4-.45-2.51-1.04-3.4h0ZM66.82,8.47c.4.36,1.25,1.24,1.25,2.19,0,.69-.56,1.26-1.25,1.26s-1.25-.56-1.25-1.26c0-.95.85-1.83,1.25-2.19ZM63.32,2.51c0-.69.56-1.26,1.25-1.26s1.25.56,1.25,1.26c0,.95-.85,1.83-1.25,2.19-.4-.36-1.25-1.24-1.25-2.19Z"></path>
@@ -47,7 +47,7 @@
                     <p class="text-green text-16 font-normal leading-[1.32]">{{ options.book_a_call.description }}</p>
                 </div>
 
-                <div class="col-span-16 s:col-start-14 s:col-span-3 flex items-center s:justify-end">
+                <div class="col-span-full s:col-start-14 s:col-span-3 flex items-center s:justify-end">
                     <a 
                         class="relative mx-auto s:mx-0 w-fit h-48 font-medium text-green py-12 px-16 l:-ml-2 flex items-center border rounded-[0.4rem] text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe bg-white" 
                         href="{{ options.book_a_call.link.url }}"
@@ -99,11 +99,11 @@
     <div class="relative py-30 s:py-20 border-t border-grey-taupe">
         <div class="site-max">
             <div class="site-grid gap-y-30 s:px-30 items-center text-center s:text-left">
-                <div class="col-span-16 s:col-span-3 order-2 s:order-1">
+                <div class="col-span-full s:col-span-3 order-2 s:order-1">
                     <p class="text-12 font-normal leading-none text-center s:text-left">© {{ "now"|date("Y") }} Outten & Golden LLP</p>
                 </div>
 
-                <div class="col-span-16 s:col-start-6 s:col-span-11 order-1 s:order-2">
+                <div class="col-span-full s:col-start-6 s:col-span-11 order-1 s:order-2">
                     <ul class="relative s:flex flex-row items-center justify-center s:justify-end text-green gap-x-30">
                         {% for item in footer_menu_6.items %}
                             <li class="inline-block px-10 s:px-0">

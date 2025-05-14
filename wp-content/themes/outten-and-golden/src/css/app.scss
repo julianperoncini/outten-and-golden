@@ -256,8 +256,13 @@ header {
 }
 
 .js-sop-bar-wrap.is-active {
-	@apply h-[8rem];
-	transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	width: 75%;
+	transition: width 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+	@screen s {
+		height: 8rem;
+		transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
 }
 
 
