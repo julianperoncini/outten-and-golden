@@ -1,12 +1,12 @@
-<section class="relative h-screen sticky top-80 {{ item.background_color ? 'bg-' ~ item.background_color|lower : 'bg-yellow' }}">
+<section class="relative s:h-screen s:sticky s:top-80 {{ item.background_color ? 'bg-' ~ item.background_color|lower : 'bg-yellow' }}">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
     <div class="site-max site-grid h-full">
         
-            <div class="col-start-1 col-span-5 py-65 pl-32 flex flex-col items-start justify-between h-[calc(100vh-8rem)]">
+            <div class="order-2 s:order-none col-start-1 col-span-full s:col-span-5 py-32 s:py-65 s:pl-32 flex flex-col items-start justify-between s:h-[calc(100vh-8rem)]">
                 <div class="relative flex flex-col mb-20 space-y-40">
                     <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
-                    <h2 class="text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h2>
+                    <h2 class="text-32 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h2>
                 </div>
                 
                 <div class="relative space-y-40">
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="col-start-7 col-span-10 -mx-32">
+            <div class="order-1 s:order-none col-start-1 col-span-full s:col-start-7 s:col-span-10 -mx-32">
                 <figure class="relative w-full h-full">
                     {% include "blocks/common/image.twig" with {
                         props : {
@@ -47,7 +47,8 @@
                                 container_class: 'w-full h-full overflow-hidden',
                                 class : 'w-full h-full object-cover',
                                 size: 'full',
-                                lazy: true
+                                lazy: true,
+                                aspect_ratio_mobile: '101%',
                             }
                         }
                     } %}

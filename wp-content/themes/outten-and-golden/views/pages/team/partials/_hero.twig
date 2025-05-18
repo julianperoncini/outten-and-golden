@@ -1,14 +1,14 @@
 {% set hero = props.hero %}
 
 <section class="relative">
-    <div class="site-max pt-[28rem] pb-160">
+    <div class="site-max pt-65 s:pt-[28rem] pb-32 s:pb-160">
         <div class="site-grid">
-            <div class="s:col-start-3 col-span-12">
-                <div class="relative w-full flex flex-col items-center justify-center space-y-40">
-                    <h2 class="text-green text-center text-[12.0rem] font-normal leading-[0.88] tracking-[-0.24rem]">
+            <div class="s:col-start-3 col-span-full s:col-span-12">
+                <div class="relative w-full flex flex-col items-center justify-center space-y-32 s:space-y-40">
+                    <h2 class="text-green text-center text-56 s:text-[12.0rem] font-normal leading-[0.88] tracking-[-0.24rem]">
                         {{ hero.title }}
                     </h2>
-                    <div class="max-w-[40rem] text-green text-center text-16 font-normal leading-[1.32]">
+                    <div class="s:max-w-[40rem] text-green text-center text-16 font-normal leading-[1.32] px-12 s:px-0">
                         {{ hero.description }}
                     </div>
                 </div>
