@@ -931,12 +931,67 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_68233be9b00f3": {
-                    "key": "layout_68233be9b00f3",
-                    "name": "layout_grid_posts",
-                    "label": "Layout Grid Posts",
+                "layout_682e5c454be69": {
+                    "key": "layout_682e5c454be69",
+                    "name": "layout_cols_text",
+                    "label": "Layout Cols Text",
                     "display": "block",
-                    "sub_fields": [],
+                    "sub_fields": [
+                        {
+                            "key": "field_682e5c514be6c",
+                            "label": "Layout Cols Text",
+                            "name": "layout_cols_text",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_682e5be3709ad"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_682e65c95b5b8": {
+                    "key": "layout_682e65c95b5b8",
+                    "name": "layout_latest_testimonials",
+                    "label": "Layout Latest Testimonials",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_682e65d85b5bb",
+                            "label": "Layout Latest Testimonials",
+                            "name": "layout_latest_testimonials",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_682e63b628a7c"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
                     "min": "",
                     "max": ""
                 }
@@ -964,5 +1019,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1747139575
+    "modified": 1747871218
 }
