@@ -3,7 +3,9 @@
 namespace YahnisElsts\AdminMenuEditor\Customizable\Controls;
 
 use YahnisElsts\AdminMenuEditor\Customizable\HtmlHelper;
+use YahnisElsts\AdminMenuEditor\Customizable\Schemas\Enum;
 use YahnisElsts\AdminMenuEditor\Customizable\Settings\Setting;
+use YahnisElsts\AdminMenuEditor\Customizable\Settings;
 
 class ChoiceControlOption {
 	public $value;
@@ -59,10 +61,10 @@ class ChoiceControlOption {
 	/**
 	 * @param ChoiceControlOption[] $options
 	 * @param mixed $selectedValue
-	 * @param Setting $setting
+	 * @param Settings\AbstractSetting $setting
 	 * @return array
 	 */
-	public static function generateSelectOptions($options, $selectedValue, Setting $setting) {
+	public static function generateSelectOptions($options, $selectedValue, Settings\AbstractSetting $setting) {
 		$htmlLines = [];
 
 		foreach ($options as $option) {
@@ -103,5 +105,81 @@ class ChoiceControlOption {
 			'optionsText'  => 'label',
 			'optionsValue' => 'value',
 		];
+	}
+
+	/**
+	 * Try to generate a list of options from the given setting.
+	 *
+	 * Returns an empty array if the setting is not a valid source of options.
+	 *
+	 * @param Settings\AbstractSetting|null $setting
+	 * @return ChoiceControlOption[]
+	 */
+	public static function tryGenerateFromSetting($setting) {
+		if ( $setting instanceof Settings\EnumSetting ) {
+			return static::fromEnumSetting($setting);
+		} elseif ( $setting instanceof Settings\WithSchema\SettingWithSchema ) {
+			$schema = $setting->getSchema();
+			if ( $schema instanceof Enum ) {
+				return static::fromEnumSchema($schema);
+			}
+		}
+		return [];
+	}
+
+	/**
+	 * @param Settings\EnumSetting $setting
+	 * @return ChoiceControlOption[]
+	 */
+	public static function fromEnumSetting(Settings\EnumSetting $setting) {
+		$results = array();
+
+		foreach ($setting->getEnumValues() as $value) {
+			$results[] = static::createFromValue(
+				$value,
+				$setting->getChoiceDetails($value),
+				$setting->isChoiceEnabled($value)
+			);
+		}
+
+		return $results;
+	}
+
+	public static function fromEnumSchema(Enum $schema) {
+		$results = array();
+
+		foreach ($schema->getEnumValues() as $value) {
+			$results[] = static::createFromValue(
+				$value,
+				$schema->getValueDetails($value),
+				$schema->isValueEnabled($value)
+			);
+		}
+
+		return $results;
+	}
+
+	protected static function createFromValue($value, $details, $enabled = true) {
+		if ( !empty($details) ) {
+			return new ChoiceControlOption(
+				$value,
+				$details['label'],
+				array(
+					'description' => $details['description'],
+					'enabled'     => $enabled,
+					'icon'        => $details['icon'],
+				)
+			);
+		} else {
+			if ( $value === null ) {
+				$label = 'Default';
+			} else {
+				$label = is_string($value) ? $value : wp_json_encode($value);
+				$label = ucwords(preg_replace('/[_-]+/', ' ', $label));
+			}
+			return new ChoiceControlOption($value, $label, array(
+				'enabled' => $enabled,
+			));
+		}
 	}
 }

@@ -377,7 +377,7 @@ namespace AmeRedirectorUi {
 						return this.redirect.urlTemplate();
 					}
 				},
-				write: (value: string) => {
+				write: (value: string): void => {
 					const menu = this.menuItems.findSelectedMenu(this.redirect);
 					if (menu !== null) {
 						//Can't manually edit the URL because a menu item is selected.

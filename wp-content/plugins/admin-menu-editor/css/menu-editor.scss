@@ -3,6 +3,8 @@
 @import "boxes";
 @import "input-group";
 @import "forms";
+@import "ui-constants";
+@import "sticky-top-bar";
 
 #ws_menu_editor {
 	min-width: 780px;
@@ -104,7 +106,7 @@ $mainContainerBorderColor: $amePostboxBorderColor; //Was #cdd5d5 before WP 5.3.
 }
 
 #ws_actor_selector {
-	margin-top: 6px;
+	margin-top: $defaultActorSelectorTopMargin;
 }
 
 /**
