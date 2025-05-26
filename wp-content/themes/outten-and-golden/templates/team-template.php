@@ -10,7 +10,7 @@ $context['hero'] = get_field('hero', $context['post']->ID) ?? [];
 $context['content_builder'] = get_fields($context['post']->ID)['content_builder'] ?? null;
 
 $args = array(
-    'post_type' => 'team-member',
+    'post_type' => 'attorney',
     'posts_per_page' => -1,
     'orderby' => 'menu_order',
     'order' => 'ASC'

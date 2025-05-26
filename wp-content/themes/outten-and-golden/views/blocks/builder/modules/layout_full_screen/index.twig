@@ -2,7 +2,7 @@
 {% set isLight = item.background_color and (item.background_color|lower == 'green' or item.background_color|lower == 'yellow') %}
 {% set textClass = isLightBg ? 'text-white-smoke' : '' %}
 
-<section class="relative bg-white">
+<section class="relative bg-white mb-60 s:mb-120">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
     <div class="site-grid relative s:left-[50%] s:ml-[-18.75rem]">

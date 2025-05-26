@@ -1,28 +1,7 @@
 {
     "key": "group_68159e71b0511",
-    "title": "Layout - Title and Text Summary",
+    "title": "Layout - Post Content",
     "fields": [
-        {
-            "key": "field_68159e71a9914",
-            "label": "Title",
-            "name": "title",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "",
-            "required": 1,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "allow_in_bindings": 0,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
         {
             "key": "field_68159e8fa9915",
             "label": "Description",
@@ -63,5 +42,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746247345
+    "modified": 1748016751
 }

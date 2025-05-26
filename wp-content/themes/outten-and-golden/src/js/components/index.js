@@ -6,6 +6,7 @@ import split from './split'
 import triggered from './triggered'
 import slider from './slider'
 import sliderOffice from './slider-office'
+import sliderTeamMembers from './slider-team'
 import lazy from './lazy'
 import listGrid from './listGrid'
 
@@ -14,5 +15,6 @@ export {
     slider,
     triggered,
     sliderOffice,
+    sliderTeamMembers,
     listGrid
 }

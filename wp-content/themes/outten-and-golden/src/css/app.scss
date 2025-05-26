@@ -9,6 +9,7 @@ Imports - Must be first!
 @use 'draggable';
 @use 'form';
 @use 'grid-layout';
+@use 'post-wyswyg';
 
 /* ==========================
 	Tailwind
@@ -79,6 +80,16 @@ body {
 main {
 	@apply relative;
 	@apply w-full;
+}
+
+input {
+	outline: none;
+	background-color: transparent;
+}
+
+textarea {
+	outline: none;
+	background-color: transparent;
 }
 
 .bg-light {
