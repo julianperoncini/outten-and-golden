@@ -1,0 +1,34 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view class="page-issue">
+		<div class="app">
+			{# <pre>{{ post|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+			{# Hero #}
+			{% include 'pages/issues/partials/_hero.twig' with {
+				props: {
+					post: post
+				}
+			} %}
+
+			{# WYSIWYG and Sticky Right Card #}
+			{% include 'pages/issues/partials/_content.twig' with {
+				props: {
+					item: post.content_post
+				}
+			} %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: post.content_builder
+					}
+				}
+			} %}
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}

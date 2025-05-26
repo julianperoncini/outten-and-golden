@@ -1,0 +1,13 @@
+{% if post.feature_content.my_story %}
+    <div class="relative">
+        <div class="relative flex items-start justify-between bg-white-smoke p-32">
+            <div class="relative space-y-40">
+                <div class="relative">
+                    <h2 class="text-black font-normal text-40 leading-[1.15] tracking-[-1%]">Notable <em class="font-disp font-normal italic">Cases</em></h2>
+                </div>
+
+                <div class="notable-cases-wyswyg">{{ post.feature_content.notable_cases }}</div>
+            </div>
+        </div>
+    </div>
+{% endif %}

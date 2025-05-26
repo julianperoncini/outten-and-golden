@@ -1,0 +1,49 @@
+<section class="relative bg-white">
+    {# <pre>{{ post.feature_content|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    
+    <div class="relative space-y-[12rem] s:space-y-[24rem] pt-60 s:pt-120">
+        {# My Story and Values #}
+        <div class="site-max site-grid">
+            {% include 'pages/team/partials/single/content/_my-story.twig' with {
+                props: {
+                    post: post
+                }
+            } %}
+
+            {% include 'pages/team/partials/single/content/_values.twig' with {
+                props: {
+                    post: post
+                }
+            } %}
+        </div>
+
+        {# Legal Practice, Credentials, Notable Cases and Form #}
+        <div class="site-max site-grid">
+            {% include 'pages/team/partials/single/content/_legal-practice.twig' with {
+                props: {
+                    post: post
+                }
+            } %}
+
+            <div class="relative col-start-10 col-span-7 space-y-32">
+                {% include 'pages/team/partials/single/content/_credentials.twig' with {
+                    props: {
+                        post: post
+                    }
+                } %}
+
+                {% include 'pages/team/partials/single/content/_notable-cases.twig' with {
+                    props: {
+                        post: post
+                    }
+                } %}
+
+                {% include 'pages/team/partials/single/content/_form.twig' with {
+                    props: {
+                        post: post
+                    }
+                } %}
+            </div>
+        </div>
+    </div>
+</section>

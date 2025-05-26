@@ -1,0 +1,29 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view class="page-issue">
+		<div class="app">
+			{# <pre>{{ post|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+			{# Hero #}
+			{% include 'pages/team/partials/single/_hero.twig' %}
+
+			{# General Content #}
+			{% include 'pages/team/partials/single/_content.twig' %}
+
+			{# All Members Slider #}
+			{% include 'pages/team/partials/single/_members-slider.twig' %}
+
+			{# Content Builder #}
+			{# {% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: post.content_builder
+					}
+				}
+			} %} #}
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}

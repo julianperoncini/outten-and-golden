@@ -1,0 +1,62 @@
+{
+  "name": "mindkomm/timmy",
+  "type": "library",
+  "description": "Advanced image manipulation for Timber.",
+  "license": "MIT",
+  "require": {
+    "composer/installers": "^1.0 || ^2.0",
+    "php": "^7.4 || ^8.0",
+    "timber/timber": "^2.0"
+  },
+  "require-dev": {
+    "wpackagist-plugin/advanced-custom-fields": "5.*",
+    "yoast/wp-test-utils": "^1.0",
+    "szepeviktor/phpstan-wordpress": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Timmy\\": "lib/"
+    },
+    "files": [
+      "functions-images.php"
+    ]
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/"
+    ]
+  },
+  "keywords": [
+    "timber",
+    "timmy",
+    "wordpress",
+    "images",
+    "responsive"
+  ],
+  "authors": [
+    {
+      "name": "Lukas Gaechter",
+      "email": "lukas.gaechter@mind.ch",
+      "homepage": "https://www.mind.ch"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/mindkomm/timmy/issues",
+    "source": "https://github.com/mindkomm/timmy"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
+  "scripts": {
+    "install-tests": "bash bin/install-wp-tests.sh timmy-tests root \"\" localhost latest",
+    "test:no-cov": "phpunit --no-coverage"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  }
+}

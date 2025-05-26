@@ -1,0 +1,92 @@
+<section class="relative bg-white py-160">
+    {# <pre>{{ team_members_slider|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    <div class="site-max">
+        <div class="flex cursor-grab js-slider-team" data-component="sliderTeamMembers(js-slider-members)">
+            {% for member in team_members_slider %}
+                <article data-member="true" class="member-item h-[50rem] relative max-w-[29rem] s:max-w-[43.3rem] min-w-[29rem] s:min-w-[43.3rem] mr-24 js-member-item">
+                    <div class="team-member w-full flex flex-col gap-y-32">
+                        {% if member.featured_image %}
+                            <figure class="relative w-full h-full">
+                                {% include "blocks/common/image.twig" with {
+                                    props : {
+                                        data: {
+                                            image : member.featured_image.image
+                                        },
+                                        options: {
+                                            container_class: 'w-full overflow-hidden',
+                                            class : 'w-full h-full object-cover',
+                                            aspect_ratio: '112%',
+                                            aspect_ratio_mobile: '113%',
+                                        }
+                                    }
+                                } %}
+
+                                <div class="team-member-contact absolute bottom-0 left-0 flex items-center space-x-[0.1rem] z-2">
+                                    {% if member.contact_info.phone %}
+                                        <a 
+                                            class="relative py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                            href="{{ member.contact_info.phone }}" 
+                                            target="_blank"
+                                            aria-label="Phone of {{ member.title }}"
+                                        >
+                                            <span class="inline-flex">
+                                                <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4.66917 11.8628H6.11754M3.03975 1H7.74696C8.94684 1 9.91953 1.97269 9.91953 3.17256V12.2249C9.91953 13.4248 8.94684 14.3975 7.74696 14.3975H3.03975C1.83988 14.3975 0.867188 13.4248 0.867188 12.2249V3.17256C0.867188 1.97269 1.83988 1 3.03975 1Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </span>
+
+                                            <span class="inline-flex">{{ member.contact_info.phone }}</span>
+                                        </a>
+                                    {% endif %}
+
+                                    {% if member.contact_info.email %}
+                                        <a 
+                                            class="relative py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                            href="mailto:{{ member.contact_info.email }}" 
+                                            target="_blank"
+                                            aria-label="Email of {{ member.title }}">
+                                            <span class="inline-flex">
+                                                <svg class="w-auto h-[1.6rem]" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1.27164 3.42971C0.960193 3.25119 0.562992 3.35894 0.384467 3.67039C0.205941 3.98183 0.313696 4.37903 0.625142 4.55756L1.27164 3.42971ZM5.36874 6.52744L5.69497 5.96522L5.69199 5.96351L5.36874 6.52744ZM6.58809 6.85559V7.50559V6.85559ZM7.80744 6.52744L7.48486 5.96311L7.48121 5.96523L7.80744 6.52744ZM12.5626 4.55795C12.8743 4.37979 12.9825 3.98272 12.8044 3.67106C12.6262 3.3594 12.2291 3.25117 11.9175 3.42933L12.5626 4.55795ZM3.3736 2.13437H9.81546V0.834375H3.3736V2.13437ZM9.81546 2.13437C10.8118 2.13437 11.6195 2.94207 11.6195 3.93842H12.9195C12.9195 2.2241 11.5298 0.834375 9.81546 0.834375V2.13437ZM11.6195 3.93842V9.46002H12.9195V3.93842H11.6195ZM11.6195 9.46002C11.6195 10.4564 10.8118 11.2641 9.81546 11.2641V12.5641C11.5298 12.5641 12.9195 11.1743 12.9195 9.46002H11.6195ZM9.81546 11.2641H3.3736V12.5641H9.81546V11.2641ZM3.3736 11.2641C2.37725 11.2641 1.56956 10.4564 1.56956 9.46002H0.269556C0.269556 11.1743 1.65928 12.5641 3.3736 12.5641V11.2641ZM1.56956 9.46002V3.93842H0.269556V9.46002H1.56956ZM1.56956 3.93842C1.56956 2.94207 2.37725 2.13437 3.3736 2.13437V0.834375C1.65928 0.834375 0.269556 2.2241 0.269556 3.93842H1.56956ZM0.625142 4.55756L5.04549 7.09136L5.69199 5.96351L1.27164 3.42971L0.625142 4.55756ZM5.04251 7.08964C5.51203 7.36209 6.04524 7.50559 6.58809 7.50559V6.20559C6.2744 6.20559 5.96629 6.12267 5.69497 5.96523L5.04251 7.08964ZM6.58809 7.50559C7.13094 7.50559 7.66415 7.36209 8.13368 7.08964L7.48121 5.96523C7.20989 6.12267 6.90178 6.20559 6.58809 6.20559V7.50559ZM8.13002 7.09175L12.5626 4.55795L11.9175 3.42933L7.48487 5.96313L8.13002 7.09175Z" fill="currentColor"/>
+                                                </svg>
+                                                </span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </figure>
+                        {% endif %}
+
+                        <div class="relative w-full space-y-24">
+                            <div class="relative w-full flex items-center justify-between">
+                                <div class="relative font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+                                    <p>{{ member.category }}</p>
+                                </div>
+
+                                <div class="relative font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+                                    <p>{{ member.location }}</p>
+                                </div>
+                            </div>
+
+                            <div class="relative w-full">
+                                <a 
+                                    class="relative w-full flex items-center justify-between font-disp text-green text-23 font-normal leading-[1.04] -tracking-[0.024rem]" 
+                                    href="{{ member.contact_info.linkedin }}"
+                                    target="_blank"
+                                    aria-label="{{ member.title }}"
+                                >
+                                    <span class="inline-flex">{{ member.title }}</span>
+                                    <span class="inline-flex">
+                                        <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0.867188 1L5.36719 5.5L0.867188 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,199 @@
+{% if post.feature_content.contact_form.hide == false %}
+    <div class="relative w-full">
+        <div class="relative w-full flex flex-col items-start space-y-32 bg-white-smoke p-32">
+            <div class="relative w-full space-y-32">
+                <div class="relative flex w-full items-start justify-between">
+                    <div class="relative">
+                        <div class="relative space-y-[2.4rem]">
+                            <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">Contact {{ post.feature_content.first_name }}</p>
+                            <h2 class="text-black font-normal text-40 leading-[1.15] tracking-[-1%]">Need legal <em class="font-disp font-normal italic">advice</em>?</h2>
+                        </div>
+                    </div>
+
+                    {% if post.feature_media.image %}
+                        <div class="relative w-[9.9rem] h-[11.1rem]">
+                            <figure class="relative w-full h-full">
+                                {% include "blocks/common/image.twig" with {
+                                    props : {
+                                        data: {
+                                            image : post.feature_media.image
+                                        },
+                                        options: {
+                                            container_class: 'w-full h-full overflow-hidden',
+                                            class : 'w-full h-full object-cover',
+                                        }
+                                    }
+                                } %}
+                            </figure>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="relative w-full flex items-center justify-between">
+                    <div class="relative flex gap-2 text-grey">
+                        {% if post.contact_info.phone %}
+                            <a 
+                                class="relative max-h-[3.8rem] h-full bg-grey-taupe py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                href="{{ post.contact_info.phone }}" 
+                                target="_blank"
+                                aria-label="Phone of {{ post.post_title }}"
+                            >
+                                <span class="inline-flex">
+                                    <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.66917 11.8628H6.11754M3.03975 1H7.74696C8.94684 1 9.91953 1.97269 9.91953 3.17256V12.2249C9.91953 13.4248 8.94684 14.3975 7.74696 14.3975H3.03975C1.83988 14.3975 0.867188 13.4248 0.867188 12.2249V3.17256C0.867188 1.97269 1.83988 1 3.03975 1Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+
+                                <span class="inline-flex">{{ post.contact_info.phone }}</span>
+                            </a>
+                        {% endif %}
+
+                        {% if post.contact_info.email %}
+                            <a 
+                                class="relative max-h-[3.8rem] h-full bg-grey-taupe py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                href="mailto:{{ post.contact_info.email }}" 
+                                target="_blank"
+                                aria-label="Email of {{ post.post_title }}">
+                                <span class="inline-flex">
+                                    <svg class="w-auto h-[1.6rem]" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.27164 3.42971C0.960193 3.25119 0.562992 3.35894 0.384467 3.67039C0.205941 3.98183 0.313696 4.37903 0.625142 4.55756L1.27164 3.42971ZM5.36874 6.52744L5.69497 5.96522L5.69199 5.96351L5.36874 6.52744ZM6.58809 6.85559V7.50559V6.85559ZM7.80744 6.52744L7.48486 5.96311L7.48121 5.96523L7.80744 6.52744ZM12.5626 4.55795C12.8743 4.37979 12.9825 3.98272 12.8044 3.67106C12.6262 3.3594 12.2291 3.25117 11.9175 3.42933L12.5626 4.55795ZM3.3736 2.13437H9.81546V0.834375H3.3736V2.13437ZM9.81546 2.13437C10.8118 2.13437 11.6195 2.94207 11.6195 3.93842H12.9195C12.9195 2.2241 11.5298 0.834375 9.81546 0.834375V2.13437ZM11.6195 3.93842V9.46002H12.9195V3.93842H11.6195ZM11.6195 9.46002C11.6195 10.4564 10.8118 11.2641 9.81546 11.2641V12.5641C11.5298 12.5641 12.9195 11.1743 12.9195 9.46002H11.6195ZM9.81546 11.2641H3.3736V12.5641H9.81546V11.2641ZM3.3736 11.2641C2.37725 11.2641 1.56956 10.4564 1.56956 9.46002H0.269556C0.269556 11.1743 1.65928 12.5641 3.3736 12.5641V11.2641ZM1.56956 9.46002V3.93842H0.269556V9.46002H1.56956ZM1.56956 3.93842C1.56956 2.94207 2.37725 2.13437 3.3736 2.13437V0.834375C1.65928 0.834375 0.269556 2.2241 0.269556 3.93842H1.56956ZM0.625142 4.55756L5.04549 7.09136L5.69199 5.96351L1.27164 3.42971L0.625142 4.55756ZM5.04251 7.08964C5.51203 7.36209 6.04524 7.50559 6.58809 7.50559V6.20559C6.2744 6.20559 5.96629 6.12267 5.69497 5.96523L5.04251 7.08964ZM6.58809 7.50559C7.13094 7.50559 7.66415 7.36209 8.13368 7.08964L7.48121 5.96523C7.20989 6.12267 6.90178 6.20559 6.58809 6.20559V7.50559ZM8.13002 7.09175L12.5626 4.55795L11.9175 3.42933L7.48487 5.96313L8.13002 7.09175Z" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                            </a>
+                        {% endif %}
+
+                        {% if post.contact_info.linkedin %}
+                            <a href="{{ post.contact_info.linkedin }}" target="_blank" class="relative max-h-[3.8rem] h-full bg-grey-taupe py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" >
+                                <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.71142 1.55571C4.71122 1.9681 4.5472 2.36352 4.25544 2.65498C3.96369 2.94644 3.56811 3.11007 3.15572 3.10986C2.74332 3.10965 2.3479 2.94563 2.05644 2.65388C1.76498 2.36213 1.60136 1.96655 1.60156 1.55415C1.60177 1.14176 1.76579 0.746339 2.05754 0.454879C2.34929 0.163419 2.74488 -0.000206002 3.15727 1.94647e-07C3.56966 0.000206391 3.96508 0.164227 4.25654 0.455978C4.548 0.74773 4.71163 1.14331 4.71142 1.55571ZM4.75807 4.26129H1.64821V13.9951H4.75807V4.26129ZM9.67165 4.26129H6.57734V13.9951H9.64055V8.8872C9.64055 6.04168 13.3491 5.77734 13.3491 8.8872V13.9951H16.42V7.82985C16.42 3.03289 10.9311 3.21171 9.64055 5.56743L9.67165 4.26129Z" fill="currentColor"/>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="relative flex gap-2 text-grey">
+                        {% if post.contact_info.vcard %}
+                            <a 
+                                class="relative max-h-[3.8rem] h-full bg-grey-taupe py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                href="{{ post.contact_info.vcard }}" 
+                                target="_blank"
+                                aria-label="VCard of {{ post.post_title }}"
+                            >
+                                <span class="inline-flex">
+                                    <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.66917 11.8628H6.11754M3.03975 1H7.74696C8.94684 1 9.91953 1.97269 9.91953 3.17256V12.2249C9.91953 13.4248 8.94684 14.3975 7.74696 14.3975H3.03975C1.83988 14.3975 0.867188 13.4248 0.867188 12.2249V3.17256C0.867188 1.97269 1.83988 1 3.03975 1Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+
+                                <span class="inline-flex">VCARD</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative w-full flex items-start justify-between border-t border-solid border-grey-taupe pt-32">
+                <div class="relative">
+                    <p class="text-20 font-normal leading-[1.24] tracking-[-2%] font-disp"><em class="font-normal italic">Areas</em> of expertise:</p>
+                </div>
+
+                <div class="relative">
+                    <ul class="relative flex flex-col items-start space-y-10">
+                        {% for item in post.feature_content.contact_form.areas_of_expertise %}
+                            <li class="relative list-disc">
+                                <p class="font-sans font-medium text-16 leading-[1.32]">{{ item.text }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="relative w-full flex flex-col items-start border-t border-solid border-grey-taupe pt-32">
+                <div class="relative pb-50">
+                    <p class="text-20 font-normal leading-[1.24] tracking-[-2%] font-disp">Have a <em class="font-normal italic">question</em> or need <em class="font-normal italic">legal advice</em>?</p>
+                </div>
+
+                <form class="relative w-full space-y-32">
+                    <div class="relative w-full flex items-start justify-between gap-32">
+                        <div class="relative w-1/2">
+                            <label for="name" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">First Name*</label>
+                            <input type="text" id="name" name="name" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
+                        </div>
+
+                        <div class="relative w-1/2">
+                            <label for="lastname" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Last Name*</label>
+                            <input type="text" id="lastname" name="lastname" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
+                        </div>
+                    </div>
+
+                    <div class="relative w-full flex items-start justify-between gap-32">
+                        <div class="relative w-1/2">
+                            <label for="phone" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Phone Number</label>
+                            <input type="number" id="phone" name="phone" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
+                        </div>
+
+                        <div class="relative w-1/2">
+                            <label for="email" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Email*</label>
+                            <input type="email" id="email" name="email" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
+                        </div>
+                    </div>
+
+                    <div class="relative w-full flex items-start justify-between gap-32">
+                        <div class="relative w-full">
+                            <label for="company-employer" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Company / Employer</label>
+                            <input type="text" id="company-employer" name="company-employer" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
+                        </div>
+                    </div>
+
+                    <div class="relative w-full">
+                        <p class="font-normal text-12 leading-[1.4]">We take your privacy seriously. The personal information you provide to Outten & Golden is fully confidential and used expressly to assist you. For details, please view our <a class="uline-double" href="/privacy-policy">privacy policy</a>.</p>
+                    </div>
+
+                    {% if post.feature_content.contact_form.schedule %}
+                        <div class="relative">
+                            <div class="relative">
+                                <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ post.feature_content.contact_form.schedule }}" target="_blank">Schedule a callback</a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="relative w-full flex items-start justify-between gap-32 pt-12">
+                        <div class="relative w-full">
+                            <label for="message" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Please briefly tell us why you're reaching out to us today</label>
+                            <textarea name="message" id="message" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full">
+                        <div class="relative flex items-center space-x-8">
+                            {# <input 
+                                type="checkbox" 
+                                id="privacy-agreement" 
+                                class="w-16 h-16 bg-transparent border-grey-taupe border-solid border-[0.1rem] rounded-full"
+                            > #}
+                            <div class="cursor-pointer w-16 h-16 bg-transparent border-grey-taupe border-solid border-[0.1rem] rounded-full"></div>
+                            <label for="privacy-agreement" class="text-12 font-normal leading-[1.4] text-green">
+                                I agree to the 
+                                <a href="/privacy-policy" class="uline-double">
+                                    Privacy Policy
+                                </a>
+                                <span class="text-red-500">*</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" type="submit" aria-label="Submit form">
+                            <span class="inline-flex">Submit</span>
+                            <span class="inline-flex">
+                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}

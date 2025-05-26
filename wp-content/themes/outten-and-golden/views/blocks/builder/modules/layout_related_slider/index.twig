@@ -1,0 +1,140 @@
+<section class="relative {{ item.background_color ? 'bg-' ~ item.background_color|lower : 'bg-white-smoke' }} border-t border-solid border-grey-taupe overflow-hidden" data-component="slider(js-slides)">
+    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    
+    <div class="site-max site-grid pt-60 s:pt-120 pb-60 s:pb-95">
+        <div class="relative col-start-1 col-span-8 space-y-40 pb-32 s:pb-40">
+            <div class="relative">
+                <h2 class="text-grey text-center s:text-left text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
+            </div>
+            <div class="relative s:max-w-[102.6rem] mx-auto">
+                <h3 class="h3 text-center s:text-left text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h3>
+            </div>
+        </div>
+
+        <div class="relative col-start-1 col-span-full">
+            <div class="flex items-center justify-between">
+                <div class="relative hidden s:flex">
+                    <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid" type="button" data-slider-prev>
+                        <span class="inline-flex">
+                            <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button" data-slider-next>
+                        <span class="inline-flex">
+                            <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="relative flex s:block items-center justify-center w-full s:w-[inherit]">
+                    <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                        <span class="inline-flex">
+                            {{ item.link.title }}
+                        </span>
+                        <span class="inline-flex">
+                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="relative site-max site-grid select-none cursor-grab w-full pb-60 js-slides" data-slider="fake">
+        <ul class="slider-container col-span-full flex w-full js-fake-slider">
+            {% for item in item.slider %}
+                <li  class="slider-item relative mr-25 s:origin-[top_left] bg-red min-w-full s:min-w-[41rem] max-w-full s:max-w-[41rem] h-1 js-fake-slide"></li>
+            {% endfor %}
+        </ul>
+
+        <ul class="slider-container col-start-1 col-span-full flex w-full z-1 min-h-auto s:min-h-[48rem] js-carousel">
+            {% for item in item.slider %}
+                {% set text_color_map = {
+                    'grey': 'text-grey-taupe',
+                    'black': 'text-grey-taupe',
+                    'yellow': 'text-black',
+                    'green': 'text-white-smoke'
+                } %}
+
+                {% set feature_content = function('get_field', 'feature_content', item.slide_content.ID) %}
+                {% set bg_color = feature_content.background_color|lower %}
+                {% set text_color = text_color_map[bg_color] %}
+
+                <li class="slider-item relative h-fit mr-25 s:origin-[top_left] {{ loop.first ? 'min-w-full s:min-w-[67rem] max-w-full s:max-w-[67rem]' : 'min-w-full s:min-w-[41rem] max-w-full s:max-w-[41rem]' }} min-w-full 3xl:min-w-[44.3rem] max-w-full 3xl:max-w-[44.3rem] js-slide active">
+                    <div class="absolute w-full h-full top-0 left-0 z-2">
+                        <div class="relative {{ feature_content.feature_image ? '!text-white' : text_color }} p-24 space-y-24 s:space-y-40 w-full h-full flex flex-col items-center justify-between">
+                            <div class="relative w-full flex items-center justify-between">
+                                <div class="text-12 font-medium leading-none tracking-[10%] uppercase">{{ item.slide_content.post_type }}</div>
+                                <div class="text-12 font-medium leading-none tracking-[10%] uppercase">{{ item.slide_content.post_date|date_modify('0 days')|date('d.m.Y') }}</div>
+                            </div>
+
+                            <div class="flex w-full flex-col s:flex-row items-center justify-center s:justify-between">
+                                <div class="relative pb-24 s:pb-0">
+                                    <h4 class="text-24 font-normal leading-[1.04] tracking-[-0.024rem]">{{ item.slide_content.post_title }}</h4>
+                                </div>
+
+                                <div class="relative">
+                                    <a class="relative inline-flex space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                                        <span class="inline-flex">
+                                            See more
+                                        </span>
+                                        <span class="inline-flex">
+                                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <figure class="relative overflow-hidden w-full h-auto">
+                        {% if feature_content.feature_image %}
+                            {% include "blocks/common/image.twig" with {
+                                props : {
+                                    data: {
+                                        image : feature_content.feature_image
+                                    },
+                                    options: {
+                                        container_class: 'w-full h-full overflow-hidden',
+                                        class : 'w-full h-full object-cover',
+                                        aspect_ratio: '67%',
+                                        aspect_ratio_mobile: '150%',
+                                    }
+                                }
+                            } %}
+                        {% else %}
+                            <div class="pt-[150%] s:pt-[67%] bg-{{ feature_content.background_color|lower }}"></div>
+                        {% endif %}
+                    </figure>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="relative w-full col-span-full flex s:hidden items-center justify-center pt-50 s:pb-0">
+            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid" type="button" data-slider-prev>
+                <span class="inline-flex">
+                    <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </button>
+
+            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button" data-slider-next>
+                <span class="inline-flex">
+                    <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </button>
+        </div>
+    </div>
+</section>

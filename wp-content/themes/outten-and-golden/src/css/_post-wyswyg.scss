@@ -1,0 +1,200 @@
+.post-wyswyg {
+    h1, h2, h3, h4, h5, h6 {
+        @apply text-40 font-normal leading-[1.15] tracking-[-1%] text-green;
+    }
+
+    p {
+        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+    }
+
+    ul {
+        @apply mt-20 s:mt-50 text-16 font-normal leading-[1.32] text-green;
+
+        li {
+            @apply relative border-t border-solid border-grey-taupe py-24;
+
+            &:last-child {
+                @apply border-b border-solid border-grey-taupe;
+            }
+        }
+    }
+
+    img {
+        @apply relative block w-full h-[40rem] object-cover;
+    }
+
+    hr {
+        @apply relative my-32 border-[#DEDAD3];
+    }
+}
+
+.values-wyswyg {
+
+    p {
+        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+    }
+}
+
+.credentials-wyswyg {
+
+    p {
+        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+    }
+
+    ul {
+        @apply text-16 font-normal leading-[1.32] text-black;
+
+        li {
+            @apply relative py-15 pl-16;
+
+            a {
+                @apply relative !font-medium text-grey;
+
+                display: inline-flex;
+                position: relative;
+                white-space: nowrap;
+            
+                --bottom: -.1em;
+            
+                &:before,
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: var(--bottom);
+                    right: 0;
+                    left: 0;
+                    height: 0.05em;
+                    min-height: 1px;
+                    background-color: currentColor
+                }
+            
+                &:before {
+                    transform-origin: left;
+                    transform: scale3d(1, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: .5s;
+                }
+            
+                &:after {
+                    transform-origin: right;
+                    transform: scale3d(0, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: 0s;
+                }
+            
+                @screen has-hover {
+                    &:hover {
+            
+                        &:before {
+                            transform-origin: right;
+                            transform: scale3d(0, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: 0s;
+                        }
+            
+                        &:after {
+                            transform-origin: left;
+                            transform: scale3d(1, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: .2s;
+                        }
+                    }
+                }
+            }
+
+            &:after {
+                @apply content-[''] absolute top-[2.4rem] left-0 w-5 h-5 bg-black rounded-full;
+            }
+        }
+    }
+}
+
+.notable-cases-wyswyg {
+
+    p {
+        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+    }
+
+    ul {
+        @apply text-16 font-normal leading-[1.32] text-black;
+
+        li {
+            @apply relative py-15 pl-16;
+
+            a {
+                @apply relative !font-medium text-grey;
+
+                display: inline-flex;
+                position: relative;
+                white-space: nowrap;
+            
+                --bottom: -.1em;
+            
+                &:before,
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: var(--bottom);
+                    right: 0;
+                    left: 0;
+                    height: 0.05em;
+                    min-height: 1px;
+                    background-color: currentColor
+                }
+            
+                &:before {
+                    transform-origin: left;
+                    transform: scale3d(1, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: .5s;
+                }
+            
+                &:after {
+                    transform-origin: right;
+                    transform: scale3d(0, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: 0s;
+                }
+            
+                @screen has-hover {
+                    &:hover {
+            
+                        &:before {
+                            transform-origin: right;
+                            transform: scale3d(0, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: 0s;
+                        }
+            
+                        &:after {
+                            transform-origin: left;
+                            transform: scale3d(1, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: .2s;
+                        }
+                    }
+                }
+            }
+
+            &:after {
+                @apply content-[''] absolute top-[2.4rem] left-0 w-5 h-5 bg-black rounded-full;
+            }
+        }
+    }
+}
