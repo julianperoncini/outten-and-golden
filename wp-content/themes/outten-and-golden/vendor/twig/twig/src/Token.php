@@ -17,6 +17,10 @@ namespace Twig;
  */
 final class Token
 {
+    private $value;
+    private $type;
+    private $lineno;
+
     public const EOF_TYPE = -1;
     public const TEXT_TYPE = 0;
     public const BLOCK_START_TYPE = 1;
@@ -33,14 +37,14 @@ final class Token
     public const ARROW_TYPE = 12;
     public const SPREAD_TYPE = 13;
 
-    public function __construct(
-        private int $type,
-        private $value,
-        private int $lineno,
-    ) {
+    public function __construct(int $type, $value, int $lineno)
+    {
+        $this->type = $type;
+        $this->value = $value;
+        $this->lineno = $lineno;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return \sprintf('%s(%s)', self::typeToString($this->type, true), $this->value);
     }
@@ -75,27 +79,14 @@ final class Token
         return $this->lineno;
     }
 
-    /**
-     * @deprecated since Twig 3.19
-     */
     public function getType(): int
     {
-        trigger_deprecation('twig/twig', '3.19', \sprintf('The "%s()" method is deprecated.', __METHOD__));
-
         return $this->type;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue()
     {
         return $this->value;
-    }
-
-    public function toEnglish(): string
-    {
-        return self::typeToEnglish($this->type);
     }
 
     public static function typeToString(int $type, bool $short = false): string

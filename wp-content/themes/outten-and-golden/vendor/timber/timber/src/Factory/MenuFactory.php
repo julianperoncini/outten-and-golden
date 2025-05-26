@@ -5,7 +5,6 @@ namespace Timber\Factory;
 use InvalidArgumentException;
 use Timber\CoreInterface;
 use Timber\Menu;
-use Timber\Timber;
 use WP_Term;
 
 /**
@@ -22,10 +21,12 @@ class MenuFactory
      *
      * Note that this method has pitfalls and might not be the most performant way to get a menu.
      *
+     * @param mixed $params
+     * @param array $args
      *
      * @return Menu|null
      */
-    public function from(mixed $params, array $args = []): ?Menu
+    public function from($params, array $args = []): ?Menu
     {
         $menu = null;
 
@@ -59,6 +60,7 @@ class MenuFactory
     /**
      * Get a Menu from its location
      *
+     * @param array $args
      * @return Menu|null
      */
     protected function from_nav_menu_terms(array $args = []): ?Menu
@@ -79,11 +81,13 @@ class MenuFactory
     /**
      * Get a Menu from its location
      *
+     * @param string $location
+     * @param array $args
      * @return Menu|null
      */
     public function from_location(string $location, array $args = []): ?Menu
     {
-        $locations = Timber::get_menu_locations();
+        $locations = \get_nav_menu_locations();
         if (!isset($locations[$location])) {
             return null;
         }
@@ -105,10 +109,6 @@ class MenuFactory
      */
     public function from_id(int $id, array $args = []): ?Menu
     {
-        if (0 === $id) {
-            return null;
-        }
-
         $term = \get_term_by('id', $id, 'nav_menu');
 
         if (!$term) {
@@ -175,7 +175,7 @@ class MenuFactory
 
         throw new InvalidArgumentException(\sprintf(
             'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-            $obj::class
+            \get_class($obj)
         ));
     }
 
@@ -212,7 +212,7 @@ class MenuFactory
          */
         $classmap = \apply_filters('timber/menu/classmap', []);
 
-        $location = Timber::get_menu_location($term);
+        $location = $this->get_menu_location($term);
 
         $class = $classmap[$location] ?? null;
 
@@ -222,10 +222,10 @@ class MenuFactory
         }
 
         // Fallback on the default class
-        $class ??= Menu::class;
+        $class = $class ?? Menu::class;
 
         /**
-         * Filters the menu class based on your custom criteria.
+         * Filters the menu class based on your custom criterias.
          *
          * Maybe the location is not appropriate in some cases. This filter will allow you to filter the class
          * on whatever data is available.
@@ -252,8 +252,21 @@ class MenuFactory
     }
 
     /**
+     * Get the menu location
+     *
+     * @param WP_Term $term
+     * @return string|null
+     */
+    protected function get_menu_location(WP_Term $term): ?string
+    {
+        $locations = \array_flip(\array_filter(\get_nav_menu_locations(), fn ($location) => \is_string($location) || \is_int($location)));
+        return $locations[$term->term_id] ?? null;
+    }
+
+    /**
      * Build menu
      *
+     * @param WP_Term $term
      * @param array $args
      * @return CoreInterface
      */

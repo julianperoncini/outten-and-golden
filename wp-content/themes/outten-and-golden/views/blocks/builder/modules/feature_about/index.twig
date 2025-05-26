@@ -1,11 +1,13 @@
-<section class="relative bg-grey">
+<section class="relative bg-grey" data-component="highlight">
     <div class="site-max py-60 s:py-120">
         <div class="site-grid gap-y-32 s:gap-y-40">
 
 
             <div class="relative flex flex-col gap-y-40 col-span-full s:col-start-2 s:col-span-14">
                 <h2 class="text-grey-taupe font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
-                <h3 class="h2 text-white-smoke/30 font-disp text-26 s:text-48 font-normal leading-[1.2] tracking-[-0.096rem]">{{ item.title }}</h3>
+                <div class="relative">
+                    <h3 class="h2 text-white-smoke font-disp text-26 s:text-48 font-normal leading-[1.2] tracking-[-0.096rem]" data-highlight-text>{{ item.title }}</h3>
+                </div>
             </div>
 
             {% if item.link %}

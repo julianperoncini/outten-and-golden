@@ -16,19 +16,24 @@ use Timber\PathHelper;
  * - height of new image
  * - color of padding
  */
-
 class Letterbox extends ImageOperation
 {
+    private $w;
+
+    private $h;
+
+    private $color;
+
     /**
      * @param int    $w     width of result image
      * @param int    $h     height
      * @param string $color hex string, for color of padding bands
      */
-    public function __construct(
-        private $w,
-        private $h,
-        private $color
-    ) {
+    public function __construct($w, $h, $color)
+    {
+        $this->w = $w;
+        $this->h = $h;
+        $this->color = $color;
     }
 
     /**
@@ -94,16 +99,15 @@ class Letterbox extends ImageOperation
                 $y = 0;
                 $x = $w / 2 - $owt / 2;
                 $oht = $h;
+                $image->crop(0, 0, $ow, $oh, $owt, $oht);
             } else {
                 $w_scale = $w / $ow;
                 $oht = $oh * $w_scale;
                 $x = 0;
                 $y = $h / 2 - $oht / 2;
                 $owt = $w;
+                $image->crop(0, 0, $ow, $oh, $owt, $oht);
             }
-
-            $image->crop(0, 0, \round($ow), \round($oh), \round($owt), \round($oht));
-
             $result = $image->save($save_filename);
             $func = 'imagecreatefromjpeg';
             $save_func = 'imagejpeg';

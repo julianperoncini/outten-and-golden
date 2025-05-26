@@ -176,7 +176,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
             // Fetch values. Auto-fetches all values if $field_name is empty.
             $object_meta = \get_metadata($object_type, $this->ID, $field_name, true);
 
-            // Mimic $single argument when fetching all meta values.
+            // Mimick $single argument when fetching all meta values.
             if (empty($field_name) && \is_array($object_meta)) {
                 $object_meta = \array_map(function ($meta) {
                     /**
@@ -281,7 +281,7 @@ abstract class CoreEntity extends Core implements CoreInterface, CoreEntityInter
      * Finds any WP_Post objects and converts them to Timber\Posts
      *
      * @api
-     * @param array|CoreEntity $data
+     * @param array|\Timber\CoreEntity $data
      */
     public function convert($data)
     {

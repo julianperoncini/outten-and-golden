@@ -72,7 +72,7 @@ final class SandboxExtension extends AbstractExtension
         return $this->sourcePolicy->enableSandbox($source);
     }
 
-    public function setSecurityPolicy(SecurityPolicyInterface $policy): void
+    public function setSecurityPolicy(SecurityPolicyInterface $policy)
     {
         $this->policy = $policy;
     }
@@ -117,13 +117,6 @@ final class SandboxExtension extends AbstractExtension
         }
     }
 
-    /**
-     * @param mixed $obj
-     *
-     * @return mixed
-     *
-     * @throws SecurityNotAllowedMethodError
-     */
     public function ensureToStringAllowed($obj, int $lineno = -1, ?Source $source = null)
     {
         if (\is_array($obj)) {
@@ -132,7 +125,7 @@ final class SandboxExtension extends AbstractExtension
             return $obj;
         }
 
-        if ($obj instanceof \Stringable && $this->isSandboxed($source)) {
+        if ($this->isSandboxed($source) && \is_object($obj) && method_exists($obj, '__toString')) {
             try {
                 $this->policy->checkMethodAllowed($obj, '__toString');
             } catch (SecurityNotAllowedMethodError $e) {
@@ -155,6 +148,23 @@ final class SandboxExtension extends AbstractExtension
 
             if (!\is_array($v)) {
                 $this->ensureToStringAllowed($v, $lineno, $source);
+                continue;
+            }
+
+            if (\PHP_VERSION_ID < 70400) {
+                static $cookie;
+
+                if ($v === $cookie ?? $cookie = new \stdClass()) {
+                    continue;
+                }
+
+                $obj[$k] = $cookie;
+                try {
+                    $this->ensureToStringAllowedForArray($v, $lineno, $source, $stack);
+                } finally {
+                    $obj[$k] = $v;
+                }
+
                 continue;
             }
 

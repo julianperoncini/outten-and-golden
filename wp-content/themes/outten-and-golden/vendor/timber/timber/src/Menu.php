@@ -2,7 +2,6 @@
 
 namespace Timber;
 
-use Stringable;
 use Throwable;
 use Timber\Factory\MenuItemFactory;
 use WP_Term;
@@ -12,7 +11,7 @@ use WP_Term;
  *
  * @api
  */
-class Menu extends CoreEntity implements Stringable
+class Menu extends CoreEntity
 {
     /**
      * The underlying WordPress Core object.
@@ -172,7 +171,7 @@ class Menu extends CoreEntity implements Stringable
                 if ($nav_menu instanceof Menu) {
                     return $nav_menu;
                 }
-            } catch (Throwable) {
+            } catch (Throwable $e) {
             }
         }
 
@@ -293,7 +292,10 @@ class Menu extends CoreEntity implements Stringable
         }
 
         // Set theme location if available
-        $this->theme_location = Timber::get_menu_location($term);
+        $locations = \array_flip(\array_filter(\get_nav_menu_locations(), fn ($location) => \is_string($location) || \is_int($location)));
+
+        $this->theme_location = $locations[$term->term_id] ?? null;
+
         if ($this->theme_location) {
             $this->args->theme_location = $this->theme_location;
         }
@@ -320,12 +322,15 @@ class Menu extends CoreEntity implements Stringable
     /**
      * Convert menu items into MenuItem objects
      *
+     * @param array $menu_items
      * @return MenuItem[]
      */
     protected function convert_menu_items(array $menu_items): array
     {
         $menu_item_factory = new MenuItemFactory();
-        return \array_map(fn ($item): MenuItem => $menu_item_factory->from($item, $this), $menu_items);
+        return \array_map(function ($item) use ($menu_item_factory): MenuItem {
+            return $menu_item_factory->from($item, $this);
+        }, $menu_items);
     }
 
     /**
@@ -348,6 +353,7 @@ class Menu extends CoreEntity implements Stringable
 
     /**
      * @internal
+     * @param array $items
      * @return MenuItem[]
      */
     protected function order_children(array $items): array
@@ -375,6 +381,7 @@ class Menu extends CoreEntity implements Stringable
 
     /**
      * @internal
+     * @param array $menu_items
      */
     protected function strip_to_depth_limit(array $menu_items, int $current = 1): array
     {
@@ -591,8 +598,8 @@ class Menu extends CoreEntity implements Stringable
             $wrap_id = 'menu-' . $this->slug;
 
             while (\in_array($wrap_id, $menu_id_slugs, true)) {
-                if (\preg_match('#-(\d+)$#', (string) $wrap_id, $matches)) {
-                    $wrap_id = \preg_replace('#-(\d+)$#', '-' . ++$matches[1], (string) $wrap_id);
+                if (\preg_match('#-(\d+)$#', $wrap_id, $matches)) {
+                    $wrap_id = \preg_replace('#-(\d+)$#', '-' . ++$matches[1], $wrap_id);
                 } else {
                     $wrap_id = $wrap_id . '-1';
                 }
@@ -600,7 +607,7 @@ class Menu extends CoreEntity implements Stringable
         }
         $menu_id_slugs[] = $wrap_id;
 
-        $wrap_class = $args->menu_class ?: '';
+        $wrap_class = $args->menu_class ? $args->menu_class : '';
 
         $nav_menu .= \sprintf($args->items_wrap, \esc_attr($wrap_id), \esc_attr($wrap_class), $items);
         if ($show_container) {

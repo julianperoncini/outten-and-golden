@@ -9,6 +9,7 @@ import sliderOffice from './slider-office'
 import sliderTeamMembers from './slider-team'
 import lazy from './lazy'
 import listGrid from './listGrid'
+import highlight from './highlight'
 
 export {
     search,
@@ -16,5 +17,6 @@ export {
     triggered,
     sliderOffice,
     sliderTeamMembers,
-    listGrid
+    listGrid,
+    highlight
 }
