@@ -156,6 +156,26 @@ class AmeActorManager {
         for (let i = 0; i < tagMetaCaps.length; i++) {
             this.tagMetaCaps[tagMetaCaps[i]] = true;
         }
+        this.loggedInUserActor = new class extends AmeBaseActor {
+            constructor() {
+                super('special:logged_in_user', 'Logged In Users', {});
+            }
+            hasOwnCap(capability) {
+                //The only capability that *all* roles and users have is the special "exist" capability.
+                return (capability === 'exist');
+            }
+        };
+        this.anonymousUserActor = new class extends AmeBaseActor {
+            constructor() {
+                super('special:anonymous_user', 'Logged Out Users', {});
+            }
+            hasOwnCap() {
+                //Anonymous visitors usually have no capabilities.
+                return false;
+            }
+        };
+        this.addSpecialActor(this.loggedInUserActor);
+        this.addSpecialActor(this.anonymousUserActor);
     }
     // noinspection JSUnusedGlobalSymbols
     actorCanAccess(actorId, grantAccess, defaultCapability = null) {
@@ -292,12 +312,6 @@ class AmeActorManager {
         }
         return capability;
     }
-    addSpecialActor(actor) {
-        if (actor.getId() === AmeSuperAdmin.permanentActorId) {
-            throw 'The Super Admin actor is immutable and cannot be replaced.';
-        }
-        this.specialActors[actor.getId()] = actor;
-    }
     /* -------------------------------
      * Roles
      * ------------------------------- */
@@ -308,9 +322,6 @@ class AmeActorManager {
         return this.roles.hasOwnProperty(roleId);
     }
     ;
-    getSuperAdmin() {
-        return this.superAdmin;
-    }
     /* -------------------------------
      * Users
      * ------------------------------- */
@@ -327,6 +338,29 @@ class AmeActorManager {
     }
     getGroupActorsFor(userLogin) {
         return this.users[userLogin].groupActors;
+    }
+    /* -------------------------------
+     * Special actors
+     * ------------------------------- */
+    getSuperAdmin() {
+        return this.superAdmin;
+    }
+    /**
+     * Get the special actor that represents any logged-in user.
+     *
+     * Note: Not to be confused with the specific user that's currently logged in.
+     */
+    getGenericLoggedInUser() {
+        return this.loggedInUserActor;
+    }
+    getAnonymousUser() {
+        return this.anonymousUserActor;
+    }
+    addSpecialActor(actor) {
+        if (actor.getId() === AmeSuperAdmin.permanentActorId) {
+            throw 'The Super Admin actor is immutable and cannot be replaced.';
+        }
+        this.specialActors[actor.getId()] = actor;
     }
     /* -------------------------------
      * Granted capability manipulation
@@ -676,6 +710,38 @@ const AmeActorFeatureStrategyDefaults = {
     noValueDefault: false,
     autoResetAll: true,
 };
+function ameUnserializeFeatureStrategySettings(input) {
+    const unserialized = {};
+    if (typeof input.superAdminDefault !== 'undefined') {
+        unserialized.superAdminDefault = input.superAdminDefault;
+    }
+    if (typeof input.noValueDefault !== 'undefined') {
+        unserialized.noValueDefault = input.noValueDefault;
+    }
+    if (typeof input.roleDefault !== 'undefined') {
+        if ((input.roleDefault === null) || (typeof input.roleDefault === 'boolean')) {
+            unserialized.roleDefault = input.roleDefault;
+        }
+        else {
+            const copy = Object.assign({}, input.roleDefault);
+            unserialized.roleDefault = (roleName) => copy[roleName] || null;
+        }
+    }
+    if (typeof input.roleCombinationMode === 'string') {
+        switch (input.roleCombinationMode) {
+            case 'Every':
+                unserialized.roleCombinationMode = AmeRoleCombinationMode.Every;
+                break;
+            case 'Some':
+                unserialized.roleCombinationMode = AmeRoleCombinationMode.Some;
+                break;
+            case 'CustomOrSome':
+                unserialized.roleCombinationMode = AmeRoleCombinationMode.CustomOrSome;
+                break;
+        }
+    }
+    return unserialized;
+}
 class AmeActorFeatureStrategy {
     constructor(settings) {
         this.settings = Object.assign({}, AmeActorFeatureStrategyDefaults, settings);

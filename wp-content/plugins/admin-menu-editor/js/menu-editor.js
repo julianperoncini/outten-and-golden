@@ -1668,8 +1668,7 @@ var knownMenuFields = {
 
 	'css_class' : $.extend({}, baseField, {
 		caption: 'CSS classes',
-		advanced : true,
-		onlyForTopMenus: true
+		advanced : true
 	}),
 
 	'hookname' : $.extend({}, baseField, {
@@ -2914,6 +2913,10 @@ function ameOnDomReady() {
 
 		//The Pro version supports submenu icons, but they can be disabled by the user.
 		knownMenuFields.icon_url.onlyForTopMenus = (wsEditorData.submenuIconsEnabled === 'never');
+
+		//The Pro version has more submenu fields, so let's enable the separator below "CSS classes".
+		//In the free version, the separator is hidden because there would only be a single field below it.
+		knownMenuFields.page_properties_heading.onlyForTopMenus = false;
 
 		$('.ws_hide_if_pro').hide();
 	}
@@ -4474,6 +4477,11 @@ function ameOnDomReady() {
 			});
 			item.defaults = $.extend(true, {}, itemTemplates.getDefaults(''));
 
+			//Top-level menus automatically get the "menu-top" class.
+			if (column.level <= 1) {
+				item['css_class'] = 'menu-top';
+			}
+
 			//Make it accessible only to the current actor if one is selected.
 			if (actorSelectorWidget.selectedActor !== null) {
 				denyAccessForAllExcept(item, actorSelectorWidget.selectedActor);
@@ -5817,48 +5825,3 @@ var domCheckIntervalId = window.setInterval(function () {
 }, 1000);
 
 })(jQuery, wsAmeLodash);
-
-//==============================================
-//				Screen options
-//==============================================
-
-jQuery(function($){
-	'use strict';
-
-	var screenOptions = $('#ws-ame-screen-meta-contents');
-	var hideSettingsCheckbox = screenOptions.find('#ws-hide-advanced-settings');
-	hideSettingsCheckbox.prop('checked', wsEditorData.hideAdvancedSettings);
-
-	//Update editor state when settings change
-	$('#ws-hide-advanced-settings').on('click', function(){
-		wsEditorData.hideAdvancedSettings = hideSettingsCheckbox.prop('checked');
-
-		//Show/hide advanced settings dynamically as the user changes the setting.
-		if ($(this).is(hideSettingsCheckbox)) {
-			var menuEditorNode = $('#ws_menu_editor');
-			if ( wsEditorData.hideAdvancedSettings ){
-				menuEditorNode.find('div.ws_advanced').hide();
-				menuEditorNode.find('a.ws_toggle_advanced_fields').text(wsEditorData.captionShowAdvanced).show();
-			} else {
-				menuEditorNode.find('div.ws_advanced').show();
-				menuEditorNode.find('a.ws_toggle_advanced_fields').text(wsEditorData.captionHideAdvanced).hide();
-			}
-		}
-
-		$.post(
-			wsEditorData.adminAjaxUrl,
-			{
-				'action' : 'ws_ame_save_screen_options',
-				'hide_advanced_settings' : wsEditorData.hideAdvancedSettings ? 1 : 0,
-				'show_extra_icons' : wsEditorData.showExtraIcons ? 1 : 0,
-				'_ajax_nonce' : wsEditorData.hideAdvancedSettingsNonce
-			}
-		);
-	});
-
-	//Move our options into the screen meta panel
-	var advSettings = $('#adv-settings');
-	if (advSettings.length > 0) {
-		advSettings.empty().append(screenOptions.show());
-	}
-});

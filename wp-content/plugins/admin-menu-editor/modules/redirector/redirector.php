@@ -17,6 +17,7 @@ use YahnisElsts\AdminMenuEditor\Options\None;
 
 class Module extends amePersistentModule {
 	const FILTER_PRIORITY = 1000000;
+	const DEFAULT_SETTING_ACTOR_ID = 'special:default';
 	const UI_SCRIPT_HANDLE = 'ame-redirector-ui';
 
 	const FIRST_LOGIN_AGE_LIMIT_IN_DAYS = 14;
@@ -111,7 +112,7 @@ class Module extends amePersistentModule {
 	 * @return array<string,bool>
 	 */
 	protected function getUserActors(WP_User $user) {
-		$actorIds = ['special:default' => true]; //The "default" setting applies to every user.
+		$actorIds = [self::DEFAULT_SETTING_ACTOR_ID => true]; //The "default" setting applies to every user.
 
 		if ( !isset($user) ) {
 			return $actorIds;
@@ -308,6 +309,7 @@ class Module extends amePersistentModule {
 		return $user;
 	}
 
+	/** @noinspection PhpVariableIsUsedOnlyInClosureInspection */
 	public function enqueueTabScripts() {
 		parent::enqueueTabScripts();
 
@@ -351,6 +353,10 @@ class Module extends amePersistentModule {
 		if ( $this->menuEditor->get_plugin_option('delete_orphan_actor_settings') ) {
 			$cleaner = new \ameActorAccessCleaner();
 			$flattenedRedirects = array_filter($flattenedRedirects, function ($details) use ($cleaner) {
+				//Special case: the "actor" that holds the default setting is always valid.
+				if ( $details['actorId'] === self::DEFAULT_SETTING_ACTOR_ID ) {
+					return true;
+				}
 				return $cleaner->tryActorExists($details['actorId'], true);
 			});
 
@@ -420,7 +426,7 @@ class Module extends amePersistentModule {
 			$params['selectedTrigger'] = strval($post['selectedTrigger']);
 		}
 
-		wp_redirect($this->getTabUrl($params));
+		wp_safe_redirect($this->getTabUrl($params));
 		exit;
 	}
 

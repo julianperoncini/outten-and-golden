@@ -110,6 +110,20 @@ abstract class AbstractStructSetting extends AbstractSetting implements \ArrayAc
 		return [];
 	}
 
+	public function encodeForForm($value) {
+		//In practice, a struct should never be output as a form field value.
+		//We just include this to simplify the class hierarchy.
+		return wp_json_encode($value);
+	}
+
+	public function decodeSubmittedValue($value) {
+		$decodedValue = @json_decode($value, true);
+		if ( !is_array($decodedValue) ) {
+			return [];
+		}
+		return $decodedValue;
+	}
+
 	public function canBeDeleted() {
 		if ( $this->deleteWhenBlank ) {
 			//In addition to other "blank" states, a struct can also be deleted
@@ -202,12 +216,6 @@ abstract class AbstractStructSetting extends AbstractSetting implements \ArrayAc
 			$this->store->buildSlot($childKey),
 			...$constructorParams
 		);
-		if ( $this->shouldEnablePostMessageForChildren() ) {
-			$child->enablePostMessageSupport();
-		}
-
-		//Children inherit the parent's tags.
-		$child->addTags(...$this->tags);
 
 		$this->registerChild($childKey, $child);
 
@@ -215,6 +223,13 @@ abstract class AbstractStructSetting extends AbstractSetting implements \ArrayAc
 	}
 
 	protected function registerChild($childKey, AbstractSetting $child) {
+		if ( $this->shouldEnablePostMessageForChildren() ) {
+			$child->enablePostMessageSupport();
+		}
+
+		//Children inherit the parent's tags.
+		$child->addTags(...$this->tags);
+
 		$this->settings[$childKey] = $child;
 
 		if ( $this->childSubscriptionsAdded ) {

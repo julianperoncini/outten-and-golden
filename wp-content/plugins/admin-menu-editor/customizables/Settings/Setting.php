@@ -40,31 +40,6 @@ class Setting extends AbstractSetting {
 	}
 
 	/**
-	 * Convert a setting value to a string usable in HTML forms.
-	 *
-	 * This does NOT encode special HTML characters. It is only intended to convert
-	 * non-string values - like booleans and NULLs - to a format suitable for form field.
-	 *
-	 * @param $value
-	 * @return string
-	 */
-	public function encodeForForm($value) {
-		//Subclasses that require more advanced encoding should override this method.
-		return (string)$value;
-	}
-
-	/**
-	 * Convert submitted form data to a type suitable for validation.
-	 * This is not necessarily the same as the setting data type.
-	 *
-	 * @param string $value
-	 */
-	public function decodeSubmittedValue($value) {
-		//The default implementation is a no-op. Subclasses can override this.
-		return $value;
-	}
-
-	/**
 	 * @param \WP_Error $errors
 	 * @param $value
 	 * @param bool $stopOnFirstError

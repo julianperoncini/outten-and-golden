@@ -11,6 +11,7 @@ use YahnisElsts\AdminMenuEditor\ProCustomizable\Controls\BackgroundPositionSelec
 use YahnisElsts\AdminMenuEditor\ProCustomizable\Controls\BackgroundRepeat;
 use YahnisElsts\AdminMenuEditor\ProCustomizable\Controls\BoxDimensions;
 use YahnisElsts\AdminMenuEditor\ProCustomizable\Controls\FontStylePicker;
+use YahnisElsts\AdminMenuEditor\Customizable\Schemas;
 
 class ElementBuilderFactory {
 	/**
@@ -204,6 +205,26 @@ class ElementBuilderFactory {
 			return $this->number($setting);
 		} else if ( $setting instanceof Settings\PredefinedSet ) {
 			return $this->autoSection($setting);
+		} else if ( $setting instanceof Settings\WithSchema\SingularSetting ) {
+
+			//Decide based on the schema.
+			$schema = $setting->getSchema();
+			if ( $schema instanceof Schemas\Boolean ) {
+				return $this->toggleCheckBox($setting)->onValue(true)->offValue(false);
+			} else if ( $schema instanceof Schemas\Enum ) {
+				return $this->radioGroup($setting);
+			} else if ( $schema instanceof Schemas\Color ) {
+				return $this->colorPicker($setting);
+			} else if ( $schema instanceof Schemas\Url ) {
+				return $this->textBox($setting)->type('url')->code();
+			} else if ( $schema instanceof Schemas\StringSchema ) {
+				return $this->textBox($setting);
+			} else if ( $schema instanceof Schemas\Number ) {
+				return $this->number($setting);
+			} else {
+				return $this->textBox($setting);
+			}
+
 		} else if ( $setting instanceof Settings\AbstractSetting ) {
 			switch ($setting->getDataType()) {
 				case 'color':
