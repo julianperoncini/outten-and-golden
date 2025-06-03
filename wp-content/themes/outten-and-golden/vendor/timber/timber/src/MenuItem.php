@@ -3,6 +3,7 @@
 namespace Timber;
 
 use stdClass;
+use Stringable;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use WP_Post;
@@ -12,17 +13,8 @@ use WP_Post;
  *
  * @api
  */
-class MenuItem extends CoreEntity
+class MenuItem extends CoreEntity implements Stringable
 {
-    /**
-     * The underlying WordPress Core object.
-     *
-     * @since 2.0.0
-     *
-     * @var WP_Post|null
-     */
-    protected ?WP_Post $wp_object;
-
     /**
      * @var string What does this class represent in WordPress terms?
      */
@@ -85,16 +77,6 @@ class MenuItem extends CoreEntity
     public $current_item_ancestor;
 
     /**
-     * Timber Menu. Previously this was a public property, but converted to a method to avoid
-     * recursion (see #2071).
-     *
-     * @since 1.12.0
-     * @see \Timber\MenuItem::menu()
-     * @var Menu The `Menu` object the menu item is associated with.
-     */
-    protected $menu;
-
-    /**
      * Object ID.
      *
      * @api
@@ -122,32 +104,41 @@ class MenuItem extends CoreEntity
      * @param Menu $menu The `Menu` object the menu item is associated with.
      * @return MenuItem a new MenuItem instance
      */
-    public static function build($data, ?Menu $menu = null): self
+    public static function build($data, ?Menu $menu = null): static
     {
         return new static($data, $menu);
     }
 
     /**
      * @internal
-     * @param WP_Post $data
      * @param Menu $menu The `Menu` object the menu item is associated with.
      */
-    protected function __construct(WP_Post $data, $menu = null)
-    {
-        $this->wp_object = $data;
-        $this->menu = $menu;
-
+    protected function __construct(
+        /**
+         * The underlying WordPress Core object.
+         *
+         * @since 2.0.0
+         */
+        protected ?WP_Post $wp_object, /**
+     * Timber Menu. Previously this was a public property, but converted to a method to avoid
+     * recursion (see #2071).
+     *
+     * @since 1.12.0
+     * @see \Timber\MenuItem::menu()
+     */
+        protected $menu = null
+    ) {
         /**
          * @property string $title The nav menu item title.
          */
-        $this->title = $data->title;
+        $this->title = $this->wp_object->title;
 
-        $this->import($data);
-        $this->import_classes($data);
-        $this->id = $data->ID;
-        $this->ID = $data->ID;
+        $this->import($this->wp_object);
+        $this->import_classes($this->wp_object);
+        $this->id = $this->wp_object->ID;
+        $this->ID = $this->wp_object->ID;
 
-        $this->_name = $data->name ?? '';
+        $this->_name = $this->wp_object->name ?? '';
         $this->add_class('menu-item-' . $this->ID);
 
         /**
@@ -233,7 +224,7 @@ class MenuItem extends CoreEntity
      * @see \Timber\MenuItem::name()
      * @return string The label for the menu item.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name();
     }
@@ -424,6 +415,12 @@ class MenuItem extends CoreEntity
         if ($this->type !== 'custom') {
             return false;
         }
+
+        // Additional check for relative/non-URLs
+        if (false === URLHelper::is_url($this->link())) {
+            return false;
+        }
+
         return URLHelper::is_external($this->link());
     }
 
@@ -550,7 +547,7 @@ class MenuItem extends CoreEntity
      *     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
      * {% endfor %}
      * ```
-     * @return string A full URL, like `http://mysite.com/thing/`.
+     * @return string A full URL, like `https://mysite.com/thing/`.
      */
     public function link()
     {
@@ -591,7 +588,7 @@ class MenuItem extends CoreEntity
         /**
          * @see Walker_Nav_Menu::start_el()
          */
-        $title = \apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new stdClass(), $this->level);
+        $title = \apply_filters('nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ?: new stdClass(), $this->level);
         return $title;
     }
 

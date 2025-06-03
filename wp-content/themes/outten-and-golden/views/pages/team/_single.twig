@@ -3,6 +3,8 @@
 {% block content %}
 	<article data-taxi-view class="page-issue">
 		<div class="app">
+			{% include 'partials/breadcrumb.twig' %}
+			
 			{# <pre>{{ post|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
 			{# Hero #}
@@ -15,13 +17,13 @@
 			{% include 'pages/team/partials/single/_members-slider.twig' %}
 
 			{# Content Builder #}
-			{# {% include 'blocks/builder/index.twig' with {
+			{% include 'blocks/builder/index.twig' with {
 				props: {
 					data: {
 						items: post.content_builder
 					}
 				}
-			} %} #}
+			} %}
 		</div>
 
 		{% include '_site-footer.twig' %}

@@ -9,7 +9,7 @@ import sliderOffice from './slider-office'
 import sliderTeamMembers from './slider-team'
 import lazy from './lazy'
 import listGrid from './listGrid'
-import highlight from './highlight'
+import carouselTestimonials from './carousel-testimonials'
 
 export {
     search,
@@ -18,5 +18,5 @@ export {
     sliderOffice,
     sliderTeamMembers,
     listGrid,
-    highlight
+    carouselTestimonials,
 }

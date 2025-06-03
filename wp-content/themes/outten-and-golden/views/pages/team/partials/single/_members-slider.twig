@@ -2,9 +2,9 @@
     {# <pre>{{ team_members_slider|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
     <div class="site-max">
-        <div class="flex cursor-grab js-slider-team" data-component="sliderTeamMembers(js-slider-members)">
+        <div class="team-members-list flex cursor-grab js-slider-team" data-component="sliderTeamMembers(js-slider-members)">
             {% for member in team_members_slider %}
-                <article data-member="true" class="member-item h-[50rem] relative max-w-[29rem] s:max-w-[43.3rem] min-w-[29rem] s:min-w-[43.3rem] mr-24 js-member-item">
+                <article data-member="true" class="team-members-item h-[50rem] relative max-w-[29rem] s:max-w-[43.3rem] min-w-[29rem] s:min-w-[43.3rem] mr-24 js-member-item">
                     <div class="team-member w-full flex flex-col gap-y-32">
                         {% if member.featured_image %}
                             <figure class="relative w-full h-full">
@@ -71,8 +71,7 @@
                             <div class="relative w-full">
                                 <a 
                                     class="relative w-full flex items-center justify-between font-disp text-green text-23 font-normal leading-[1.04] -tracking-[0.024rem]" 
-                                    href="{{ member.contact_info.linkedin }}"
-                                    target="_blank"
+                                    href="/attorneys/{{ member.post_name }}"
                                     aria-label="{{ member.title }}"
                                 >
                                     <span class="inline-flex">{{ member.title }}</span>

@@ -1,7 +1,7 @@
 {# Component accepts:
    - text: string (required)
    - href: string (optional)
-   - bgColor: string (optional, default: 'bg-white')
+   - bgColor: string (optional, default: 'white')
    - textColor: string (optional, default: 'text-green')
    - class: string (optional)
 #}
@@ -9,15 +9,19 @@
 {% set props = {
     text: data.text ?? '',
     href: data.href ?? false,
-    bgColor: data.bgColor ?? 'bg-white',
+    bgColor: data.bgColor ?? 'white',
     textColor: data.textColor ?? 'text-green',
     class: data.class ?? ''
 } %}
 
 {% set base_classes = "relative flex items-center justify-center py-12 px-16 text-12 font-medium leading-none tracking-[0.12rem] uppercase" %}
+
+{% set bg_class = props.bgColor|slice(0, 3) == 'bg-' ? props.bgColor|lower : 'bg-' ~ props.bgColor|lower %}
+{% set bg_class = 'green' in bg_class ? bg_class ~ '-resolved' : bg_class %}
+
 {% set element_classes = [
     base_classes,
-    props.bgColor,
+    bg_class,
     props.textColor,
     props.class
 ] | join(' ') %}
@@ -28,4 +32,5 @@
     {% else %}
         <div class="{{ element_classes }}">{{ props.text }}</div>
     {% endif %}
+    <span class="absolute top-0 left-0 bg-green-resolved bg-lavander hidden select-none pointer-events-none"></span>
 </div>

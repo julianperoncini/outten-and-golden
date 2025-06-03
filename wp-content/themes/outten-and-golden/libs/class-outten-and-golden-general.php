@@ -91,6 +91,9 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('do_meta_boxes', [$this, 'remove_featured_image_metabox']);
         add_filter('show_admin_bar',     '__return_false');
         add_filter('taxi_namespace', [ $this, 'taxi_namespace' ] );
+        
+        add_action('admin_head-profile.php', [$this, 'hide_gravatar_section']);
+        add_action('admin_head-user-edit.php', [$this, 'hide_gravatar_section']);
 
         add_filter( 'timmy/sizes', function( $sizes ) {
             return array_map( function( $size ) {
@@ -259,6 +262,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         );
         
         $context['posts'] = Timber::get_posts($args);
+        $context['breadcrumb'] = $this->get_breadcrumb();
+        $context['is_home'] = is_front_page();
 
         return $context;
     }
@@ -298,6 +303,200 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
 
 		return $ns;
 	}
+
+    public function hide_gravatar_section() {
+        echo '<style>
+            /* Hide the Profile Picture section */
+            .user-profile-picture,
+            tr.user-profile-picture-wrap,
+            .form-table tr:has([href*="gravatar"]),
+            .form-table tr:has(img[src*="gravatar"]) {
+                display: none !important;
+            }
+        </style>';
+        
+        echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Hide Profile Picture heading
+            const headings = document.querySelectorAll("h3");
+            headings.forEach(function(h3) {
+                if (h3.textContent.includes("Profile Picture")) {
+                    h3.style.display = "none";
+                    // Hide the next table
+                    let nextElement = h3.nextElementSibling;
+                    if (nextElement && nextElement.classList.contains("form-table")) {
+                        nextElement.style.display = "none";
+                    }
+                }
+            });
+            
+            // Hide Gravatar links and images
+            const gravatarElements = document.querySelectorAll("a[href*=\'gravatar\'], img[src*=\'gravatar\']");
+            gravatarElements.forEach(function(element) {
+                let row = element.closest("tr");
+                if (row) {
+                    row.style.display = "none";
+                }
+            });
+        });
+        </script>';
+    }
+
+    // public function get_breadcrumb() {
+    //     global $post;
+    //     $breadcrumb = [];
+    
+    //     if (!is_front_page()) {
+    //         $breadcrumb[] = [
+    //             'label' => 'Home',
+    //             'url'   => home_url('/')
+    //         ];
+    
+    //         if (is_single()) {
+    //             $post_type = get_post_type();
+    
+    //             if ($post_type !== 'post' && $post_type !== 'page') {
+    //                 $post_type_obj = get_post_type_object($post_type);
+    //                 if ($post_type_obj && $post_type_obj->has_archive) {
+    //                     $breadcrumb[] = [
+    //                         'label' => $post_type_obj->labels->name,
+    //                         'url'   => get_post_type_archive_link($post_type)
+    //                     ];
+    //                 }
+    //             }
+    
+    //             if ($post_type === 'post') {
+    //                 $categories = get_the_category();
+    //                 if (!empty($categories)) {
+    //                     $breadcrumb[] = [
+    //                         'label' => $categories[0]->name,
+    //                         'url'   => get_category_link($categories[0]->term_id)
+    //                     ];
+    //                 }
+    //             }
+    
+    //             $breadcrumb[] = [
+    //                 'label' => get_the_title(),
+    //                 'url'   => get_permalink()
+    //             ];
+    
+    //         } elseif (is_page()) {
+    //             $ancestors = get_post_ancestors($post);
+    //             $ancestors = array_reverse($ancestors);
+
+    //             foreach ($ancestors as $ancestor_id) {
+    //                 $breadcrumb[] = [
+    //                     'label' => get_the_title($ancestor_id),
+    //                     'url'   => get_permalink($ancestor_id)
+    //                 ];
+    //             }
+    
+    //             $breadcrumb[] = [
+    //                 'label' => get_the_title(),
+    //                 'url'   => get_permalink()
+    //             ];
+    //         } elseif (is_post_type_archive()) {
+    //             $post_type = get_post_type();
+    //             $post_type_obj = get_post_type_object($post_type);
+    //             $breadcrumb[] = [
+    //                 'label' => $post_type_obj->labels->name,
+    //                 'url'   => get_post_type_archive_link($post_type)
+    //             ];
+    //         } elseif (is_category()) {
+    //             $category = get_queried_object();
+    //             $breadcrumb[] = [
+    //                 'label' => $category->name,
+    //                 'url'   => get_category_link($category->term_id)
+    //             ];
+    //         }
+    //     }
+    
+    //     return $breadcrumb;
+    // }
+
+    public function get_breadcrumb() {
+        global $post;
+        $breadcrumb = [];
+    
+        if (!is_front_page()) {
+            $breadcrumb[] = [
+                'label' => 'Home',
+                'url'   => home_url('/')
+            ];
+    
+            if (is_single()) {
+                $post_type = get_post_type();
+    
+                if ($post_type === 'attorney') {
+                    $breadcrumb[] = [
+                        'label' => 'Team',
+                        'url'   => home_url('/attorney')
+                    ];
+                } 
+                elseif ($post_type === 'client-stories') {
+                    $breadcrumb[] = [
+                        'label' => 'Client Stories',
+                        'url'   => home_url('/client-stories')
+                    ];
+                } elseif ($post_type !== 'post' && $post_type !== 'page') {
+                    $post_type_obj = get_post_type_object($post_type);
+                    if ($post_type_obj && $post_type_obj->has_archive) {
+                        $breadcrumb[] = [
+                            'label' => $post_type_obj->labels->name,
+                            'url'   => get_post_type_archive_link($post_type)
+                        ];
+                    }
+                }
+    
+                if ($post_type === 'post') {
+                    $categories = get_the_category();
+                    if (!empty($categories)) {
+                        $breadcrumb[] = [
+                            'label' => $categories[0]->name,
+                            'url'   => get_category_link($categories[0]->term_id)
+                        ];
+                    }
+                }
+    
+                $breadcrumb[] = [
+                    'label' => get_the_title(),
+                    'url'   => get_permalink()
+                ];
+    
+            } elseif (is_page()) {
+                $ancestors = get_post_ancestors($post);
+                $ancestors = array_reverse($ancestors);
+    
+                foreach ($ancestors as $ancestor_id) {
+                    $breadcrumb[] = [
+                        'label' => get_the_title($ancestor_id),
+                        'url'   => get_permalink($ancestor_id)
+                    ];
+                }
+    
+                $breadcrumb[] = [
+                    'label' => get_the_title(),
+                    'url'   => get_permalink()
+                ];
+            } elseif (is_post_type_archive()) {
+                $post_type = get_post_type();
+                $post_type_obj = get_post_type_object($post_type);
+                $breadcrumb[] = [
+                    'label' => $post_type_obj->labels->name,
+                    'url'   => get_post_type_archive_link($post_type)
+                ];
+            } elseif (is_category()) {
+                $category = get_queried_object();
+                $breadcrumb[] = [
+                    'label' => $category->name,
+                    'url'   => get_category_link($category->term_id)
+                ];
+            }
+        }
+    
+        return $breadcrumb;
+    }
+    
 }
 
 new OUTTEN_AND_GOLDEN_Theme_General;

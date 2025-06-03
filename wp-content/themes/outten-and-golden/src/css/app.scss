@@ -151,6 +151,20 @@ body.home {
     }
 }
 
+.site-grid-8 {
+    --gap: 0.8rem;
+    --cols: 8;
+
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-column-gap: var(--gap);
+
+    @screen s {
+        --gap: 2.5rem;
+        --cols: 8;
+    }
+}
+
 .site-grid-10 {
     --gap: 0rem;
     --cols: 1;
@@ -268,11 +282,13 @@ header {
 
 .js-sop-bar-wrap.is-active {
 	width: 75%;
-	transition: width 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	opacity: 1;
+	transition: all 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
 	@screen s {
 		height: 8rem;
-		transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		opacity: 1;
+		transition: all 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 	}
 }
 
@@ -285,7 +301,8 @@ body.home {
 
 .js-slider-mm-office-progress .js-sop-bar-wrap.is-active {
 	@apply h-[2rem];
-	transition: height 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	opacity: 1;
+	transition: all 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .team-members-list > .team-members-item:nth-child(6n+1) .team-member-contact a {
@@ -410,5 +427,14 @@ body.home {
 		background-color: #DEDAD3;
 		opacity: 0.1;
 		margin-top: 4rem !important;
+	}
+}
+
+.js-carousel-testimonials-dots {
+	transition: all 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	transition-delay: 0.3s;
+
+	&.active {
+		@apply bg-green w-32;
 	}
 }

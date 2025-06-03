@@ -35,9 +35,13 @@ export default {
       green: {
         DEFAULT: '#1E383E',
         lemon: '#E5F291',
+        resolved: '#6DA479',
       },
       yellow: {
         DEFAULT: '#FCDC9B'
+      },
+      lavander: {
+        DEFAULT: '#C292C1'
       }
     },
     // Generate fontSize scale (0-150)

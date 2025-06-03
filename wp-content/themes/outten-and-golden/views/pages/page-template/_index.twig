@@ -3,6 +3,8 @@
 {% block content %}
 	<article data-taxi-view>
 		<div class="app">
+			{% include 'partials/breadcrumb.twig' %}
+			
 			{% include 'blocks/builder/index.twig' with {
 				props: {
 					data: {

@@ -1,3 +1,45 @@
+.cols-text-p-wysiwyg {
+    ul {
+        @apply mt-20 s:mt-50 text-16 font-normal leading-[1.32] text-green;
+
+        li {
+            @apply relative border-t border-b border-solid border-grey-taupe py-24;
+
+            a {
+                @apply relative inline-block mt-12 p-8 bg-white-smoke text-grey rounded-[0.4rem];
+
+                &::before {
+                    content: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.5548 13.0045H5.20212C5.08273 13.0045 4.96823 12.9571 4.8838 12.8726C4.79938 12.7882 4.75195 12.6737 4.75195 12.5543V5.20163C4.75195 5.08224 4.79938 4.96774 4.8838 4.88331C4.96823 4.79889 5.08273 4.75146 5.20212 4.75146H12.5548C12.6742 4.75146 12.7887 4.79889 12.8731 4.88331C12.9575 4.96774 13.005 5.08224 13.005 5.20163V12.5543C13.005 12.6737 12.9575 12.7882 12.8731 12.8726C12.7887 12.9571 12.6742 13.0045 12.5548 13.0045Z' stroke='%237A7871' stroke-width='1.12541' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9.25302 4.75137V1.45016C9.25302 1.33077 9.20559 1.21627 9.12117 1.13185C9.03675 1.04743 8.92225 1 8.80286 1H1.45016C1.33077 1 1.21627 1.04743 1.13185 1.13185C1.04743 1.21627 1 1.33077 1 1.45016V8.80286C1 8.92225 1.04743 9.03675 1.13185 9.12117C1.21627 9.20559 1.33077 9.25302 1.45016 9.25302H4.75137' stroke='%237A7871' stroke-width='1.12541' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+                    display: inline-block;
+                    margin-right: 0.8rem;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}
+
+.recruiting-text-p-wysiwyg {
+    ul {
+        @apply text-16 font-normal leading-[1.32] text-green;
+
+        li {
+            @apply relative py-24;
+
+            a {
+                @apply relative inline-block mt-12 p-8 bg-white-smoke text-grey rounded-[0.4rem];
+
+                &::before {
+                    content: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.5548 13.0045H5.20212C5.08273 13.0045 4.96823 12.9571 4.8838 12.8726C4.79938 12.7882 4.75195 12.6737 4.75195 12.5543V5.20163C4.75195 5.08224 4.79938 4.96774 4.8838 4.88331C4.96823 4.79889 5.08273 4.75146 5.20212 4.75146H12.5548C12.6742 4.75146 12.7887 4.79889 12.8731 4.88331C12.9575 4.96774 13.005 5.08224 13.005 5.20163V12.5543C13.005 12.6737 12.9575 12.7882 12.8731 12.8726C12.7887 12.9571 12.6742 13.0045 12.5548 13.0045Z' stroke='%237A7871' stroke-width='1.12541' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9.25302 4.75137V1.45016C9.25302 1.33077 9.20559 1.21627 9.12117 1.13185C9.03675 1.04743 8.92225 1 8.80286 1H1.45016C1.33077 1 1.21627 1.04743 1.13185 1.13185C1.04743 1.21627 1 1.33077 1 1.45016V8.80286C1 8.92225 1.04743 9.03675 1.13185 9.12117C1.21627 9.20559 1.33077 9.25302 1.45016 9.25302H4.75137' stroke='%237A7871' stroke-width='1.12541' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+                    display: inline-block;
+                    margin-right: 0.8rem;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}
+
 .post-wyswyg {
     h1, h2, h3, h4, h5, h6 {
         @apply text-40 font-normal leading-[1.15] tracking-[-1%] text-green;
@@ -77,7 +119,8 @@
                     left: 0;
                     height: 0.05em;
                     min-height: 1px;
-                    background-color: currentColor
+                    background-color: currentColor;
+                    opacity: 0.3;
                 }
             
                 &:before {
@@ -195,6 +238,226 @@
             &:after {
                 @apply content-[''] absolute top-[2.4rem] left-0 w-5 h-5 bg-black rounded-full;
             }
+        }
+    }
+}
+
+.client-stories-wyswyg {
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green;
+    }
+
+    p {
+        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+    }
+
+    ul {
+        @apply mt-20 s:mt-50 text-16 font-normal leading-[1.32] text-green;
+
+        li {
+            @apply relative border-t border-solid border-grey-taupe py-24;
+
+            &:last-child {
+                @apply border-b border-solid border-grey-taupe;
+            }
+
+            a {
+                @apply relative !font-medium text-grey;
+
+                display: inline-flex;
+                position: relative;
+                white-space: nowrap;
+            
+                --bottom: -.1em;
+            
+                &:before,
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: var(--bottom);
+                    right: 0;
+                    left: 0;
+                    height: 0.05em;
+                    min-height: 1px;
+                    background-color: currentColor;
+                    opacity: 0.3;
+                }
+            
+                &:before {
+                    transform-origin: left;
+                    transform: scale3d(1, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: .5s;
+                }
+            
+                &:after {
+                    transform-origin: right;
+                    transform: scale3d(0, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: 0s;
+                }
+            
+                @screen has-hover {
+                    &:hover {
+            
+                        &:before {
+                            transform-origin: right;
+                            transform: scale3d(0, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: 0s;
+                        }
+            
+                        &:after {
+                            transform-origin: left;
+                            transform: scale3d(1, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: .2s;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    img {
+        @apply relative block w-full h-[40rem] object-cover;
+    }
+
+    hr {
+        @apply relative my-32 border-[#DEDAD3];
+    }
+
+    blockquote {
+        @apply relative flex flex-col items-center justify-center py-65;
+
+        h1, h2, h3, h4, h5, h6 {
+            @apply text-center text-grey not-italic font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase;
+        }
+
+        p {
+            @apply mx-auto max-w-[37rem] text-center text-green font-disp italic text-24 font-normal leading-[1.24] tracking-[-2%];    
+        }
+    }
+}
+
+.cases-and-investigations-wyswyg {
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green;
+    }
+
+    p {
+        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+
+        strong {
+            @apply text-16 font-medium leading-[1.32];
+        }
+    }
+
+    ol {
+        @apply pt-32 s:pt-65 text-16 font-normal leading-[1.32] text-green flex flex-col items-start gap-4;
+
+        li {
+            @apply relative bg-white-smoke p-24 w-full;
+
+            strong {
+                @apply text-16 font-medium;
+            }
+        }
+    }
+
+    ul {
+        @apply mt-20 s:mt-50 text-16 font-normal leading-[1.32] text-green;
+
+        li {
+            @apply relative border-t border-solid border-grey-taupe py-24;
+
+            &:last-child {
+                @apply border-b border-solid border-grey-taupe;
+            }
+
+            a {
+                @apply relative !font-medium text-grey;
+
+                display: inline-flex;
+                position: relative;
+                white-space: nowrap;
+            
+                --bottom: -.1em;
+            
+                &:before,
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: var(--bottom);
+                    right: 0;
+                    left: 0;
+                    height: 0.05em;
+                    min-height: 1px;
+                    background-color: currentColor;
+                    opacity: 0.3;
+                }
+            
+                &:before {
+                    transform-origin: left;
+                    transform: scale3d(1, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: .5s;
+                }
+            
+                &:after {
+                    transform-origin: right;
+                    transform: scale3d(0, 1, 1);
+                    transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                    transition-delay: 0s;
+                }
+            
+                @screen has-hover {
+                    &:hover {
+            
+                        &:before {
+                            transform-origin: right;
+                            transform: scale3d(0, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: 0s;
+                        }
+            
+                        &:after {
+                            transform-origin: left;
+                            transform: scale3d(1, 1, 1);
+                            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+                            transition-delay: .2s;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    img {
+        @apply relative block w-full h-[40rem] object-cover;
+    }
+
+    hr {
+        @apply relative my-32 border-[#DEDAD3];
+    }
+
+    blockquote {
+        @apply relative flex flex-col items-center justify-center py-65;
+
+        h1, h2, h3, h4, h5, h6 {
+            @apply text-center text-grey not-italic font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase;
+        }
+
+        p {
+            @apply mx-auto max-w-[37rem] text-center text-green font-disp italic text-24 font-normal leading-[1.24] tracking-[-2%];    
         }
     }
 }

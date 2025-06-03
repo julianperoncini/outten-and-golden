@@ -10,8 +10,11 @@ use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
+use Twig\Extension\EscaperExtension;
+use Twig\Runtime\EscaperRuntime;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Twig\DeprecatedCallableInfo;
 
 /**
  * Class Twig
@@ -23,7 +26,7 @@ class Twig
     /**
      * @codeCoverageIgnore
      */
-    public static function init()
+    public static function init(): void
     {
         $self = new self();
 
@@ -98,7 +101,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_post() }} or {{ get_posts() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberPost' => [
@@ -107,7 +116,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_post() }} or {{ get_posts() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'Image' => [
@@ -116,7 +131,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_image() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberImage' => [
@@ -125,7 +146,13 @@ class Twig
                     return $post_factory->from($post_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_image() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'Term' => [
@@ -134,7 +161,13 @@ class Twig
                     return $termFactory->from($term_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_term() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberTerm' => [
@@ -143,7 +176,13 @@ class Twig
                     return $termFactory->from($term_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_term() }} or {{ get_terms() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'User' => [
@@ -152,7 +191,13 @@ class Twig
                     return Timber::get_user($user_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_user() }} or {{ get_users() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'TimberUser' => [
@@ -161,7 +206,13 @@ class Twig
                     return Timber::get_user($user_id);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ get_user() }} or {{ get_users() }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'shortcode' => [
@@ -275,29 +326,35 @@ class Twig
         $filters = [
             /* image filters */
             'resize' => [
-                'callable' => ['Timber\ImageHelper', 'resize'],
+                'callable' => [ImageHelper::class, 'resize'],
             ],
             'retina' => [
-                'callable' => ['Timber\ImageHelper', 'retina_resize'],
+                'callable' => [ImageHelper::class, 'retina_resize'],
             ],
             'letterbox' => [
-                'callable' => ['Timber\ImageHelper', 'letterbox'],
+                'callable' => [ImageHelper::class, 'letterbox'],
             ],
             'tojpg' => [
-                'callable' => ['Timber\ImageHelper', 'img_to_jpg'],
+                'callable' => [ImageHelper::class, 'img_to_jpg'],
             ],
             'towebp' => [
-                'callable' => ['Timber\ImageHelper', 'img_to_webp'],
+                'callable' => [ImageHelper::class, 'img_to_webp'],
             ],
 
             // Debugging filters.
             'get_class' => [
                 'callable' => function ($obj) {
                     Helper::deprecated('{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0');
-                    return \get_class($obj);
+                    return $obj::class;
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: "{{ function('get_class', my_object) }}",
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
             'print_r' => [
@@ -306,7 +363,13 @@ class Twig
                     return \print_r($arr, true);
                 },
                 'options' => [
-                    'deprecated' => true,
+                    'deprecation_info' => new DeprecatedCallableInfo(
+                        package: 'timber/timber',
+                        version: '2.0.0',
+                        altName: '{{ dump(my_object) }}',
+                        altPackage: null,
+                        altVersion: null
+                    ),
                 ],
             ],
 
@@ -321,7 +384,7 @@ class Twig
                 'callable' => 'wp_trim_words',
             ],
             'excerpt_chars' => [
-                'callable' => ['Timber\TextHelper', 'trim_characters'],
+                'callable' => [TextHelper::class, 'trim_characters'],
             ],
             'function' => [
                 'callable' => [$this, 'exec_function'],
@@ -342,16 +405,14 @@ class Twig
                 'callable' => [$this, 'add_list_separators'],
             ],
             'pluck' => [
-                'callable' => ['Timber\Helper', 'pluck'],
+                'callable' => [Helper::class, 'pluck'],
             ],
             'wp_list_filter' => [
-                'callable' => ['Timber\Helper', 'wp_list_filter'],
+                'callable' => [Helper::class, 'wp_list_filter'],
             ],
 
             'relative' => [
-                'callable' => function ($link) {
-                    return URLHelper::get_rel_url($link, true);
-                },
+                'callable' => fn ($link) => URLHelper::get_rel_url($link, true),
             ],
 
             /**
@@ -364,12 +425,10 @@ class Twig
                 ],
             ],
             'time_ago' => [
-                'callable' => ['Timber\DateTimeHelper', 'time_ago'],
+                'callable' => [DateTimeHelper::class, 'time_ago'],
             ],
             'truncate' => [
-                'callable' => function ($text, $len) {
-                    return TextHelper::trim_words($text, $len);
-                },
+                'callable' => fn ($text, $len) => TextHelper::trim_words($text, $len),
             ],
 
             // Numbers filters
@@ -537,29 +596,28 @@ class Twig
      */
     public function add_timber_escapers($twig)
     {
-        $esc_url = function (Environment $env, $string) {
-            return \esc_url($string);
-        };
+        $esc_url = fn (Environment $env, $string) => \esc_url($string);
 
-        $wp_kses_post = function (Environment $env, $string) {
-            return \wp_kses_post($string);
-        };
+        $wp_kses_post = fn (Environment $env, $string) => \wp_kses_post($string);
 
-        $esc_html = function (Environment $env, $string) {
-            return \esc_html($string);
-        };
+        $esc_html = fn (Environment $env, $string) => \esc_html($string);
 
-        $esc_js = function (Environment $env, $string) {
-            return \esc_js($string);
-        };
+        $esc_js = fn (Environment $env, $string) => \esc_js($string);
 
-        if (\class_exists('Twig\Extension\EscaperExtension')) {
-            $escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
+        if (\class_exists(EscaperRuntime::class)) {
+            $escaper_extension = $twig->getRuntime(EscaperRuntime::class);
+            $escaper_extension->setEscaper('esc_url', '\esc_url');
+            $escaper_extension->setEscaper('wp_kses_post', '\wp_kses_post');
+            $escaper_extension->setEscaper('esc_html', '\esc_html');
+            $escaper_extension->setEscaper('esc_js', '\esc_js');
+        } elseif ($twig->hasExtension(EscaperExtension::class)) {
+            $escaper_extension = $twig->getExtension(EscaperExtension::class);
             $escaper_extension->setEscaper('esc_url', $esc_url);
             $escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
             $escaper_extension->setEscaper('esc_html', $esc_html);
             $escaper_extension->setEscaper('esc_js', $esc_js);
         }
+
         return $twig;
     }
 
@@ -653,10 +711,9 @@ class Twig
     /**
      *
      *
-     * @param mixed   $arr
      * @return array
      */
-    public function to_array($arr)
+    public function to_array(mixed $arr)
     {
         if (\is_array($arr)) {
             return $arr;
@@ -700,7 +757,7 @@ class Twig
      */
     public function convert_pre_entities($matches)
     {
-        return \str_replace($matches[1], \htmlentities($matches[1]), $matches[0]);
+        return \str_replace($matches[1], \htmlentities((string) $matches[1]), (string) $matches[0]);
     }
 
     /**

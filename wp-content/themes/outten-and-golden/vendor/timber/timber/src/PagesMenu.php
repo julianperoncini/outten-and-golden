@@ -33,6 +33,9 @@ class PagesMenu extends Menu
          * Default arguments from wp_page_menu() function.
          *
          * @see wp_page_menu()
+         *
+         * @since 2.3.0 The 'menu' and 'theme_location' are added to provide compatibility with Polylang.
+         * @see https://github.com/timber/timber/issues/2922
          */
         $defaults = [
             'sort_column' => 'menu_order, post_title',
@@ -43,6 +46,8 @@ class PagesMenu extends Menu
             'after' => '</ul>',
             'item_spacing' => 'discard',
             'walker' => '',
+            'menu' => '',
+            'theme_location' => '',
             'menu_id' => '',
             'menu_class' => 'menu',
             'container' => 'div',
@@ -94,7 +99,7 @@ class PagesMenu extends Menu
         }
 
         // Sanitize, mostly to keep spaces out.
-        $args['exclude'] = \preg_replace('/[^0-9,]/', '', $args['exclude']);
+        $args['exclude'] = \preg_replace('/[^0-9,]/', '', (string) $args['exclude']);
 
         // Allow plugins to filter an array of excluded pages (but don't put a nullstring into the array).
         $exclude_array = ($args['exclude'])

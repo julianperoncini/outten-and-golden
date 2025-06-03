@@ -2,7 +2,11 @@
 
 {% block content %}
 	<article data-taxi-view>
-		<div class="app" data-taxi-namespace="{{ taxi_namespace }}">
+		<div class="app" data-taxi-namespace="{{ taxi_namespace }}-{{ post.post_name }}">
+			{% if not is_home %}
+				{% include 'partials/breadcrumb.twig' %}
+			{% endif %}
+			
 			{% include 'blocks/builder/index.twig' with {
 				props: {
 					data: {

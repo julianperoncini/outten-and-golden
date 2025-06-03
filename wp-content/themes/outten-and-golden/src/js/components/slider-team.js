@@ -32,6 +32,8 @@ export default function sliderTeamMembers() {
     const elements = {
         carousel: qs('.js-slider-team'),
         slide: qsa('.js-member-item'),
+        prev: qs('.js-slider-team-prev'),
+        next: qs('.js-slider-team-next'),
     }
 
     const pos = (e) => {
@@ -199,6 +201,8 @@ export default function sliderTeamMembers() {
         window.addEventListener(state.events.up, up)
         elements.carousel.addEventListener(state.events.down, down)
         elements.carousel.addEventListener(state.events.move, move)
+        elements.prev && elements.prev.addEventListener('click', previous)
+        elements.next && elements.next.addEventListener('click', next)
 
         evt.on('resize', resize)
         evt.on('tick', tick)
@@ -208,6 +212,8 @@ export default function sliderTeamMembers() {
         window.removeEventListener(state.events.up, up)
         elements.carousel.removeEventListener(state.events.down, down)
         elements.carousel.removeEventListener(state.events.move, move)
+        elements.prev && elements.prev.removeEventListener('click', previous)
+        elements.next && elements.next.removeEventListener('click', next)
 
         evt.off('resize', resize)
         evt.off('tick', tick)

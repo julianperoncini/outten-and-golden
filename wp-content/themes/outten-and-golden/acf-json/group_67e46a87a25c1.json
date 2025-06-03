@@ -21,6 +21,7 @@
                 "Yellow": "Yellow",
                 "Black": "Black",
                 "White": "White",
+                "Light Grey": "Light Grey",
                 "Grey": "Grey"
             },
             "default_value": "White",
@@ -262,5 +263,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1748016789
+    "modified": 1748409439
 }

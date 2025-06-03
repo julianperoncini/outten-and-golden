@@ -3,6 +3,8 @@
 {% block content %}
 	<article data-taxi-view class="page-team">
 		<div class="app">
+			{% include 'partials/breadcrumb.twig' %}
+			
 			{# Hero #}
 			{% include 'pages/team/partials/_hero.twig' with {
 				props: {

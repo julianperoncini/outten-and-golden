@@ -1,10 +1,42 @@
-{% set isLightBg = item.background_color and (item.background_color|lower == 'green' or item.background_color|lower == 'yellow') %}
-{% set isLight = item.background_color and (item.background_color|lower == 'green' or item.background_color|lower == 'yellow') %}
-{% set textClass = isLightBg ? 'text-white-smoke' : '' %}
+{% set text_color_map = {
+    'grey': 'text-grey-taupe',
+    'black': 'text-grey-taupe',
+    'yellow': 'text-black',
+    'green': 'text-white-smoke',
+    'white': 'text-green',
+    'light-grey': 'text-green'
+} %}
 
-<section class="relative bg-white mb-60 s:mb-120">
-    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+{% set progress_color_map = {
+    'grey': 'bg-grey-taupe',
+    'black': 'bg-grey-taupe',
+    'yellow': 'bg-black',
+    'green': 'bg-white-smoke',
+    'white': 'bg-green',
+    'light-grey': 'bg-green'
+} %}
 
+{% set bg_color_map = {
+    'grey': 'bg-grey',
+    'black': 'bg-black',
+    'yellow': 'bg-yellow',
+    'green': 'bg-green',
+    'white': 'bg-white',
+    'light-grey': 'bg-white-smoke'
+} %}
+
+{% set bg_color_temp = item.background_color|lower|default('white') %}
+{% if bg_color_temp == 'light grey' %}
+    {% set bg_color = 'light-grey' %}
+{% else %}
+    {% set bg_color = bg_color_temp %}
+{% endif %}
+
+{% set text_color = text_color_map[bg_color] %}
+{% set progress_color = progress_color_map[bg_color] %}
+{% set bg_color_mapped = bg_color_map[bg_color] %}
+
+<section class="relative {{ text_color }} {{ bg_color_mapped }} mb-60 s:mb-120">
     <div class="site-grid relative s:left-[50%] s:ml-[-18.75rem]">
         <div class="col-span-full s:col-span-10">
             <div class="relative w-full">
@@ -30,13 +62,13 @@
             <div class="col-start-1 col-span-full s:col-span-6 py-32 s:py-65 s:pl-32 flex flex-col items-start justify-between">
                 <div class="relative flex flex-col space-y-40 max-w-full s:max-w-[40.5rem] pb-40 s:pb-0">
                     <div class="relative">
-                        <h5 class="text-12 font-medium leading-none tracking-[0.12rem] uppercase text-grey {{ textClass }}">
+                        <h5 class="text-12 font-medium leading-none tracking-[0.12rem] uppercase text-grey {{ text_color }}">
                             {{ item.subtitle }}
                         </h5>
                     </div>
 
                     <div class="relative">
-                        <div class="text-32 s:text-40 font-normal leading-[1] tracking-[-0.02em] text-green {{ textClass }}">
+                        <div class="text-32 s:text-40 font-normal leading-[1] tracking-[-0.02em] text-green {{ text_color }}">
                             {{ item.title }}
                         </div>
                     </div>
@@ -45,8 +77,8 @@
                 <div class="relative w-full s:w-[inherit] flex flex-col-reverse s:flex-row items-start gap-25 js-slider-office" data-component="sliderOffice(js-slider-office)">
                     <div class="relative w-full s:w-[inherit] s:mt-[0.8rem] flex flex-row s:flex-col gap-x-8 s:gap-x-0 s:gap-y-8 js-slider-office-progress">
                         {% for item in item.card_slider %}
-                            <span class="cursor-pointer inline-flex w-1/2 s:w-[0.1rem] h-[0.1rem] s:h-[3rem] {% if isLightBg %}bg-[#DEDAD320]{% else %}bg-grey-taupe{% endif %} js-sop-bar-wrap">
-                                <span class="w-full h-full {% if isLight %}bg-green{% else %}bg-white-smoke{% endif %} origin-top scale-y-0 js-slider-office-progress-bar"></span>
+                            <span class="cursor-pointer inline-flex w-1/2 s:w-[0.1rem] h-[0.1rem] s:h-[3rem] {{ progress_color }} opacity-20 js-sop-bar-wrap">
+                                <span class="w-1/2 s:w-[0.1rem] h-full {{ progress_color }} origin-top scale-y-0 js-slider-office-progress-bar"></span>
                             </span>
                         {% endfor %}
                     </div>
@@ -55,18 +87,18 @@
                         {% for item in item.card_slider %}
                             <article class="{% if loop.first %}relative{% else %}absolute top-0 left-0{% endif %} w-full s:w-[inherit] flex flex-col gap-y-40 text-green {{ textClass }} js-slide-office">
                                 <div class="flex flex-col gap-y-24">
-                                    <h4 class="text-24 s:text-32 font-normal leading-[1.04] -tracking-[0.032rem] {{ textClass }}">
+                                    <h4 class="text-24 s:text-32 font-normal leading-[1.04] -tracking-[0.032rem] {{ text_color }}">
                                         {{ item.city }}
                                     </h4>
 
-                                    <p class="inline-flex w-full text-16 font-normal leading-[1.32] {{ textClass }}">
+                                    <p class="inline-flex w-full text-16 font-normal leading-[1.32] {{ text_color }}">
                                         {{ item.address }}
                                     </p>
                                 </div>
 
                                 <div class="flex items-start justify-between s:justify-start gap-32">
                                     {% if item.phone %}
-                                        <a href="{{ item.phone }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ textClass }}">
+                                        <a href="{{ item.phone }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ text_color }}">
                                             <span class="inline-flex">
                                                 <svg class="w-[1.1rem] h-auto" width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M4.53636 12.1641H5.98473M2.90694 1.30127H7.61415C8.81403 1.30127 9.78671 2.27396 9.78671 3.47383V12.5262C9.78671 13.726 8.81403 14.6987 7.61415 14.6987H2.90694C1.70706 14.6987 0.734375 13.726 0.734375 12.5262V3.47383C0.734375 2.27396 1.70706 1.30127 2.90694 1.30127Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -78,7 +110,7 @@
                                     {% endif %}
 
                                     {% if item.fax %}
-                                        <a href="{{ item.fax }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ textClass }}">
+                                        <a href="{{ item.fax }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ text_color }}">
                                             <span class="inline-flex">
                                                 <svg class="w-[1.4rem] h-auto" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M9.8916 0.469727C10.3451 0.469727 10.7799 0.650099 11.1006 0.970703C11.4212 1.29135 11.6015 1.72623 11.6016 2.17969V3.88965H10.9629C10.7862 3.88965 10.6146 3.90718 10.4482 3.94141L10.3242 3.9668V2.17969C10.3242 2.06516 10.2783 1.95501 10.1973 1.87402C10.1162 1.79308 10.0061 1.74805 9.8916 1.74805H4.53613C4.4216 1.74805 4.3115 1.79308 4.23047 1.87402C4.14948 1.95501 4.10358 2.06516 4.10352 2.17969V4.75391H9.02832L8.90332 4.91992C8.67797 5.21833 8.51669 5.56828 8.43945 5.94922L8.42285 6.03223H2.92969C2.67311 6.03223 2.42658 6.13405 2.24512 6.31543C2.06364 6.49691 1.96191 6.74335 1.96191 7V11.8203C1.96198 11.9348 2.0069 12.045 2.08789 12.126C2.16888 12.207 2.27903 12.2519 2.39355 12.252H8.42285L8.43945 12.335C8.51579 12.7082 8.67465 13.0596 8.90332 13.3643L9.02734 13.5303H2.39355C1.9401 13.5302 1.50522 13.3499 1.18457 13.0293C0.863922 12.7086 0.683658 12.2738 0.683594 11.8203V7C0.683594 6.40441 0.920653 5.83325 1.3418 5.41211L1.50586 5.2627C1.87901 4.95693 2.34217 4.78106 2.82617 4.75879V2.17969C2.82624 1.72623 3.0065 1.29135 3.32715 0.970703C3.64784 0.650099 4.08266 0.469727 4.53613 0.469727H9.8916ZM12.0342 4.75391C12.4876 4.75397 12.9225 4.93434 13.2432 5.25488C13.5639 5.57559 13.7441 6.0113 13.7441 6.46484V11.8203C13.7441 12.2738 13.5638 12.7086 13.2432 13.0293C12.9225 13.3499 12.4876 13.5302 12.0342 13.5303H10.9629C10.5094 13.5303 10.0746 13.3499 9.75391 13.0293C9.43326 12.7086 9.25299 12.2738 9.25293 11.8203V6.46484C9.25293 6.0113 9.4332 5.57559 9.75391 5.25488C10.0746 4.93438 10.5095 4.75391 10.9629 4.75391H12.0342ZM10.9629 6.03223C10.8483 6.03223 10.7383 6.07814 10.6572 6.15918C10.5763 6.24021 10.5303 6.35031 10.5303 6.46484V11.8203C10.5303 11.9348 10.5762 12.045 10.6572 12.126C10.7383 12.2069 10.8484 12.252 10.9629 12.252H12.0342C12.1487 12.2519 12.2589 12.207 12.3398 12.126C12.4208 12.045 12.4658 11.9348 12.4658 11.8203V6.46484C12.4658 6.35038 12.4207 6.24019 12.3398 6.15918C12.2589 6.07819 12.1487 6.03229 12.0342 6.03223H10.9629ZM3.46484 9.03906C3.63427 9.03906 3.79717 9.10581 3.91699 9.22559C4.0368 9.3454 4.10349 9.5083 4.10352 9.67773C4.10352 9.8472 4.03682 10.0101 3.91699 10.1299C3.79716 10.2497 3.63431 10.3164 3.46484 10.3164C3.29541 10.3164 3.13251 10.2497 3.0127 10.1299C2.89292 10.0101 2.82617 9.84716 2.82617 9.67773C2.82619 9.5083 2.89288 9.3454 3.0127 9.22559C3.13251 9.10578 3.29541 9.03908 3.46484 9.03906ZM5.60742 9.03906C5.77661 9.03913 5.93886 9.10607 6.05859 9.22559C6.17841 9.3454 6.24607 9.5083 6.24609 9.67773C6.24609 9.8472 6.17842 10.0101 6.05859 10.1299C5.93885 10.2495 5.77665 10.3163 5.60742 10.3164C5.43799 10.3164 5.2751 10.2497 5.15527 10.1299C5.03544 10.0101 4.96777 9.8472 4.96777 9.67773C4.9678 9.5083 5.03546 9.3454 5.15527 9.22559C5.27509 9.10586 5.43803 9.03906 5.60742 9.03906ZM3.46484 6.89648C3.63431 6.89648 3.79716 6.96415 3.91699 7.08398C4.03657 7.2037 4.10341 7.36595 4.10352 7.53516C4.10352 7.70455 4.03672 7.86749 3.91699 7.9873C3.79716 8.10714 3.63431 8.1748 3.46484 8.1748C3.29541 8.17478 3.13251 8.10712 3.0127 7.9873C2.89302 7.8675 2.82617 7.70451 2.82617 7.53516C2.82628 7.36599 2.89316 7.20369 3.0127 7.08398C3.13251 6.96417 3.29541 6.89651 3.46484 6.89648ZM5.60742 6.89648C5.77676 6.89655 5.93883 6.96426 6.05859 7.08398C6.17833 7.20372 6.24599 7.36584 6.24609 7.53516C6.24609 7.70462 6.17842 7.86747 6.05859 7.9873C5.93884 8.10698 5.77672 8.17474 5.60742 8.1748C5.43796 8.1748 5.2751 8.10714 5.15527 7.9873C5.03549 7.86748 4.96777 7.70458 4.96777 7.53516C4.96788 7.36591 5.03564 7.2037 5.15527 7.08398C5.2751 6.96415 5.43796 6.89648 5.60742 6.89648Z" fill="currentColor" stroke="currentColor" stroke-width="0.20682"/>
@@ -90,7 +122,7 @@
                                     {% endif %}
 
                                     {% if item.email %}
-                                        <a href="mailto:{{ item.email }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ textClass }}">
+                                        <a href="mailto:{{ item.email }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ text_color }}">
                                             <span class="inline-flex">
                                                 <svg class="w-[1.3rem] h-auto" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M0.992709 2.73049C0.681262 2.55197 0.284061 2.65972 0.105536 2.97117C-0.0729892 3.28261 0.0347649 3.67982 0.346211 3.85834L0.992709 2.73049ZM5.08981 5.82822L5.41604 5.26601L5.41306 5.26429L5.08981 5.82822ZM6.30916 6.15637V6.80637V6.15637ZM7.52851 5.82822L7.20593 5.2639L7.20228 5.26601L7.52851 5.82822ZM12.2837 3.85873C12.5954 3.68057 12.7036 3.2835 12.5254 2.97184C12.3473 2.66018 11.9502 2.55195 11.6386 2.73011L12.2837 3.85873ZM3.09467 1.43516H9.53653V0.135156H3.09467V1.43516ZM9.53653 1.43516C10.5329 1.43516 11.3406 2.24285 11.3406 3.2392H12.6406C12.6406 1.52488 11.2509 0.135156 9.53653 0.135156V1.43516ZM11.3406 3.2392V8.7608H12.6406V3.2392H11.3406ZM11.3406 8.7608C11.3406 9.75715 10.5329 10.5648 9.53653 10.5648V11.8648C11.2509 11.8648 12.6406 10.4751 12.6406 8.7608H11.3406ZM9.53653 10.5648H3.09467V11.8648H9.53653V10.5648ZM3.09467 10.5648C2.09832 10.5648 1.29062 9.75715 1.29062 8.7608H-0.00937498C-0.00937498 10.4751 1.38035 11.8648 3.09467 11.8648V10.5648ZM1.29062 8.7608V3.2392H-0.00937498V8.7608H1.29062ZM1.29062 3.2392C1.29062 2.24285 2.09832 1.43516 3.09467 1.43516V0.135156C1.38035 0.135156 -0.00937498 1.52488 -0.00937498 3.2392H1.29062ZM0.346211 3.85834L4.76656 6.39214L5.41306 5.26429L0.992709 2.73049L0.346211 3.85834ZM4.76358 6.39042C5.2331 6.66287 5.76631 6.80637 6.30916 6.80637V5.50637C5.99547 5.50637 5.68736 5.42345 5.41604 5.26601L4.76358 6.39042ZM6.30916 6.80637C6.85201 6.80637 7.38522 6.66287 7.85474 6.39042L7.20228 5.26601C6.93096 5.42345 6.62285 5.50637 6.30916 5.50637V6.80637ZM7.85109 6.39253L12.2837 3.85873L11.6386 2.73011L7.20594 5.26391L7.85109 6.39253Z" fill="currentColor"/>
@@ -102,7 +134,7 @@
                                     {% endif %}
                                     
                                     {% if item.map %}
-                                        <a href="{{ item.map }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ textClass }}">
+                                        <a href="{{ item.map }}" target="_blank" class="flex items-center gap-x-8 text-16 font-normal leading-[1.32] {{ text_color }}">
                                             <span class="inline-flex">
                                                 <svg class="w-[1.3rem] h-auto" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <mask id="path-1-outside-1_3153_6433" maskUnits="userSpaceOnUse" x="-0.00976562" y="-0.575684" width="13" height="13" fill="black">
