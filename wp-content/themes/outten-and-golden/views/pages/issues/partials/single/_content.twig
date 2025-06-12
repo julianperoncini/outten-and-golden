@@ -1,0 +1,77 @@
+<section class="relative bg-white">
+    {# <pre>{{ post|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    {% set text_color_map = {
+        'grey': 'text-grey-taupe',
+        'black': 'text-grey-taupe',
+        'yellow': 'text-black',
+        'green': 'text-white-smoke'
+    } %}
+
+    {% set bg_color = post.feature_content.background_color|lower %}
+    {% set text_color = text_color_map[bg_color] %}
+    
+    <div class="site-max site-grid pt-60 s:pt-120">
+        <div class="relative col-start-1 col-span-8">
+            <div class="post-wyswyg">{{ post.content_post.description_post }}</div>
+        </div>
+
+        <div class="relative col-start-10 col-span-7">
+            <div class="sticky top-120 {{ text_color }} bg-{{ post.feature_content.background_color|lower }}">
+                <div class="relative p-32 space-y-24">
+                    <h3 class="font-disp text-56 leading-[1.10] tracking-[-2%]">{{ post.content_post.description_card.title }}</h3>
+                    <p class="text-20 font-normal leading-[1.24] tracking-[-1%]">{{ post.content_post.description_card.description }}</p>
+                    <div class="relative">
+                        <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] bg-white text-green py-15 px-25 uppercase" href="{{ post.content_post.description_card.link.url }}" target="{{ post.content_post.description_card.link.target }}">
+                            <span class="inline-flex">
+                                {{ post.content_post.description_card.link.title }}
+                            </span>
+                            <span class="inline-flex">
+                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative w-full h-[0.1rem] bg-white-smoke"></div>
+
+                <div class="relative p-32 flex flex-col items-start space-y-40">
+                    <div class="relative flex items-center text-12 font-medium leading-none tracking-[10%]">
+                        <div>1</div>
+                        <div>/</div>
+                        <div>3</div>
+                    </div>
+
+                    <div class="relative">
+                        <article class="relative">
+                            <p class="text-20 font-normal leading-[1.24] tracking-[-1%]">
+                                If you think you've experienced illegal discrimination because of your criminal history, we're ready to fight for your rights.
+                                If you think you've experienced illegal discrimination because of your criminal history, we're ready to fight for your rights.
+                            </p>
+                        </article>
+                    </div>
+
+                    <div class="relative flex">
+                        <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid" type="button">
+                            <span class="inline-flex">
+                                <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.75 10L1.25 5.5L5.75 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button">
+                            <span class="inline-flex">
+                                <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.25 1L5.75 5.5L1.25 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,74 @@
+{%- set cleaned_title = post.post_title | replace({ '%' : '', '#' : ''}) -%}
+
+<section class="relative bg-white">
+    {# <pre>{{ post.feature_content|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    <div class="site-max">
+        <div class="site-grid">
+            <div class="relative col-start-5 col-span-8 p-24 flex items-start justify-between bg-white-smoke">
+                <div class="relative flex items-start gap-16">
+                    <div class="relative w-32 h-32 rounded-[0.2rem] overflow-hidden">
+                        <figure class="relative w-full h-full">
+                            {% include "blocks/common/image.twig" with {
+                                props : {
+                                    data: {
+                                        image : post.author.profile_picture
+                                    },
+                                    options: {
+                                        container_class: 'w-full relative',
+                                        class : 'w-full relative h-full object-cover',
+                                        aspect_ratio: '100%',
+                                        aspect_ratio_mobile: '100%',
+                                    }
+                                }
+                            } %}
+                        </figure>
+                    </div>
+
+                    <div class="relative text-green flex flex-col items-start gap-y-2">
+                        <p class="not-italic text-12 font-medium leading-none tracking-[0.12rem] uppercase">Author</p>
+                        <p class="not-italic text-16 font-medium leading-[1.32]">{{ post.author.first_name }} {{ post.author.last_name }}</p>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="relative text-green flex flex-col items-start gap-y-2">
+                        <p class="not-italic text-12 font-medium leading-none tracking-[0.12rem] uppercase">DATE</p>
+                        <p class="not-italic text-16 font-medium leading-[1.32]">{{ post.post_date|date("F j, Y") }}</p>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="relative text-green flex flex-col items-start gap-y-2">
+                        <p class="not-italic text-12 font-medium leading-none tracking-[0.12rem] uppercase">Share</p>
+                        <ul class="relative flex items-center gap-x-16">
+                            <li class="relative inline-flex">
+                                <a href="/" class="relative flex">
+                                    <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.71142 1.55571C4.71122 1.9681 4.5472 2.36352 4.25544 2.65498C3.96369 2.94644 3.56811 3.11007 3.15572 3.10986C2.74332 3.10965 2.3479 2.94563 2.05644 2.65388C1.76498 2.36213 1.60136 1.96655 1.60156 1.55415C1.60177 1.14176 1.76579 0.746339 2.05754 0.454879C2.34929 0.163419 2.74488 -0.000206002 3.15727 1.94647e-07C3.56966 0.000206391 3.96508 0.164227 4.25654 0.455978C4.548 0.74773 4.71163 1.14331 4.71142 1.55571ZM4.75807 4.26129H1.64821V13.9951H4.75807V4.26129ZM9.67165 4.26129H6.57734V13.9951H9.64055V8.8872C9.64055 6.04168 13.3491 5.77734 13.3491 8.8872V13.9951H16.42V7.82985C16.42 3.03289 10.9311 3.21171 9.64055 5.56743L9.67165 4.26129Z" fill="{{ icon_color|default('#1E383E') }}"/>
+                                    </svg>
+                                </a>
+                            </li>
+
+                            <li class="relative inline-flex">
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ post.link | e('url') }}" target="_blank" rel="noreferrer" aria-label="" class="relative flex">
+                                    <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.71142 1.55571C4.71122 1.9681 4.5472 2.36352 4.25544 2.65498C3.96369 2.94644 3.56811 3.11007 3.15572 3.10986C2.74332 3.10965 2.3479 2.94563 2.05644 2.65388C1.76498 2.36213 1.60136 1.96655 1.60156 1.55415C1.60177 1.14176 1.76579 0.746339 2.05754 0.454879C2.34929 0.163419 2.74488 -0.000206002 3.15727 1.94647e-07C3.56966 0.000206391 3.96508 0.164227 4.25654 0.455978C4.548 0.74773 4.71163 1.14331 4.71142 1.55571ZM4.75807 4.26129H1.64821V13.9951H4.75807V4.26129ZM9.67165 4.26129H6.57734V13.9951H9.64055V8.8872C9.64055 6.04168 13.3491 5.77734 13.3491 8.8872V13.9951H16.42V7.82985C16.42 3.03289 10.9311 3.21171 9.64055 5.56743L9.67165 4.26129Z" fill="{{ icon_color|default('#1E383E') }}"/>
+                                    </svg>
+                                </a>
+                            </li>
+
+                            <li class="relative inline-flex">
+                                <a href="/" class="relative flex">
+                                    <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.71142 1.55571C4.71122 1.9681 4.5472 2.36352 4.25544 2.65498C3.96369 2.94644 3.56811 3.11007 3.15572 3.10986C2.74332 3.10965 2.3479 2.94563 2.05644 2.65388C1.76498 2.36213 1.60136 1.96655 1.60156 1.55415C1.60177 1.14176 1.76579 0.746339 2.05754 0.454879C2.34929 0.163419 2.74488 -0.000206002 3.15727 1.94647e-07C3.56966 0.000206391 3.96508 0.164227 4.25654 0.455978C4.548 0.74773 4.71163 1.14331 4.71142 1.55571ZM4.75807 4.26129H1.64821V13.9951H4.75807V4.26129ZM9.67165 4.26129H6.57734V13.9951H9.64055V8.8872C9.64055 6.04168 13.3491 5.77734 13.3491 8.8872V13.9951H16.42V7.82985C16.42 3.03289 10.9311 3.21171 9.64055 5.56743L9.67165 4.26129Z" fill="{{ icon_color|default('#1E383E') }}"/>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,22 @@
+<aside class="relative z-1">
+    <div class="relative py-12 px-32 bg-white border-b border-solid border-grey-taupe">
+        <ul class="relative flex items-center gap-x-10 font-normal text-12 leading-[1.4]">
+            {% if breadcrumb %}
+                {% for item in breadcrumb %}
+                    <li class="relative">
+                        <a class="flex items-center gap-x-8 {{ loop.last ? 'text-black' : 'text-grey' }}" href="{{ item.url }}" aria-label="{{ item.label }}">
+                            <span class="inline-flex">{{ item.label }}</span>
+                            {% if not loop.last %}
+                                <span class="inline-flex relative top-[0.1rem]">
+                                    <svg class="w-5 h-8" viewBox="0 0 5 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.5" d="M0.867187 1L3.86719 4L0.867188 7" stroke="#292929" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</aside>

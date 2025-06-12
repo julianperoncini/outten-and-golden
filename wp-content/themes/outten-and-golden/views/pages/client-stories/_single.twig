@@ -1,0 +1,37 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view class="page-single-client-stories">
+		<div class="app">
+			{% include 'partials/breadcrumb.twig' %}
+			
+			{# <pre>{{ post|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+			{# Hero #}
+			{% include 'pages/client-stories/partials/single/_hero.twig' %}
+
+			{# General Content #}
+			{% include 'pages/client-stories/partials/single/_content.twig' %}
+
+			{# Author #}
+			{% include 'pages/client-stories/partials/single/_author.twig' %}
+
+			{# Related Attorneys #}
+			{% include 'pages/client-stories/partials/single/_attorneys-related.twig' %}
+
+			{# Related Stories #}
+			{% include 'pages/client-stories/partials/single/_other-stories-slider.twig' %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: post.content_builder
+					}
+				}
+			} %}
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}

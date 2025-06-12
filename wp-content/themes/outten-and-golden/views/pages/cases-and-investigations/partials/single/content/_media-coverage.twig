@@ -1,0 +1,37 @@
+{% if post.content_post.media_coverage %}
+    <div class="relative flex items-start justify-between bg-white-smoke p-32">
+        <div class="relative space-y-40 w-full">
+            <div class="relative">
+                <h2 class="text-black font-normal text-40 leading-[1.15] tracking-[-1%]"><em class="font-disp font-normal italic">Media</em> Coverage:</h2>
+            </div>
+
+            <div class="relative w-full">
+                <ul class="relative w-full flex flex-col items-start gap-32">
+                    {% for item in post.content_post.media_coverage %}
+                        <li class="relative">
+                            <div class="relative flex items-center gap-x-10">
+                                <figure class="relative w-[5.3rem] h-[5.3rem] shrink-0">
+                                    {% include "blocks/common/image.twig" with {
+                                        props : {
+                                            data: {
+                                                image : item.logo
+                                            },
+                                            options: {
+                                                container_class: 'w-full h-full overflow-hidden',
+                                                class : 'w-full h-full object-contain shrink-0',
+                                            }
+                                        }
+                                    } %}
+                                </figure>
+
+                                <div class="w-[0.2rem] h-[5.3rem] bg-black shrink-0"></div>
+
+                                <a class="inline-flex font-medium text-16 leading-[1.32] text-grey underline" href="{{ item.link.url }}" target="_blank" aria-label="{{ item.link.title }}">{{ item.link.title }}</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}

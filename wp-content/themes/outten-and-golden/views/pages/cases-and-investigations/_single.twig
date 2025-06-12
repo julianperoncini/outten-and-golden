@@ -1,0 +1,28 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view class="page-issue">
+		<div class="app">
+			{% include 'partials/breadcrumb.twig' %}
+			
+			{# <pre>{{ tags|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+			{# Hero #}
+			{% include 'pages/cases-and-investigations/partials/single/_hero.twig' %}
+
+			{# General Content #}
+			{% include 'pages/cases-and-investigations/partials/single/_content.twig' %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: post.content_builder
+					}
+				}
+			} %}
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}

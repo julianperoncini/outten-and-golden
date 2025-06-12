@@ -1,0 +1,22 @@
+<div class="relative w-full h-screen h-[100dvh]">
+    <div class="relative site-max h-full w-full flex items-center justify-center bg-{{ post.feature_content.background_color|lower }}">
+
+        <div class="relative site-grid flex flex-col items-center justify-center space-y-40">
+
+            <div class="relative col-start-8 col-span-2 flex items-center justify-center">
+                <h3 class="text-center text-white-smoke text-12 font-normal uppercase">{{ post.post_type }}</h3>
+            </div>
+
+            <div class="relative col-start-4 col-span-10 flex items-center justify-center">
+                <h1 class="text-center text-white-smoke text-96 font-normal leading-[1.10] tracking-[-0.02rem]">{{ post.post_title }}</h1>
+            </div>
+
+            <div class="relative col-start-6 col-span-6 flex items-center justify-center">
+                <p class="text-center text-white-smoke text-16 font-normal">
+                    {{ post.feature_content.description }}
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>

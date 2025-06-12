@@ -1,0 +1,22 @@
+<section class="relative bg-white">
+    {# <pre>{{ post.feature_content|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    
+    <div class="relative space-y-[12rem] s:space-y-[24rem] pt-60 s:pt-120">
+        {# Post Content, Framing the issue, Media Coverage and Form #}
+        <div class="site-max site-grid">
+            {# Post Content #}
+            {% include 'pages/cases-and-investigations/partials/single/content/_content.twig' %}
+
+            <div class="relative col-start-10 col-span-7 space-y-32">
+                {# Framing the issue #}
+                {% include 'pages/cases-and-investigations/partials/single/content/_framing-the-issue.twig' %}
+
+                {# Form #}
+                {% include 'pages/cases-and-investigations/partials/single/content/_form.twig' %}
+                
+                {# Media Coverage #}
+                {% include 'pages/cases-and-investigations/partials/single/content/_media-coverage.twig' %}
+            </div>
+        </div>
+    </div>
+</section>

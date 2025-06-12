@@ -1,0 +1,60 @@
+{% set text_color_map = {
+    'grey': 'text-grey-taupe',
+    'black': 'text-grey-taupe',
+    'yellow': 'text-black',
+    'green': 'text-white-smoke'
+} %}
+
+{% set bg_color = post.feature_content.background_color|lower %}
+{% set text_color = text_color_map[bg_color] %}
+
+<section class="relative">
+    <div class="relative h-full h-screen h-[100dvh]">
+        <div class="relative w-full h-full flex">
+            <div class="relative w-1/2 h-full">
+                {% if post.feature_content.feature_image %}
+                    <figure class="relative w-full h-full">
+                        {% include "blocks/common/image.twig" with {
+                            props : {
+                                data: {
+                                    image : post.feature_content.feature_image
+                                },
+                                options: {
+                                    container_class: 'w-full h-full overflow-hidden',
+                                    class : 'w-full h-full object-cover',
+                                }
+                            }
+                        } %}
+                    </figure>
+                {% endif %}
+            </div>
+
+            <div class="relative w-1/2 h-full flex flex-col items-center justify-between p-32 {{ text_color }} bg-{{ bg_color }}">
+                <div class="relative flex items-start gap-4">
+                    {% for item in categories %}
+                        {% include "/views/partials/tag.twig" with {
+                            data: {
+                                text: item.name,
+                            }
+                        } %}
+                    {% endfor %}
+                </div>
+
+                <div class="relative">
+                    <h1 class="text-center font-normal text-56 leading-[1.1] tracking-[-2%]">{{ post.feature_content.title }}</h1>
+                </div>
+
+                <div class="relative flex items-start gap-4 {{ item.background_color|lower }}">
+                    {% for item in tags %}
+                        {% include "/views/partials/category.twig" with {
+                            data: {
+                                text: item.name,
+                                bgColor: item.background_color,
+                            }
+                        } %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

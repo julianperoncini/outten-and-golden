@@ -1,0 +1,176 @@
+{% set all_client_stories = props.all_client_stories %}
+{% set client_stories_posts = props.client_stories_posts %}
+
+<section class="relative">
+    <div class="site-max">
+        <div class="site-grid">
+            <div class="s:col-start-1 col-span-full s:col-span-5">
+                <h2 class="font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_client_stories.title }}</h2>
+            </div>
+
+            <div class="s:col-start-12 col-span-full s:col-span-5">
+                <p class="text-green text-16 font-normal leading-[1.32] px-12 s:px-0">
+                    {{ all_client_stories.description }}
+                </p>
+            </div>
+
+            <div class="col-start-1 col-span-full pt-30 s:pt-80 flex flex-col gap-25 js-all-posts-container">
+                <div class="relative flex flex-wrap pb-32 s:pb-80 gap-24">
+                    {% for post in client_stories_posts %}
+                        {% set loop_index = loop.index0 %}
+
+                        {% set feature_content = function('get_field', 'feature_content', post.ID) %}
+                        {% set bg_color = feature_content.background_color|lower %}
+                        {% set post_link = function('get_permalink', post.ID) %}
+
+
+                        {% set group_position = loop_index % 4 %}
+                        {% set is_large = group_position == 3 %}
+                        {% set large_post_index = loop_index // 4 %}
+                        {% set image_position = large_post_index % 2 == 0 ? 'right' : 'left' %}
+
+                        {% set text_color_map = {
+                            'grey': 'text-white',
+                            'black': 'text-grey-taupe',
+                            'yellow': 'text-black',
+                            'green': 'text-white',
+                            'white': 'text-green',
+                            'sky': 'text-green',
+                            'lemon': 'text-green',
+                            'lavander': 'text-green',
+                        } %}
+                        {% set text_color = text_color_map[bg_color] %}
+                        
+                        {% set all_taxonomies = function('get_object_taxonomies', 'client-stories') %}
+                        {% set post_terms = {} %}
+
+                        {% for taxonomy in all_taxonomies %}
+                            {% set terms = function('get_the_terms', post.ID, taxonomy) %}
+                            {% if terms and terms is not same as(false) %}
+                                {% set post_terms = post_terms|merge({(taxonomy): terms}) %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if is_large %}
+                            <a class="relative flex flex-col s:flex-row items-start w-full max-w-full {{ text_color ? text_color : 'text-white' }} {% if image_position == 'left' %}s:flex-row-reverse{% endif %}" href="{{ post_link }}">
+                                <div class="relative p-24 s:p-32 w-full h-full bg-{{ feature_content.background_color|lower }}">
+                                    <div class="flex flex-col items-start space-y-24 s:space-y-32">
+                                        <div class="relative w-full flex flex-wrap items-center gap-4 z-2">
+                                            {% if post_terms['client-stories-categories'] %}
+                                                {% for category in post_terms['client-stories-categories'] %}
+                                                    {% include "/views/partials/tag.twig" with {
+                                                        data: {
+                                                            text: category.name,
+                                                        }
+                                                    } %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="relative">
+                                            <h4 class="font-disp text-24 s:text-40 font-normal leading-[1.2] tracking-[-0.02rem]">{{ feature_content.title }}</h4>
+                                        </div>
+
+                                        <div class="relative max-w-full s:max-w-[39.5rem]">
+                                            <div class="text-16 font-normal leading-[1.32] px-12 s:px-0">
+                                                {{ feature_content.description }}
+                                            </div>
+                                        </div>
+
+                                        <div class="relative">
+                                            <button class="relative font-sans inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" type="button" aria-label="Button to view client story post">
+                                                <span class="inline-flex">
+                                                    Read the full story
+                                                </span>
+                                                <span class="inline-flex">
+                                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <figure class="relative overflow-hidden w-full max-w-full s:max-w-[65rem] h-auto pointer-events-none select-none">
+                                    {% if feature_content.feature_image %}
+                                        {% include "blocks/common/image.twig" with {
+                                            props : {
+                                                data: {
+                                                    image : feature_content.feature_image
+                                                },
+                                                options: {
+                                                    container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                                    class : 'w-full h-full object-cover pointer-events-none select-none',
+                                                    aspect_ratio: '95%',
+                                                    aspect_ratio_mobile: '95%',
+                                                }
+                                            }
+                                        } %}
+                                    {% else %}
+                                        <div class="pt-[150%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
+                                    {% endif %}
+                                </figure>
+                            </a>
+                        {% else %}
+                            <a class="relative block w-full min-w-full s:min-w-[44.3rem] max-w-full s:max-w-[44.3rem] {{ text_color ? text_color : 'text-white' }}" href="{{ post_link }}">
+                                <div class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
+                                    <div class="pt-[150%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
+                                </div>
+
+                                <div class="absolute inset-0 p-24 s:p-32">
+                                    <div class="flex flex-col items-start space-y-24 s:space-y-32">
+                                        <div class="relative w-full flex flex-wrap items-center gap-4 z-2">
+                                            {% if post_terms['client-stories-categories'] %}
+                                                {% for category in post_terms['client-stories-categories'] %}
+                                                    {% include "/views/partials/tag.twig" with {
+                                                        data: {
+                                                            text: category.name,
+                                                        }
+                                                    } %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="relative">
+                                            <h4 class="font-disp text-24 s:text-40 font-normal leading-[1.2] tracking-[-0.02rem]">{{ feature_content.title }}</h4>
+                                        </div>
+
+                                        <div class="relative">
+                                            <div class="text-16 font-normal leading-[1.32] px-12 s:px-0">
+                                                {{ feature_content.description }}
+                                            </div>
+                                        </div>
+
+                                        <div class="relative">
+                                            <button class="relative font-sans inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" type="button" aria-label="Button to view client story post">
+                                                <span class="inline-flex">
+                                                    Read the full story
+                                                </span>
+                                                <span class="inline-flex">
+                                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a> 
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {% if client_stories_posts.pagination.pages is not empty %}
+                    {% include 'partials/pagination.twig' with {
+                        props: {
+                            pagination: client_stories_posts.pagination,
+                            items_per_page: 18,
+                            items_per_page_options: [6, 12, 18]
+                        }
+                    } %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>

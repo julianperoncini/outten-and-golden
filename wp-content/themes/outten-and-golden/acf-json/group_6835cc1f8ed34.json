@@ -1,0 +1,51 @@
+{
+    "key": "group_6835cc1f8ed34",
+    "title": "Custom Avatar",
+    "fields": [
+        {
+            "key": "field_6835cc1f58e72",
+            "label": "Profile Picture",
+            "name": "profile_picture",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "library": "all",
+            "min_width": 100,
+            "min_height": 100,
+            "min_size": "",
+            "max_width": 250,
+            "max_height": 250,
+            "max_size": "",
+            "mime_types": "",
+            "allow_in_bindings": 0,
+            "preview_size": "medium"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "user_role",
+                "operator": "==",
+                "value": "all"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1748362750
+}

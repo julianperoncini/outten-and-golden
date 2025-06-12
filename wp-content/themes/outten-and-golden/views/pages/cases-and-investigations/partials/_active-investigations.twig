@@ -1,0 +1,119 @@
+{% set active_investigations = props.active_investigations %}
+
+<section class="relative bg-white-smoke">
+    <div class="site-max py-32 s:py-120">
+        <div class="site-grid">
+            <div class="s:col-start-1 col-span-full s:col-span-5">
+                <h2 class="font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ active_investigations.title }}</h2>
+            </div>
+
+            <div class="s:col-start-12 col-span-full s:col-span-5">
+                <p class="text-green text-16 font-normal leading-[1.32] px-12 s:px-0">
+                    {{ active_investigations.description }}
+                </p>
+            </div>
+
+            <div class="col-start-1 col-span-full site-grid pt-30 s:pt-50">
+                {% for item in active_investigations.active_investigations_posts %}
+                    {% set feature_content = function('get_field', 'feature_content', item.post) %}
+                    {% set bg_color = feature_content.background_color|lower %}
+                    {% set post_link = function('get_permalink', item.post) %}
+
+                    {% if feature_content.feature_image %}
+                        {% set text_color = 'text-white' %}
+                    {% else %}
+                        {% set text_color_map = {
+                            'grey': 'text-grey-taupe',
+                            'black': 'text-grey-taupe',
+                            'yellow': 'text-black',
+                            'green': 'text-white-smoke'
+                        } %}
+                        {% set text_color = text_color_map[bg_color] %}
+                    {% endif %}
+
+                    {% set all_taxonomies = function('get_object_taxonomies', 'cases') %}
+                    {% set post_terms = {} %}
+
+                    {% for taxonomy in all_taxonomies %}
+                        {% set terms = function('get_the_terms', item.post, taxonomy) %}
+                        {% if terms and terms is not same as(false) %}
+                            {% set post_terms = post_terms|merge({(taxonomy): terms}) %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <article class="relative col-start-1 col-span-full s:col-span-8 {{ text_color ? text_color : 'text-white' }}">
+                        <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
+                            {% if post_terms['case-categories'] %}
+                                {% for category in post_terms['case-categories'] %}
+                                    {% include "/views/partials/tag.twig" with {
+                                        data: {
+                                            text: category.name,
+                                        }
+                                    } %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
+                            {% if feature_content.feature_image %}
+                                {% include "blocks/common/image.twig" with {
+                                    props : {
+                                        data: {
+                                            image : feature_content.feature_image
+                                        },
+                                        options: {
+                                            container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                            class : 'w-full h-full object-cover pointer-events-none select-none',
+                                            aspect_ratio: '105%',
+                                            aspect_ratio_mobile: '105%',
+                                        }
+                                    }
+                                } %}
+                            {% else %}
+                                <div class="pt-[105%] s:pt-[105%] bg-{{ feature_content.background_color|lower }}"></div>
+                            {% endif %}
+                        </figure>
+
+                        <div class="relative s:absolute bottom-0 left-0 w-full p-24 space-y-24">
+                            <div class="flex flex-wrap items-center justify-center s:justify-start gap-4">
+                                {# Category #}
+                                {% if post_terms['tags-cases'] %}
+                                    <div class="case-tags">
+                                        {% for tag in post_terms['tags-cases'] %}
+                                            {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
+                                            {% include "/views/partials/category.twig" with {
+                                                data: {
+                                                    text: tag.name,
+                                                    bgColor: tag_background_color,
+                                                }
+                                            } %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex flex-col s:flex-row items-end justify-center s:justify-between">
+                                <div class="relative pb-24 s:pb-0">
+                                    <h4 class="text-32 font-normal leading-[1.15] tracking-[-1%]">{{ feature_content.title }}</h4>
+                                </div>
+
+                                <div class="relative">
+                                    <a class="relative inline-flex space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" href="{{ post_link }}">
+                                        <span class="inline-flex">
+                                            See more
+                                        </span>
+                                        <span class="inline-flex">
+                                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
