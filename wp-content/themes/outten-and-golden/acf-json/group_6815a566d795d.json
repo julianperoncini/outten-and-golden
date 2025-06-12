@@ -417,38 +417,6 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_68161e3d21882": {
-                    "key": "layout_68161e3d21882",
-                    "name": "layout_related_slider",
-                    "label": "Layout Related Slider",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_68161e4b21885",
-                            "label": "Layout Related Slider",
-                            "name": "layout_related_slider",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_68161db9581e3"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
                 "layout_68309f35f10c7": {
                     "key": "layout_68309f35f10c7",
                     "name": "layout_full_screen",
@@ -505,5 +473,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1748129602
+    "modified": 1749740403
 }

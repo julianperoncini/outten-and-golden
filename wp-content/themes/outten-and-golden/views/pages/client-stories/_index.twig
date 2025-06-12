@@ -4,12 +4,30 @@
 	<article data-taxi-view class="page-client-stories">
 		<div class="app">
 			{% include 'partials/breadcrumb.twig' %}
-			
-			{% for item in content_builder %}
-				{{ include('blocks/' ~ item.acf_fc_layout ~ '.twig', {
-					item: item
-				}, ignore_missing = true) }}
-			{% endfor %}		
+
+			{# Hero #}
+			{% include 'pages/client-stories/partials/_hero.twig' with {
+				props: {
+					hero: hero
+				}
+			} %}
+
+			{# All Posts #}
+			{% include 'pages/client-stories/partials/_all_posts.twig' with {
+				props: {
+					all_client_stories: all_client_stories,
+					client_stories_posts: client_stories_posts
+				}
+			} %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: content_builder.content_builder
+					}
+				}
+			} %}
 		</div>
 
 		{% include '_site-footer.twig' %}

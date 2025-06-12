@@ -78,9 +78,9 @@
             "layout": "table",
             "pagination": 0,
             "min": 1,
-            "max": 4,
+            "max": 6,
             "collapsed": "",
-            "button_label": "Add News",
+            "button_label": "Add Newsroom",
             "rows_per_page": 20,
             "sub_fields": [
                 {
@@ -98,9 +98,11 @@
                         "id": ""
                     },
                     "post_type": [
-                        "newsroom"
+                        "post"
                     ],
-                    "post_status": "",
+                    "post_status": [
+                        "publish"
+                    ],
                     "taxonomy": "",
                     "return_format": "object",
                     "multiple": 0,
@@ -132,5 +134,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746284197
+    "modified": 1749748735
 }

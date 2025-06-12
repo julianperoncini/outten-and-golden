@@ -2,15 +2,15 @@
 
 <section class="relative">
     <div class="site-max s:pt-120 pb-80 s:pb-120">
-        <div class="site-grid space-y-60 s:space-y-80">
+        <div class="site-grid space-y-60 s:space-y-80" data-component="teamFilter(js-all-team-members-container)">
             <div class="relative col-start-1 col-span-full z-2">
                 <div class="site-grid">
                     <div class="relative order-2 s:order-none col-start-1 col-span-full s:col-span-10">
                         <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex flex-nowrap s:flex-wrap items-center text-green">
-                            <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all">All</button>
+                            <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
 
                             {% for category in all_categories %}
-                                <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}">
+                                <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}" data-filter="{{ category.slug }}">
                                     {{ category.name }}
                                 </button>
                             {% endfor %}
@@ -29,33 +29,54 @@
 
                     <div class="relative order-1 s:order-none s:col-start-14 col-span-full s:col-span-3 flex justify-center s:justify-end pb-80">
                         <div class="relative w-fit">
-                            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center space-x-12 border-[0.1rem] border-solid border-grey-taupe">
-                                <span class="inline-flex">Select a location</span>
-                                <span class="inline-flex">
+                            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center space-x-12 border-[0.1rem] border-solid border-grey-taupe js-all-team-members-select-location" type="button" aria-label="Button to select a location">
+                                <span class="inline-flex js-all-team-members-location-button-text">Select a location</span>
+                                <span class="inline-flex js-all-team-members-select-location-arrow">
                                     <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9.86719 0.75L5.36719 5.25L0.867187 0.75" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </span>
                             </button>
 
-                            <div class="absolute top-full left-0 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe invisible">
-                                <ul>
+                            <div class="absolute top-full left-0 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe invisible js-all-team-members-locations-container">
+                                <div class="relative js-all-team-members-locations">
+                                    <button class="relative w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="all" aria-label="Button to filter by all">All</button>
                                     {% for location in all_locations %}
-                                        <li class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+                                        <button class="relative w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="{{ location.slug }}" aria-label="Button to filter by {{ location.name }}">
                                             {{ location.name }}
-                                        </li>
+                                        </button>
                                     {% endfor %}
-                                </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="relative col-start-1 col-span-full z-1">
+            <div class="relative col-start-1 col-span-full z-1 js-all-team-members-container">
                 <ul class="team-members-list grid grid-cols-8 s:grid-cols-6 s:gap-x-24 gap-y-32 s:gap-y-[6.4rem]">
                     {% for member in team_members %}
-                        <li class="team-members-item relative w-full col-span-full s:col-span-3 l:col-span-2">
+                        {% set member_categories = function('get_the_terms', member.ID, 'team-categories') %}
+                        {% set member_locations = function('get_the_terms', member.ID, 'team-locations') %}
+                        {% set member_link = function('get_permalink', member.ID) %}
+
+                        <li class="team-members-item relative w-full col-span-full s:col-span-3 l:col-span-2 js-all-team-members-item" 
+                            {% if member_categories %}
+                                {% set category_slugs = [] %}
+                                {% for cat in member_categories %}
+                                    {% set category_slugs = cat.slug %}
+                                {% endfor %}
+                                data-filter-category="all,{{ category_slugs }}"
+                            {% endif %}
+
+                            {% if member_locations %}
+                                {% set location_slugs = [] %}
+                                {% for loc in member_locations %}
+                                    {% set location_slugs = loc.slug %}
+                                {% endfor %}
+                                data-filter-location="all,{{ location_slugs }}"
+                            {% endif %}
+                        >
                             <div class="team-member w-full flex flex-col gap-y-32">
                                 {% if member.featured_image %}
                                     <figure class="relative w-full h-full">
@@ -118,7 +139,7 @@
                                     <div class="relative w-full">
                                         <a 
                                             class="relative w-full flex items-center justify-between font-disp text-green text-23 font-normal leading-[1.04] -tracking-[0.024rem]" 
-                                            href="/attorney/{{ member.post_name }}"
+                                            href="{{ member_link }}"
                                             aria-label="{{ member.title }}"
                                         >
                                             <span class="inline-flex">{{ member.title }}</span>

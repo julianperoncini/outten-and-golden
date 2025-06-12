@@ -36,19 +36,33 @@
                                 <h3 class="text-40 s:text-56 text-normal leading-[1.16] tracking-[-0.112rem]">{{ item.title }}</h3>
                             </div>
                             
-                            <div class="relative">
-                                <a 
-                                    class="relative w-fit h-48 font-medium text-green py-12 px-16 l:-ml-2 flex items-center border rounded-[0.4rem] text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe bg-white" 
-                                    href="{{ item.link.url }}"
-                                    target="{{ item.link.target }}"
-                                >
-                                    <div class="hidden l:flex items-center">
-                                        {% for item in items %}
-                                            <img class="relative size-24 object-cover {{ loop.index == 1 ? '' : '-ml-15' }}" src="{{ item.image.url }}" alt="{{ item.image.alt }}">
-                                        {% endfor %}
-                                    </div>
-                                    <span class="leading-none">{{ item.link.title }}</span>
-                                </a>
+                            <div class="relative flex items-center gap-x-24 s:gap-x-32">
+                                {% if item.link %}
+                                    <a 
+                                        class="relative w-fit h-48 font-medium text-green py-12 px-16 l:-ml-2 flex items-center border rounded-[0.4rem] text-12 gap-x-8 uppercase tracking-[0.1em] border-green" 
+                                        href="{{ item.link.url }}"
+                                    >
+                                        <div class="hidden l:flex items-center">
+                                            {% for item in items %}
+                                                <img class="relative size-24 object-cover {{ loop.index == 1 ? '' : '-ml-15' }}" src="{{ item.image.url }}" alt="{{ item.image.alt }}">
+                                            {% endfor %}
+                                        </div>
+                                        <span class="leading-none">{{ item.link.title }}</span>
+                                    </a>
+                                {% endif %}
+
+                                {% if item.tel_link %}
+                                    <a 
+                                        class="font-medium text-green py-12 px-16 uppercase hidden s:flex items-center gap-x-8 text-12 h-48 border rounded-[0.4rem] border-green"
+                                        href="{{ item.tel_link.url }}"
+                                        target="_blank"
+                                    >
+                                        <svg class="w-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.35 14.7">
+                                            <path d="M7.53,14.7H2.82c-1.56,0-2.82-1.27-2.82-2.82V2.82C0,1.27,1.27,0,2.82,0h4.71c1.56,0,2.82,1.27,2.82,2.82v9.05c0,1.56-1.27,2.82-2.82,2.82ZM2.82,1.3c-.84,0-1.52.68-1.52,1.52v9.05c0,.84.68,1.52,1.52,1.52h4.71c.84,0,1.52-.68,1.52-1.52V2.82c0-.84-.68-1.52-1.52-1.52H2.82ZM5.9,12.16h-1.45c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h1.45c.36,0,.65.29.65.65s-.29.65-.65.65Z"/>
+                                        </svg>
+                                        <span class="tracking-[0.1em] leading-none">{{ item.tel_link.title }}</span>
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
 

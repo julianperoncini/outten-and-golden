@@ -3,6 +3,36 @@
     "title": "Layout - Large Content and Image",
     "fields": [
         {
+            "key": "field_684712773e11f",
+            "label": "Background Color",
+            "name": "background_color",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Green": "Green",
+                "Yellow": "Yellow",
+                "Black": "Black",
+                "Grey": "Grey",
+                "Light Grey": "Light Grey"
+            },
+            "default_value": false,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
             "key": "field_68142a5f0696f",
             "label": "Subtitle",
             "name": "subtitle",
@@ -106,5 +136,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746152085
+    "modified": 1749488417
 }

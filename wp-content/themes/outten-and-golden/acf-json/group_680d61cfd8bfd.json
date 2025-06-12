@@ -162,74 +162,6 @@
                     "append": ""
                 },
                 {
-                    "key": "field_68325cf5f9133",
-                    "label": "Testimonials",
-                    "name": "testimonials",
-                    "aria-label": "",
-                    "type": "repeater",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "layout": "block",
-                    "pagination": 0,
-                    "min": 0,
-                    "max": 0,
-                    "collapsed": "",
-                    "button_label": "Add Row",
-                    "rows_per_page": 20,
-                    "sub_fields": [
-                        {
-                            "key": "field_68325d1bf9135",
-                            "label": "Quote",
-                            "name": "description",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "maxlength": "",
-                            "allow_in_bindings": 0,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "parent_repeater": "field_68325cf5f9133"
-                        },
-                        {
-                            "key": "field_68325d35f9136",
-                            "label": "Staff Name",
-                            "name": "staff_name",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "maxlength": "",
-                            "allow_in_bindings": 0,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "parent_repeater": "field_68325cf5f9133"
-                        }
-                    ]
-                },
-                {
                     "key": "field_68325d57f9137",
                     "label": "My Story",
                     "name": "my_story",
@@ -535,7 +467,7 @@
                     "label": "Vcard",
                     "name": "vcard",
                     "aria-label": "",
-                    "type": "text",
+                    "type": "file",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -544,12 +476,12 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
-                    "maxlength": "",
-                    "allow_in_bindings": 0,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
+                    "return_format": "url",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "allow_in_bindings": 1
                 }
             ]
         },
@@ -802,5 +734,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1748274052
+    "modified": 1749740030
 }

@@ -1,12 +1,22 @@
-<section class="relative bg-grey" data-component="highlight">
+{% set text_color_map = {
+    'grey': 'text-grey-taupe',
+    'black': 'text-grey-taupe',
+    'yellow': 'text-black',
+    'green': 'text-white-smoke'
+} %}
+
+{% set bg_color = item.background_color|lower %}
+{% set text_color = text_color_map[bg_color] %}
+
+<section class="relative {{ bg_color ? 'bg-' ~ bg_color : 'bg-grey' }}" data-component="highlight">
     <div class="site-max py-60 s:py-120">
         <div class="site-grid gap-y-32 s:gap-y-40">
-
+            {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
             <div class="relative flex flex-col gap-y-40 col-span-full s:col-start-2 s:col-span-14">
-                <h2 class="text-grey-taupe font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
+                <h2 class="{{ text_color ? text_color : 'text-grey-taupe' }} font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
                 <div class="relative">
-                    <h3 class="h2 text-white-smoke font-disp text-26 s:text-48 font-normal leading-[1.2] tracking-[-0.096rem]" data-highlight-text>{{ item.title }}</h3>
+                    <h3 class="h2 {{ text_color ? text_color : 'text-white-smoke' }} font-disp text-26 s:text-48 font-normal leading-[1.2] tracking-[-0.096rem]" data-highlight-text>{{ item.title }}</h3>
                 </div>
             </div>
 

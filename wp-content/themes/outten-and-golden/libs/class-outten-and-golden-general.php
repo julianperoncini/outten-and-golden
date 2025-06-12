@@ -438,7 +438,20 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
                         'label' => 'Client Stories',
                         'url'   => home_url('/client-stories')
                     ];
-                } elseif ($post_type !== 'post' && $post_type !== 'page') {
+                } 
+                elseif ($post_type === 'cases') {
+                    $breadcrumb[] = [
+                        'label' => 'Cases & Investigations',
+                        'url'   => home_url('/cases-and-investigations')
+                    ];
+                }
+                elseif ($post_type === 'issues') {
+                    $breadcrumb[] = [
+                        'label' => 'Issues',
+                        'url'   => home_url('/issues')
+                    ];
+                }
+                elseif ($post_type !== 'post' && $post_type !== 'page') {
                     $post_type_obj = get_post_type_object($post_type);
                     if ($post_type_obj && $post_type_obj->has_archive) {
                         $breadcrumb[] = [
@@ -449,13 +462,10 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
                 }
     
                 if ($post_type === 'post') {
-                    $categories = get_the_category();
-                    if (!empty($categories)) {
-                        $breadcrumb[] = [
-                            'label' => $categories[0]->name,
-                            'url'   => get_category_link($categories[0]->term_id)
-                        ];
-                    }
+                    $breadcrumb[] = [
+                        'label' => 'Newsroom',
+                        'url'   => home_url('/newsroom')
+                    ];
                 }
     
                 $breadcrumb[] = [

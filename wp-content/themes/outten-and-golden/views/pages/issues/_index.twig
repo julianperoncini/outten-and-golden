@@ -5,11 +5,29 @@
 		<div class="app">
 			{% include 'partials/breadcrumb.twig' %}
 			
-			{% for item in content_builder %}
-				{{ include('blocks/' ~ item.acf_fc_layout ~ '.twig', {
-					item: item
-				}, ignore_missing = true) }}
-			{% endfor %}		
+			{# Hero #}
+			{% include 'pages/issues/partials/_hero.twig' with {
+				props: {
+					hero: hero
+				}
+			} %}
+
+			{# All Posts Layout #}
+			{% include 'pages/issues/partials/_all_posts.twig' with {
+				props: {
+					all_issues_layout: all_issues_layout,
+					categories: categories
+				}
+			} %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: content_builder.content_builder
+					}
+				}
+			} %}
 		</div>
 
 		{% include '_site-footer.twig' %}

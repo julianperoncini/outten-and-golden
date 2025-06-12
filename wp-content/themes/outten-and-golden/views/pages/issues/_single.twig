@@ -5,21 +5,21 @@
 		<div class="app">
 			{% include 'partials/breadcrumb.twig' %}
 			
-			{# <pre>{{ post|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
-
 			{# Hero #}
-			{% include 'pages/issues/partials/_hero.twig' with {
+			{% include 'pages/issues/partials/single/_hero.twig' with {
 				props: {
 					post: post
 				}
 			} %}
 
 			{# WYSIWYG and Sticky Right Card #}
-			{% include 'pages/issues/partials/_content.twig' with {
+			{% include 'pages/issues/partials/single/_content.twig' with {
 				props: {
 					item: post.content_post
 				}
 			} %}
+
+			{% include 'pages/issues/partials/single/_other-issues-slider.twig' %}
 
 			{# Content Builder #}
 			{% include 'blocks/builder/index.twig' with {

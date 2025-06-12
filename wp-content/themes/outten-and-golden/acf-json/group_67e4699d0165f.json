@@ -93,7 +93,7 @@
             "min": 0,
             "max": 4,
             "collapsed": "",
-            "button_label": "Add Row",
+            "button_label": "Add Card",
             "rows_per_page": 20,
             "sub_fields": [
                 {
@@ -188,5 +188,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746032347
+    "modified": 1749732133
 }

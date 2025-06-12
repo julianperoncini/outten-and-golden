@@ -80,7 +80,7 @@
             "min": 0,
             "max": 0,
             "collapsed": "",
-            "button_label": "Add Row",
+            "button_label": "Add News Slider",
             "rows_per_page": 20,
             "sub_fields": [
                 {
@@ -98,9 +98,11 @@
                         "id": ""
                     },
                     "post_type": [
-                        "newsroom"
+                        "post"
                     ],
-                    "post_status": "",
+                    "post_status": [
+                        "publish"
+                    ],
                     "taxonomy": "",
                     "return_format": "object",
                     "multiple": 0,
@@ -132,5 +134,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1748393920
+    "modified": 1749747734
 }

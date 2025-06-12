@@ -63,7 +63,7 @@
             "min": 0,
             "max": 0,
             "collapsed": "",
-            "button_label": "Add Row",
+            "button_label": "Add Credential",
             "rows_per_page": 20,
             "sub_fields": [
                 {
@@ -139,5 +139,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1746395208
+    "modified": 1749731999
 }

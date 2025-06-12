@@ -42,6 +42,9 @@ export default {
       },
       lavander: {
         DEFAULT: '#C292C1'
+      },
+      sky: {
+        DEFAULT: '#CFD8ED'
       }
     },
     // Generate fontSize scale (0-150)

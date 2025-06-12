@@ -8,8 +8,14 @@ import slider from './slider'
 import sliderOffice from './slider-office'
 import sliderTeamMembers from './slider-team'
 import lazy from './lazy'
-import listGrid from './listGrid'
+import listGrid from './filters/listGrid'
 import carouselTestimonials from './carousel-testimonials'
+import sliderFake from './slider-fake'
+import carouselStories from './carousel-stories'
+import listIssuesFilter from './filters/listIssuesFilter'
+import blogsFilter from './filters/blogsFilter'
+import casesFilter from './filters/casesFilter'
+import teamFilter from './filters/teamFilter'
 
 export {
     search,
@@ -19,4 +25,10 @@ export {
     sliderTeamMembers,
     listGrid,
     carouselTestimonials,
+    sliderFake,
+    carouselStories,
+    listIssuesFilter,
+    blogsFilter,
+    casesFilter,
+    teamFilter,
 }

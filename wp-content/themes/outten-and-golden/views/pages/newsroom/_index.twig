@@ -1,15 +1,47 @@
 {% extends '_layout.twig' %}
 
+{% set post = Post(feature_billboard.post) %}
+{% set feature_billboard_content = function('get_field', 'feature_content', post.ID) %}
+{% set feature_billboard_post_link = function('get_permalink', post.ID) %}
+
 {% block content %}
 	<article data-taxi-view class="page-newsroom">
 		<div class="app">
-		    {% include 'partials/breadcrumb.twig' %}
-		
-			{% for item in content_builder %}
-				{{ include('blocks/builder/' ~ item.acf_fc_layout ~ '.twig', {
-					item: item
-				}, ignore_missing = true) }}
-			{% endfor %}	
+			{% include 'partials/breadcrumb.twig' %}
+			
+			{# Hero #}
+			{% include 'pages/newsroom/partials/_hero.twig' with {
+				props: {
+					hero: hero
+				}
+			} %}
+
+			{# Feature Billboard #}
+			{% include 'pages/newsroom/partials/_billboard.twig' with {
+				props: {
+					post: post,
+					feature_content: feature_billboard_content,
+					feature_post_link: feature_billboard_post_link
+				}
+			} %}
+
+			{# All Posts #}
+			{% include 'pages/newsroom/partials/_all_posts.twig' with {
+				props: {
+					all_post_articles: all_post_articles,
+					all_posts: newsroom_posts,
+					categories: categories
+				}
+			} %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: content_builder.content_builder
+					}
+				}
+			} %}
 		</div>
 
 		{% include '_site-footer.twig' %}

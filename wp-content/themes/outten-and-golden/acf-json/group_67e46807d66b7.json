@@ -85,7 +85,7 @@
             "min": 0,
             "max": 0,
             "collapsed": "",
-            "button_label": "Add Row",
+            "button_label": "Add Case",
             "rows_per_page": 20,
             "sub_fields": [
                 {
@@ -137,5 +137,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1743123286
+    "modified": 1749731935
 }

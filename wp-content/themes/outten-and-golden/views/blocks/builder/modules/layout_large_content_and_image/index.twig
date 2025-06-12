@@ -1,4 +1,14 @@
-<section class="relative bg-green-lemon">
+{% set text_color_map = {
+    'grey': 'text-white',
+    'black': 'text-white',
+    'yellow': 'text-black',
+    'green': 'text-white-smoke'
+} %}
+
+{% set bg_color = item.background_color|lower %}
+{% set text_color = text_color_map[bg_color] %}
+
+<section class="relative {{ bg_color ? 'bg-' ~ bg_color : 'bg-grey' }} {{ text_color ? text_color : 'text-white' }}">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
     <div class="site-max py-32">
@@ -7,20 +17,20 @@
                 <div class="relative flex flex-col items-start gap-y-40">
                     {% if item.subtitle %}
                         <div class="relative">
-                            <h5 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
+                            <h5 class="font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h5>
                         </div>
                     {% endif %}
 
                     {% if item.title %}
                         <div class="relative">
-                            <h1 class="text-26 s:text-32 l:text-48 font-normal leading-[1.12] tracking-[-0.096rem] text-green">{{ item.title }}</h1>
+                            <h1 class="text-26 s:text-32 l:text-48 font-normal leading-[1.12] tracking-[-0.096rem]">{{ item.title }}</h1>
                         </div>
                     {% endif %}
                 </div>
 
                 <div class="relative">
                     {% if item.link %}
-                        <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-green-lemon py-15 px-25 bg-black uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                        <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-grey py-15 px-25 bg-white uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
                             <span class="inline-flex">
                                 {{ item.link.title }}
                             </span>

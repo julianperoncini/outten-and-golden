@@ -6,14 +6,14 @@
     <div class="js-bg-switcher absolute top-0 left-0 w-full h-full inset-0"></div>
 
     <div class="relative border-t {{ isLight ? 'border-grey-taupe border-opacity-20' : 'border-white-smoke border-opacity-20' }}">
-        <div class="site-max site-grid relative pt-60 s:pt-120 pb-60 s:pb-95">
-            <div class="s:sticky s:top-160 h-fit pb-120 s:pb-32 col-span-full s:col-start-2 s:col-span-6 flex flex-col gap-y-32 s:gap-y-25">
+        <div class="site-max site-grid relative pt-60 s:pt-120 pb-60 s:pb-0">
+            <div class="s:sticky s:top-160 h-fit pb-120 s:pb-[9.6rem] col-span-full s:col-start-2 s:col-span-6 flex flex-col gap-y-32 s:gap-y-25">
                 <h2 class="{{ isLight ? 'text-green' : 'text-white-smoke' }} text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase js-bg-switcher-text">{{ item.subtitle }}</h2>
                 <h3 class="text-26 s:text-32 font-normal leading-[1.16] tracking-[-0.032rem] {{ isLight ? 'text-green' : 'text-white-smoke' }} js-bg-switcher-text">{{ item.description }}</h3>
             </div>
             <div class="col-span-full s:col-start-9 s:col-span-8">
                 {% for item in item.card %}
-                    <article class="relative flex flex-col items-start {% if loop.first %}pt-0{% else %}pt-60 s:pt-85{% endif %} pb-60 s:pb-32 s:pl-22 s:pr-12 space-y-60 s:space-y-65">
+                    <article class="relative flex flex-col items-start {% if loop.first %}pt-0{% else %}pt-60 s:pt-85{% endif %} pb-60 s:pb-[9.6rem] s:pl-[9.6rem] s:pr-[9.6rem] space-y-60 s:space-y-65">
                         <div class="relative max-w-[16.8rem] s:max-w-[22.6rem] w-full mx-auto">
                             {% include "blocks/common/image.twig" with {
                                 props : {

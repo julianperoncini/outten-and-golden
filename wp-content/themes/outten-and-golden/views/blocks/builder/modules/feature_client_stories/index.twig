@@ -3,7 +3,7 @@
 
     <div class="site-max py-80 s:py-160">
         <div class="site-grid">
-            <div class="col-start-1 col-span-full">
+            <div class="col-start-1 col-span-full" data-component="carouselStories">
                 <div class="relative flex flex-col items-center justify-center space-y-32 s:space-y-40 pb-60 s:pb-95">
                     <div class="relative">
                         <h2 class="font-sans text-center text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
@@ -35,7 +35,7 @@
                 <div class="col-start-1 col-span-full">
                     <div class="site-grid items-center justify-center">
                         <div class="col-start-1 col-span-1 hidden s:block">
-                            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button">
+                            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-prev" type="button">
                                 <span class="inline-flex">
                                     <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -45,63 +45,95 @@
                         </div>
 
                         <div class="s:col-start-2 col-span-full s:col-span-14">
-                            <div class="relative w-full h-full">
-                                <article class="relative w-full h-[64rem] s:h-[70rem] flex flex-col s:flex-row items-start">
-                                    <div class="relative w-full s:w-1/2 h-full">
-                                        <figure class="relative overflow-hidden w-full h-[32rem] s:h-full">
-                                            <img
-                                                class="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
-                                                src="https://placehold.co/600x400"
-                                                alt=""
-                                            />
-                                        </figure>
-                                    </div>
+                            <div class="relative w-full h-[64rem] s:h-[70rem] bg-green js-carousel-story">
+                                {% for post in item.client_stories %}
+                                
+                                    {% set feature_content = function('get_field', 'feature_content', post.story.ID) %}
+                                    {% set bg_color = feature_content.background_color|lower %}
+                                    {% set post_link = function('get_permalink', post.story.ID) %}
 
-                                    <div class="relative w-full s:w-1/2 h-full bg-green">
-                                        <div class="relative space-y-[2.4rem] s:space-y-[3.2rem] p-24 s:p-32">
-                                            <div class="relative w-full hidden s:flex flex-wrap items-center gap-4 z-2">
-                                                {% include "/views/partials/tag.twig" with {
-                                                    data: {
-                                                        text: "Digital Discrimination",
-                                                        href: "/"
-                                                    }
-                                                } %}
-                                            </div>
+                                    {% set all_taxonomies = function('get_object_taxonomies', 'client-stories') %}
+                                    {% set post_terms = {} %}
 
-                                            <div class="relative block s:hidden !mt-0">
-                                                <div class="font-sans text-white-smoke text-12 font-medium leading-none tracking-[0.12rem] uppercase">CLIENT STORY</div>
-                                            </div>
+                                    {% for taxonomy in all_taxonomies %}
+                                        {% set terms = function('get_the_terms', post.story.ID, taxonomy) %}
+                                        {% if terms and terms is not same as(false) %}
+                                            {% set post_terms = post_terms|merge({(taxonomy): terms}) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    <article class="{{ loop.index == 1 ? 'relative z-10' : 'absolute top-0 left-0 invisible' }} w-full h-full flex flex-col s:flex-row items-start js-carousel-story-item">
+                                        <div class="relative w-full s:w-1/2 h-full overflow-hidden">
+                                            <figure class="relative overflow-hidden w-full h-[32rem] s:h-full js-carousel-story-fig">
+                                                {% if feature_content.feature_image %}
+                                                    {% include "blocks/common/image.twig" with {
+                                                        props : {
+                                                            data: {
+                                                                image : feature_content.feature_image
+                                                            },
+                                                            options: {
+                                                                container_class: 'w-full h-full overflow-hidden pointer-events-none select-none js-carousel-story-img',
+                                                                class : 'w-full h-full object-cover pointer-events-none select-none',
+                                                                aspect_ratio: '100%',
+                                                                aspect_ratio_mobile: '100%',
+                                                            }
+                                                        }
+                                                    } %}
+                                                {% else %}
+                                                    <div class="pt-[100%] bg-{{ bg_color }}"></div>
+                                                {% endif %}
+                                            </figure>
+                                        </div>
 
-                                            <div class="relative s:max-w-[50rem]">
-                                                <h4 class="font-disp text-32 s:text-56 text-white-smoke font-normal leading-[1.2] tracking-[-0.112rem]">
-                                                    Doordash V. Instacart
-                                                </h4>
-                                            </div>
+                                        <div class="relative w-full s:w-1/2 h-full">
+                                            <div class="relative space-y-[2.4rem] s:space-y-[3.2rem] p-24 s:p-32 js-carousel-story-content">
+                                                <div class="relative w-full hidden s:flex flex-wrap items-center gap-4 z-2 js-carousel-story-tags">
+                                                    {% if post_terms['client-stories-categories'] %}
+                                                        {% for category in post_terms['client-stories-categories'] %}
+                                                            {% include "/views/partials/tag.twig" with {
+                                                                data: {
+                                                                    text: category.name,
+                                                                }
+                                                            } %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
 
-                                            <div class="relative s:max-w-[40rem]">
-                                                <p class="font-sans text-16 text-white-smoke font-normal leading-[1.32]">Years before Doordash and Instacart, immigrant deliverymen walked groceries on behalf of large chain stores, for as little as $1 an hour. We helped them secure justice, and the fair pay they deserved.</p>
-                                            </div>
+                                                <div class="relative block s:hidden !mt-0">
+                                                    <div class="font-sans text-white-smoke text-12 font-medium leading-none tracking-[0.12rem] uppercase js-carousel-story-fade">CLIENT STORY</div>
+                                                </div>
 
-                                            <div class="relative text-white-smoke">
-                                                <a class="relative font-sans inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
-                                                    <span class="inline-flex">
-                                                        Read the full story
-                                                    </span>
-                                                    <span class="inline-flex">
-                                                        <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                                        </svg>
-                                                    </span>
-                                                </a>
+                                                <div class="relative s:max-w-[50rem]">
+                                                    <h4 class="font-disp text-32 s:text-56 text-white-smoke font-normal leading-[1.2] tracking-[-0.112rem] js-carousel-story-fade">
+                                                        {{ feature_content.title }}
+                                                    </h4>
+                                                </div>
+
+                                                <div class="relative s:max-w-[40rem]">
+                                                    <div class="font-sans text-16 text-white-smoke font-normal leading-[1.32] js-carousel-story-fade">{{ feature_content.description }}</div>
+                                                </div>
+
+                                                <div class="relative text-white-smoke js-carousel-story-fade">
+                                                    <a class="relative font-sans inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" href="{{ post_link }}">
+                                                        <span class="inline-flex">
+                                                            Read the full story
+                                                        </span>
+                                                        <span class="inline-flex">
+                                                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                        </span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </article>
+                                    </article>
+                                {% endfor %}
                             </div>
                         </div>
 
                         <div class="col-start-16 col-span-1 hidden s:flex justify-end">
-                            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button">
+                            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-next" type="button">
                                 <span class="inline-flex">
                                     <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -111,14 +143,14 @@
                         </div>
 
                         <div class="col-start-1 col-span-full flex items-center justify-center s:hidden pt-50">
-                            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button">
+                            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-prev" type="button">
                                 <span class="inline-flex">
                                     <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </span>
                             </button>
-                            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button">
+                            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 !border-l-0 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-next" type="button">
                                 <span class="inline-flex">
                                     <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>

@@ -65,8 +65,6 @@ export default class extends Renderer {
 	initComponents() {
 		let elems = qsa('[data-component]')
 
-		console.log(elems)
-		
 		elems = elems.filter(
 		  (el) =>
 			el.dataset.mobile === undefined ||

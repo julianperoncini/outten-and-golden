@@ -1,15 +1,65 @@
 {% extends '_layout.twig' %}
 
+{% set post = Post(feature_billboard.post) %}
+{% set feature_billboard_content = function('get_field', 'feature_content', post.ID) %}
+{% set feature_billboard_categories = function('get_the_terms', post.ID, 'case-categories') %}
+{% set feature_billboard_tags = function('get_the_terms', post.ID, 'tags-cases') %}
+{% set feature_billboard_post_link = function('get_permalink', post.story.ID) %}
+
+{% set active_investigations = active_investigations %}
+{% set all_cases_and_investigations = all_cases_and_investigations %}
+
+{% set cases_posts = cases_posts %}
+{% set categories = categories %}
+{% set tags = tags %}
+
 {% block content %}
 	<article data-taxi-view class="page-cases-and-investigations">
 		<div class="app">
 			{% include 'partials/breadcrumb.twig' %}
-			
-			{% for item in content_builder %}
-				{{ include('blocks/' ~ item.acf_fc_layout ~ '.twig', {
-					item: item
-				}, ignore_missing = true) }}
-			{% endfor %}		
+
+			{# Hero #}
+			{% include 'pages/cases-and-investigations/partials/_hero.twig' with {
+				props: {
+					hero: hero
+				}
+			} %}
+
+			{# Feature Billboard #}
+			{% include 'pages/cases-and-investigations/partials/_billboard.twig' with {
+				props: {
+					feature_content: feature_billboard_content,
+					feature_categories: feature_billboard_categories,
+					feature_tags: feature_billboard_tags,
+					feature_post_link: feature_billboard_post_link
+				}
+			} %}
+
+			{# Active Investigations #}
+			{% include 'pages/cases-and-investigations/partials/_active-investigations.twig' with {
+				props: {
+					active_investigations: active_investigations
+				}
+			} %}
+
+			{# All Posts #}
+			{% include 'pages/cases-and-investigations/partials/_all_posts.twig' with {
+				props: {
+					all_cases_and_investigations: all_cases_and_investigations,
+					cases_posts: cases_posts,
+					categories: categories,
+					tags: tags
+				}
+			} %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: content_builder.content_builder
+					}
+				}
+			} %}	
 		</div>
 
 		{% include '_site-footer.twig' %}
