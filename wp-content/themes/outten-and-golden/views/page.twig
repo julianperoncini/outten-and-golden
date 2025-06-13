@@ -1,8 +1,8 @@
 {% extends '_layout.twig' %}
 
 {% block content %}
-	<article data-taxi-view>
-		<div class="app" data-taxi-namespace="{{ taxi_namespace }}">
+	<article data-taxi-view data-taxi-namespace="{{ taxi_namespace }}" data-page-type="{{ page_data.type }}">
+		<div class="app">
 			{% include 'blocks/builder/index.twig' with {
 				props: {
 					data: {

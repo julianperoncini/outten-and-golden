@@ -250,6 +250,35 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
         $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
 
+        $context['all_tags'] = Timber::get_terms([
+            'taxonomy' => 'post_tag',
+            //'hide_empty' => true,
+            'number' => 20 
+        ]);
+
+        $search_related = get_field('search_category', 'option');
+
+        // Convert WP_Post objects to Timber Posts
+        if ($search_related) {
+            foreach ($search_related as &$category) {
+                if (isset($category['search_category_posts'])) {
+                    foreach ($category['search_category_posts'] as &$post_group) {
+                        if (isset($post_group['search_category_post'])) {
+                            foreach ($post_group['search_category_post'] as &$post) {
+                                // Handle WP_Post object
+                                if (is_object($post) && $post instanceof WP_Post) {
+                                    // Use Timber::get_post() instead
+                                    $post = Timber::get_post($post->ID);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $context['search_related'] = $search_related;
+
         $context['taxi_namespace'] = apply_filters('taxi_namespace', 'default');
 
         $context['options'] = get_fields('option');
@@ -259,6 +288,12 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         );
         
         $context['posts'] = Timber::get_posts($args);
+
+        $context['page_data'] = [
+            'type' => $this->get_page_type(),
+            'template' => get_page_template_slug(),
+            'body_classes' => get_body_class(),
+        ];
 
         return $context;
     }
@@ -281,23 +316,63 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         remove_meta_box('postimagediv', 'page', 'side');
     }
 
-    /**
-     * Sets the correct highway namespace depending on
-     * what page the user is on.
-     * @param  string $ns
-     * @return string
-     */
-	public function taxi_namespace( $ns ) {
-		if ( is_page() ) {
-			$ns = 'page';
-		}
-
-		if ( is_front_page() ) {
-			$ns = 'home';
-		}
-
-		return $ns;
-	}
+    public function taxi_namespace( $ns ) {
+        if ( is_page() ) {
+            $ns = 'page';
+        }
+    
+        if ( is_front_page() ) {
+            $ns = 'home';
+        }
+    
+        if ( is_search() ) {
+            global $wp_query;
+            
+            // Get current URL path
+            $current_path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+            
+            // Get search query from multiple sources
+            $search_query = get_search_query();
+            $search_param = isset($_GET['s']) ? trim($_GET['s']) : '';
+            
+            // Check if this is your clean URL format
+            $is_clean_search_url = strpos($current_path, 'search') === 0;
+            
+            // Determine if search is empty
+            $is_empty_search = false;
+            
+            if ($is_clean_search_url) {
+                // For clean URLs like /search/ or /search (no query)
+                $path_parts = explode('/', $current_path);
+                $is_empty_search = (count($path_parts) <= 1 || $current_path === 'search');
+            } else {
+                // For traditional URLs like /?s=
+                $is_empty_search = empty($search_query) && empty($search_param);
+            }
+            
+            if ( $is_empty_search ) {
+                $ns = 'search-empty';
+            } elseif ( $wp_query->found_posts == 0 ) {
+                $ns = 'search-no-results';
+            } else {
+                $ns = 'search';
+            }
+        }
+    
+        if ( is_single() ) {
+            $ns = 'single';
+        }
+    
+        if ( is_archive() ) {
+            $ns = 'archive';
+        }
+    
+        if ( is_category() ) {
+            $ns = 'category';
+        }
+    
+        return $ns;
+    }
 }
 
 new OUTTEN_AND_GOLDEN_Theme_General;
