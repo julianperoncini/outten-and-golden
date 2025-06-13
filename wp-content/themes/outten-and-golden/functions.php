@@ -4,7 +4,7 @@
 	 * Load Composer dependencies
 	 * ==========================
 */
-if (!class_exists('Timber')) {
+if (!class_exists('Timber\Timber')) {
 	include __DIR__ . '/vendor/autoload.php';
 }
 
@@ -31,3 +31,11 @@ require_once __DIR__ . '/libs/class-outten-and-golden-enqueue.php';
 	 * Hooks and filters for enqueu scripts.
 */
 require_once __DIR__ . '/libs/class-outten-and-golden-ajax.php';
+
+/**
+	 * Search
+	 * ======
+	 *
+	 * Hooks and filters for search.
+*/
+require_once __DIR__ . '/libs/class-outten-and-golden-search.php';

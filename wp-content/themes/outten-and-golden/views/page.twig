@@ -1,12 +1,13 @@
 {% extends '_layout.twig' %}
 
 {% block content %}
-	<article data-taxi-view>
-		<div class="app" data-taxi-namespace="{{ taxi_namespace }}-{{ post.post_name }}">
+	<article data-taxi-view data-taxi-namespace="{{ taxi_namespace }}" data-page-type="{{ page_data.type }}">
+		<div class="app">
+
 			{% if not is_home %}
 				{% include 'partials/breadcrumb.twig' %}
 			{% endif %}
-			
+
 			{% include 'blocks/builder/index.twig' with {
 				props: {
 					data: {
