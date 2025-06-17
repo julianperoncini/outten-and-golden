@@ -1,0 +1,80 @@
+{# Layout 2 #}
+
+{% set layout = props.layout %}
+{% set bg_color = layout.background_color|lower %}
+
+<div class="relative py-60 s:py-120 {{ bg_color ? 'bg-' ~ bg_color : 'bg-white' }}">
+    
+    <div class="site-max pb-32 s:pb-50">
+        <h3 class="font-sans text-32 s:text-40 text-green font-normal leading-[1.16] s:leading-[1.32] tracking-[-0.032rem]">{{ layout.title }}</h3>
+    </div>
+
+    <div class="site-max site-grid gap-24 grid-layout js-list-grid-layout">
+        {% for item in layout.posts %}
+            {% set feature_content = function('get_field', 'feature_content', item.ID) %}
+            {% set bg_color = feature_content.background_color|lower %}
+            {% set post_link = function('get_permalink', item.ID) %}
+
+            {% if feature_content.feature_image %}
+                {% set text_color = 'text-white' %}
+            {% else %}
+                {% set text_color_map = {
+                    'grey': 'text-white',
+                    'black': 'text-grey-taupe',
+                    'yellow': 'text-green',
+                    'green': 'text-white'
+                } %}
+                {% set text_color = text_color_map[bg_color] %}
+            {% endif %}
+
+            <div class="column-two w-full relative col-span-full s:col-span-8 overflow-hidden js-list-grid-item">
+                <a href="{{ post_link }}" class="column-inner-two overflow-hidden block w-full h-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ text_color ? text_color : 'text-white' }}">
+                    <figure class="relative overflow-hidden w-full h-[46rem] pointer-events-none select-none js-list-grid-item-image">
+                        {% if feature_content.feature_image %}
+                            {% include "blocks/common/image.twig" with {
+                                props : {
+                                    data: {
+                                        image : feature_content.feature_image
+                                    },
+                                    options: {
+                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                        class : 'w-full h-full object-cover pointer-events-none select-none',
+                                        aspect_ratio: '102%',
+                                        aspect_ratio_mobile: '102%',
+                                    }
+                                }
+                            } %}
+                        {% else %}
+                            <div class="h-full bg-{{ feature_content.background_color|lower }}"></div>
+                        {% endif %}
+                    </figure>
+
+                    <div class="absolute inset-0 p-16 s:p-24 z-2 w-full h-full flex flex-col justify-between js-list-grid-item-content">
+                        <div class="column-category w-full flex items-center justify-between">
+                            <span class="column-category-type text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.post_type }}</span>
+
+                            <span class="column-category-date text-12 font-medium leading-none tracking-[0.12rem] uppercase"><p>{{ item.post_date|date('m.d.Y') }}</p></span>
+                        </div>
+
+                        <div class="relative w-full leading-none flex flex-col s:flex-row s:justify-between items-start s:items-end space-y-[2.4rem] s:space-y-0">
+                            <div class="relative">
+                                <h4 class="column-title-two relative text-24 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem] max-w-[30rem] s:max-w-[35rem]">{{ feature_content.title }}</h4>
+                            </div>
+                            
+                            <div class="text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center whitespace-nowrap">
+                                <span class="inline-flex">
+                                    See more
+                                </span>
+                                <span class="inline-flex relative top-[0.1rem]">
+                                    <svg class="w-6 h-10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 0.999999L4.5 4.5L1 8" stroke="currentColor" stroke-width="1.01111" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>

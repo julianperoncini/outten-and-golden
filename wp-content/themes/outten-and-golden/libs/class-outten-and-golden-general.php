@@ -510,6 +510,12 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
                         'url'   => home_url('/cases-and-investigations')
                     ];
                 }
+                elseif ($post_type === 'capabilities') {
+                    $breadcrumb[] = [
+                        'label' => 'Capabilities',
+                        'url'   => home_url('/capabilities')
+                    ];
+                }
                 elseif ($post_type === 'issues') {
                     $breadcrumb[] = [
                         'label' => 'Issues',

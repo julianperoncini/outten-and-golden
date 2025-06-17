@@ -1,0 +1,50 @@
+{% set hero = props.hero %}
+
+<section class="relative bg-white pt-60 s:pt-0">
+    {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    <div class="site-max mt-0 s:-mt-80">
+        <div class="site-grid s:h-full s:h-screen">
+            <div class="relative h-full flex flex-col items-center s:items-start justify-center s:justify-end col-span-full s:col-span-5 s:col-start-1 space-y-[3.2rem] s:space-y-40 pb-65 s:pb-32">
+                {% if hero.subtitle %}
+                    <p class="text-center s:text-left text-grey text-12 font-medium leading-none tracking-[0.012rem] uppercase">
+                        {{ hero.subtitle }}
+                    </p>
+                {% endif %}
+            
+                {% if hero.title %}
+                    <h2 class="text-center s:text-left text-green text-72 s:text-120 font-normal leading-none tracking-[-0.024rem]">
+                        {{ hero.title }}
+                    </h2>
+                {% endif %}
+
+                {% if hero.description %}
+                    <div class="relative max-w-[40rem]">
+                        <div class="text-center s:text-left text-green text-16 font-normal leading-[1.32]">
+                            {{ hero.description }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div> 
+
+            {% if hero.image %}
+                <div class="col-span-full s:col-span-8 s:col-start-9 h-full">
+                    <div class="relative -ml-20 s:-ml-0 -mr-20 s:-mr-30 h-[65rem] s:h-full">
+                        {% include "blocks/common/image.twig" with {
+                            props : {
+                                data: {
+                                    image : hero.image
+                                },
+                                options: {
+                                    container_class: 'w-full h-full overflow-hidden',
+                                    class : 'w-full h-full object-cover',
+                                    size: 'hero',
+                                    aspect_ratio: '111%',
+                                }
+                            }
+                        } %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

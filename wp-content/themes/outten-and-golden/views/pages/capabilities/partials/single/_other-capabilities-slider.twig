@@ -1,0 +1,96 @@
+<section class="relative bg-white pt-60 s:pt-160">
+    {# <pre>{{ other_issues_slider|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+
+    <div class="site-max">
+        <div class="site-grid">
+            <div class="relative col-start-1 col-span-8 space-y-40 pb-32 s:pb-40">
+                <div class="relative">
+                    <h2 class="text-grey text-center s:text-left text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase">Related Capabilities</h2>
+                </div>
+                <div class="relative s:max-w-[102.6rem] mx-auto">
+                    <h3 class="h3 text-center s:text-left text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">You may be interested</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-max">
+        <div class="issues-list select-none flex cursor-grab js-slider-team" data-component="sliderTeamMembers(js-slider-members)">
+            {% for item in other_capabilities_slider %}
+                {% set post_link = function('get_permalink', item.ID) %}
+                {% set bg_color = item.feature_content.background_color|lower %}
+                {% if item.feature_content.feature_image %}
+                    {% set text_color = 'text-white' %}
+                {% else %}
+                    {% set text_color_map = {
+                        'grey': 'text-grey-taupe',
+                        'black': 'text-grey-taupe',
+                        'yellow': 'text-black',
+                        'green': 'text-white-smoke'
+                    } %}
+                    {% set text_color = text_color_map[bg_color] %}
+                {% endif %}
+
+                <article class="relative w-full h-full {{ text_color }} max-w-[29rem] s:max-w-[67rem] min-w-[29rem] s:min-w-[67rem] min-h-[46.5rem] max-h-[46.5rem] mr-24 js-member-item">
+                    <div class="relative w-full h-full">
+                        <div class="relative w-full h-full z-1">
+                            {% if item.feature_content.feature_image %}
+                                <figure class="relative w-full h-full">
+                                    {% include "blocks/common/image.twig" with {
+                                        props : {
+                                            data: {
+                                                image : item.feature_content.feature_image
+                                            },
+                                            options: {
+                                                container_class: 'w-full h-full overflow-hidden',
+                                                class : 'w-full h-full object-cover',
+                                                aspect_ratio: '67%',
+                                                aspect_ratio_mobile: '150%',
+                                            }
+                                        }
+                                    } %}
+                                </figure>
+                            {% else %}
+                                <div class="pt-[150%] s:pt-[67%] bg-{{ item.feature_content.background_color|lower }}"></div>
+                            {% endif %}
+                        </div>
+
+                        <div class="absolute inset-0 p-24 z-2 w-full h-full flex flex-col justify-between">
+                            <div class="relative flex items-center justify-between w-full font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+                                <div class="relative">
+                                    <p>{{ item.category }}</p>
+                                </div>
+
+                                <div class="relative">
+                                    <p>{{ item.post_date|date_modify('0 days')|date('d.m.Y') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-end justify-between w-full">
+                                <div class="relative">
+                                    <h4 class="font-sans max-w-[35rem] text-24 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem]">{{ item.feature_content.title }}</h4>
+                                </div>
+                                
+                                <div class="relative top-15 left-25">
+                                    <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 uppercase" href="{{ post_link }}">
+                                        <span class="hidden s:inline-flex">
+                                            See more
+                                        </span>
+                                        <span class="hidden s:inline-flex">
+                                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                        <svg class="block s:hidden w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>

@@ -1,7 +1,7 @@
-<section class="relative bg-white-smoke">
+<section class="relative pt-40 pb-100 bg-white-smoke">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-    <div class="site-max py-60" data-component="slider(js-slides)">
+    <div class="site-max py-60" data-component="slider(js-slider-container-notable)">
         <div class="site-grid">
             <div class="relative col-span-full col-start-1 flex items-end justify-between pb-60">
                 <div class="relative s:max-w-[50rem] flex flex-col items-start space-y-40">
@@ -15,7 +15,7 @@
                 </div>
 
                 <div class="relative flex">
-                    <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid" type="button" data-slider-prev>
+                    <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid js-slider-prev" type="button">
                         <span class="inline-flex">
                             <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -23,7 +23,7 @@
                         </span>
                     </button>
 
-                    <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid" type="button" data-slider-next>
+                    <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-slider-next" type="button">
                         <span class="inline-flex">
                             <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -34,12 +34,100 @@
             </div>
 
             <div class="relative col-span-full col-start-1">
-                <div class="relative select-none cursor-grab w-full js-slides" data-slider>
-                    <ul class="slider-container flex relative z-1">
+                <div class="relative select-none cursor-grab w-full js-slider-container-notable">
+                    <ul class="slider-container flex relative z-1 js-slides">
                         {% for item in item.notable_cases_slider %}
-                            <li class="relative p-24 min-w-[55rem] max-w-[55rem] min-h-[40rem] max-h-[40rem] bg-grey-taupe mr-24 {{ loop.last ? '!mr-0' }} js-slide">
-                                <div class="font-disp text-green text-24 font-normal leading-[1.15] tracking-[-2%]">
-                                    {{ item.title }}
+                            {% set text_color_map = {
+                                'grey': 'text-grey-taupe',
+                                'black': 'text-grey-taupe',
+                                'yellow': 'text-black',
+                                'green': 'text-white-smoke'
+                            } %}
+
+                            {% set feature_content = function('get_field', 'feature_content', item.notable_case.ID) %}
+                            {% set bg_color = feature_content.background_color|lower %}
+                            {% set text_color = text_color_map[bg_color] %}
+                            
+                            {% set all_taxonomies = function('get_object_taxonomies', 'cases') %}
+                            {% set post_terms = {} %}
+
+                            {% for taxonomy in all_taxonomies %}
+                                {% set terms = function('get_the_terms', item.notable_case.ID, taxonomy) %}
+
+                                {% if terms and terms is not same as(false) %}
+                                    {% set post_terms = post_terms|merge({(taxonomy): terms}) %}
+                                {% endif %}
+                            {% endfor %}
+
+                            <li class="relative min-w-[55rem] max-w-[55rem] min-h-[40rem] max-h-[40rem] mr-24 js-slide">
+                                <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
+                                    {% if post_terms['case-categories'] %}
+                                        {% for category in post_terms['case-categories'] %}
+                                            {% include "/views/partials/tag.twig" with {
+                                                data: {
+                                                    text: category.name,
+                                                }
+                                            } %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+
+                                <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
+                                    {% if feature_content.feature_image %}
+                                        {% include "blocks/common/image.twig" with {
+                                            props : {
+                                                data: {
+                                                    image : feature_content.feature_image
+                                                },
+                                                options: {
+                                                    container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                                    class : 'w-full h-full object-cover pointer-events-none select-none',
+                                                    aspect_ratio: '67%',
+                                                    aspect_ratio_mobile: '150%',
+                                                }
+                                            }
+                                        } %}
+                                    {% else %}
+                                        <div class="pt-[150%] s:pt-[67%] bg-{{ feature_content.background_color|lower }}"></div>
+                                    {% endif %}
+                                </figure>
+
+                                <div class="relative s:absolute w-full pt-24 s:pt-32 space-y-24 s:space-y-40">
+                                    <div class="flex flex-wrap items-center justify-center s:justify-start gap-4">
+                                        {# Category #}
+                                        {% if post_terms['tags-cases'] %}
+                                            <div class="case-tags">
+                                                {% for tag in post_terms['tags-cases'] %}
+                                                    {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
+                                                    {% include "/views/partials/category.twig" with {
+                                                        data: {
+                                                            text: tag.name,
+                                                            bgColor: tag_background_color,
+                                                        }
+                                                    } %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="flex flex-col s:flex-row items-center justify-center s:justify-between">
+                                        <div class="relative pb-24 s:pb-0">
+                                            <h4 class="text-24 font-normal leading-[1.04] tracking-[-0.024rem] text-green">{{ feature_content.title }}</h4>
+                                        </div>
+
+                                        <div class="relative">
+                                            <a class="relative inline-flex space-x-8 text-12 font-medium leading-none tracking-[0.12rem] text-green uppercase" href="{{ item.link.url }}">
+                                                <span class="inline-flex">
+                                                    See more
+                                                </span>
+                                                <span class="inline-flex">
+                                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                         {% endfor %}

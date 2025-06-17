@@ -351,70 +351,6 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_68159e0170f84": {
-                    "key": "layout_68159e0170f84",
-                    "name": "layout_title_and_text_summary",
-                    "label": "Layout Title and Text Summary",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_682bee499760e",
-                            "label": "Layout Title and Text Summary",
-                            "name": "layout_title_and_text_summary",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_68159e71b0511"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                "layout_68159f566b7a1": {
-                    "key": "layout_68159f566b7a1",
-                    "name": "layout_full_screen_image",
-                    "label": "Layout Full Screen Image",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_682bee4997617",
-                            "label": "Layout Full Screen Image",
-                            "name": "layout_full_screen_image",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_68159f2639a19"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
                 "layout_6815a041706ed": {
                     "key": "layout_6815a041706ed",
                     "name": "layout_team_members",
@@ -471,5 +407,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1749732342
+    "modified": 1750166425
 }

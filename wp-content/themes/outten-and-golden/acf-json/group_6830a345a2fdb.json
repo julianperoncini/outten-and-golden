@@ -81,7 +81,7 @@
                         "id": ""
                     },
                     "post_type": [
-                        "newsroom"
+                        "post"
                     ],
                     "post_status": [
                         "publish"
@@ -117,5 +117,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1749732245
+    "modified": 1750166590
 }

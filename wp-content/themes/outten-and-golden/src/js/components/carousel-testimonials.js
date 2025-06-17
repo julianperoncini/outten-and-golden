@@ -6,6 +6,8 @@ import { evt, utils, store } from '../core'
 const { qs, qsa, rect } = utils
 const { dom, features, bounds } = store
 
+gsap.registerPlugin(ScrollTrigger)
+
 export default function carouselTestimonials() {
 
     const state = {
@@ -13,6 +15,9 @@ export default function carouselTestimonials() {
         current: 0,
         d: 5,
         cache: null,
+        autoplayInterval: null,
+        autoplayDelay: 2800,
+        isVisible: false
     }
 
     const elements = {
@@ -49,19 +54,83 @@ export default function carouselTestimonials() {
         })
     }
 
+    const startAutoplay = () => {
+        if (state.autoplayInterval) return
+        
+        state.autoplayInterval = setInterval(() => {
+            if (state.isVisible) {
+                next()
+            }
+        }, state.autoplayDelay)
+    }
+
+    const stopAutoplay = () => {
+        if (state.autoplayInterval) {
+            clearInterval(state.autoplayInterval)
+            state.autoplayInterval = null
+        }
+    }
+
+    const resetAutoplay = () => {
+        stopAutoplay()
+        if (state.isVisible) {
+            startAutoplay()
+        }
+    }
+
     const mount = () => {
         evt.on('click', elements.next, next)
         evt.on('click', elements.prev, prev)
         evt.on('click', elements.dots, click)
         
-        // Set initial active dot
         updateDots()
+
+        if (elements.el) {
+            this.st = ScrollTrigger.create({
+                trigger: elements.el,
+                start: "top bottom-=100px",
+                end: "bottom top+=100px",
+                onEnter: () => {
+                    state.isVisible = true
+                    startAutoplay()
+                },
+                onLeave: () => {
+                    state.isVisible = false
+                    stopAutoplay()
+                },
+                onEnterBack: () => {
+                    state.isVisible = true
+                    startAutoplay()
+                },
+                onLeaveBack: () => {
+                    state.isVisible = false
+                    stopAutoplay()
+                }
+            })
+        }
+
+        if (elements.el) {
+            elements.el.addEventListener('mouseenter', stopAutoplay)
+            elements.el.addEventListener('mouseleave', () => {
+                if (state.isVisible) startAutoplay()
+            })
+        }
     }
 
     const unmount = () => {
         this.st?.kill()
+        stopAutoplay()
 
+        evt.off('click', elements.next, next)
+        evt.off('click', elements.prev, prev)
         evt.off('click', elements.dots, click)
+
+        if (elements.el) {
+            elements.el.removeEventListener('mouseenter', stopAutoplay)
+            elements.el.removeEventListener('mouseleave', () => {
+                if (state.isVisible) startAutoplay()
+            })
+        }
     }
 
     const click = ({ currentTarget }) => {
@@ -70,6 +139,7 @@ export default function carouselTestimonials() {
         
         animate()
         updateDots()
+        resetAutoplay()
     }
 
     const next = () => {
@@ -86,6 +156,7 @@ export default function carouselTestimonials() {
         
         animate()
         updateDots()
+        resetAutoplay()
     }
 
     const animate = () => { 
@@ -124,6 +195,9 @@ export default function carouselTestimonials() {
         },
         get elements() {
             return elements
-        }
+        },
+        startAutoplay,
+        stopAutoplay,
+        unmount
     }
 }

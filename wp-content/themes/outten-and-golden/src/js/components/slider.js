@@ -1,40 +1,95 @@
 import gsap from 'gsap'
 import lerp from '@14islands/lerp'
 import { evt, utils, store } from '@/core'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 
 const { qs, qsa, rect } = utils
 const { device, bounds } = store
 
 const isMobile = device.isMobile
 
-export default function sliderScale(element, options = {}) {
+gsap.registerPlugin(ScrollTrigger)
+
+export default function slider(container) {
     const state = {
-        on: 0,
-        cancelX: 0,
-        cancelY: 0,
-        t: 0,
-        tc: 0,
-        dx: 0,
         speed: 2,
-        offset: 0,
-        active: false,
-        max: 0,
-        so: 0,
-        resizing: false,
-        cache: null,
-        elems: [],
-        events: {},
+        ox: 0,
         cx: 0,
         cy: 0,
-        doSnap: null
+        dx: 0,
+        t: 0,
+        tc: 0,
+        diff: 0,
+        max: 0,
+        margin: 0,
+        idx: 0,
+        active: false,
+        resizing: false,
+        run: false,
+        cache: null,
+        events: {},
+        isMobile: isMobile
     }
 
     const elements = {
-        el: element,
-        carousel: qs('.js-slider-container', element.elements.el),
-        slide: qsa('.js-slider-item', element.elements.carousel),
-        prev: qs('.js-slider-prev', element.elements.el),
-        next: qs('.js-slider-next', element.elements.el),
+        container: container.section,
+        slides: null,
+        slide: null,
+        prev: qs('.js-slider-prev', container.section),
+        next: qs('.js-slider-next', container.section),
+    }
+
+    let snaps = []
+    let st = null
+    let crect = null
+
+    
+    const resize = () => {
+        state.resizing = true
+        
+        
+        elements.slide = qsa('.js-slide', elements.container)
+        if (!elements.slide.length) return
+        
+        elements.slides = qs('.js-slides', elements.container)
+        
+        const srect = rect(elements.slides)
+        crect = rect(elements.container)
+
+        const total = elements.slide.length - 1
+        const offset = srect.left - crect.left
+
+        state.speed = state.isMobile ? 3.5 : 2
+
+        snaps = []
+        state.cache = []
+        
+        state.cache = elements.slide.map((elem, i) => {
+            elem.style.transform = `translate3d(0, 0, 0)`
+        
+            const { left, right, width } = rect(elem)
+            const start = left - crect.width
+            const end = right
+        
+            snaps.push(left - srect.left)
+        
+            if (i === total) {
+                calcMax(elem, end, offset)
+            }
+        
+            return { el: elem, start, width, end, out: true }
+        })
+
+        transforms()
+        
+        setTimeout(() => {
+            state.resizing = false
+        }, 0)
+    }
+
+    const calcMax = (elem, right, offset) => {
+        state.margin = parseInt(getComputedStyle(elem).getPropertyValue('margin-right'))
+        state.max = Math.max(0, right + state.margin - offset)
     }
 
     const pos = (e) => {
@@ -51,7 +106,7 @@ export default function sliderScale(element, options = {}) {
         state.cx = x
         state.cy = y
         state.dx = x
-        state.on = state.t + x * state.speed
+        state.ox = state.t + x * state.speed
     }
 
     const move = (e) => {
@@ -67,8 +122,7 @@ export default function sliderScale(element, options = {}) {
             e.stopPropagation()
         }
 
-        state.t = state.on - x * state.speed
-        clamp()
+        state.t = state.ox - x * state.speed
     }
 
     const up = (e) => {
@@ -76,112 +130,60 @@ export default function sliderScale(element, options = {}) {
         state.active = false
 
         const { x } = pos(e)
-
         if (Math.abs(x - state.dx) < 10) {
-            const el = e.target.closest('[data-to]')
-            // Handle click/tap functionality here if needed
-        }
-
-        snap()
-        clamp()
-    }
-
-    const clamp = () => {
-        state.t = gsap.utils.clamp(0, state.max, state.t)
-    }
-
-    const calcMax = (el, right, width, offset) => {
-        const margin = parseInt(getComputedStyle(el).getPropertyValue('margin-right'))
-
-        state.max = Math.max(0, right - (bounds.ww - offset))
-        state.so = width + margin
-        state.doSnap = gsap.utils.snap(state.so)
-    }
-
-    const resize = () => {
-        state.resizing = true
-
-        const total = elements.slide?.length - 1
-        const offset = rect(elements.carousel).left
-
-        if (state.cache) {
-            state.cache.forEach((c, i) => {
-                c.xSet(0)
-
-                const { left, right, width } = rect(c.el)
-
-                c.start = left - bounds.ww
-                c.end = right
-                c.out = true
-
-                if (i === total) {
-                    calcMax(c.el, right, width, offset)
-                }
-            })
+            const el = e.target.closest('[data-url]')
+            if (el && el.dataset.url) {
+                // Handle navigation - you can customize this
+                window.location.href = el.dataset.url
+            }
         } else {
-            state.elems = []
-            state.cache = elements.slide.map((el, i) => {
-                el.style.transform = 'none'
-
-                const { left, right, width } = rect(el)
-                const start = left - bounds.ww
-                const end = right
-                const xSet = gsap.quickSetter(el, 'x', 'px')
-
-                if (i === total) {
-                    calcMax(el, right, width, offset)
-                }
-
-                return { el, xSet, start, end, out: true }
-            })
+            snap()
         }
-
-        transform()
-        clamp()
-        
-        setTimeout(() => {
-            state.resizing = false
-        })
-    }
-
-    const previous = () => {
-        state.t = state.doSnap(state.t - state.so)
-        clamp()
-    }
-
-    const next = () => {
-        state.t = state.doSnap(state.t + state.so)
-        clamp()
     }
 
     const snap = () => {
-        state.t = state.doSnap(state.t)
+        const target = gsap.utils.wrap(0, state.max, state.t)
+        const snapValue = gsap.utils.snap(snaps, target)
+        const diff = snapValue - target
+
+        state.t += diff
+        state.idx = snaps.indexOf(snapValue)
     }
 
-    const tick = ({ ratio }) => {
+    const tick = ({ ratio = gsap.ticker.deltaRatio() }) => {
+        if (!state.run) return
+        
         state.tc = lerp(state.tc, state.t, 0.1 * ratio)
         state.tc = Math.round(state.tc * 100) / 100
 
-        const still = Math.abs(state.t - state.tc) <= 0.1
-        if (!still) {
-            transform()
+        state.diff = state.tc - state.t
+        state.diff = Math.round(state.diff * 1000) / 1000
+
+        if (!state.resizing) {
+            transforms()
         }
     }
 
-    const transform = () => {
-        state.cache?.forEach((c) => {
-            const { start, end, xSet } = c
+    const transforms = () => {
+        state.cache?.forEach(c => {
+            const { start, end, el } = c
+            const t = gsap.utils.wrap(-(state.max - end), end, state.tc)
+            const v = visible(start, end, t)
 
-            if (visible(start, end, state.tc) || state.resizing) {
+            if (v || state.resizing) {
                 if (c.out) {
                     c.out = false
                 }
-                xSet(-state.tc)
+                transform(el, t)
             } else if (!c.out) {
                 c.out = true
-                xSet(-state.tc)
+                transform(el, t)
             }
         })
+    }
+
+    const transform = (el, transformValue) => {
+        el.style.transform = `translate3d(${-transformValue}px, 0, 0)`
     }
 
     const visible = (start, end, t) => {
@@ -190,43 +192,83 @@ export default function sliderScale(element, options = {}) {
 
     const setEvents = () => {
         state.events = {
-            move: isMobile ? 'touchmove' : 'mousemove',
-            down: isMobile ? 'touchstart' : 'mousedown',
-            up: isMobile ? 'touchend' : 'mouseup',
+            move: state.isMobile ? 'touchmove' : 'mousemove',
+            down: state.isMobile ? 'touchstart' : 'mousedown',
+            up: state.isMobile ? 'touchend' : 'mouseup',
         }
+    }
+
+    const next = () => {
+        console.log('CAROUSEL: NEXT')
+        
+        if (!state.cache) return
+
+        const c = state.cache[state.idx]
+        if (!c) return
+
+        const left = c.width || 0
+
+        state.t += left + state.margin
+        state.idx = gsap.utils.wrap(0, state.cache.length, state.idx + 1)
+    }
+
+    const previous = () => {
+        console.log('CAROUSEL: PREVIOUS')
+
+        if (!state.cache) return
+
+        const c = state.cache[state.idx]
+        if (!c) return
+
+        const left = c.width || 0
+
+        state.t -= left + state.margin
+        state.idx = gsap.utils.wrap(0, state.cache.length, state.idx - 1)
     }
 
     const bindEvents = () => {
         setEvents()
 
+        elements.container?.addEventListener(state.events.down, down)
+        elements.container?.addEventListener(state.events.move, move)
         window.addEventListener(state.events.up, up)
-        elements.carousel.addEventListener(state.events.down, down)
-        elements.carousel.addEventListener(state.events.move, move)
-        elements.prev && elements.prev.addEventListener('click', previous)
-        elements.next && elements.next.addEventListener('click', next)
+        elements.prev?.addEventListener('click', previous)
+        elements.next?.addEventListener('click', next)
 
-        evt.on('resize', resize)
-        evt.on('tick', tick)
+        console.log(elements.prev)
+        console.log(elements.next)
+
+        window.addEventListener('resize', resize)
+        
+        gsap.ticker.add(tick)
+
+        console.log('carousel: bindEvents')
     }
 
     const unbindEvents = () => {
+        elements.container?.removeEventListener(state.events.down, down)
+        elements.container?.removeEventListener(state.events.move, move)
         window.removeEventListener(state.events.up, up)
-        elements.carousel.removeEventListener(state.events.down, down)
-        elements.carousel.removeEventListener(state.events.move, move)
-        elements.prev && elements.prev.removeEventListener('click', previous)
-        elements.next && elements.next.removeEventListener('click', next)
+        window.removeEventListener('resize', resize)
+        elements.prev?.removeEventListener('click', previous)
+        elements.next?.removeEventListener('click', next)
 
-        evt.off('resize', resize)
-        evt.off('tick', tick)
+        console.log('carousel: unbindEvents')
     }
 
     const init = () => {
         bindEvents()
         resize()
+
+        ScrollTrigger.create({
+            trigger: elements.container,
+            onToggle: ({ isActive }) => state.run = isActive
+        })
     }
 
     const destroy = () => {
         unbindEvents()
+        st?.kill()
         state.cache = null
     }
 
@@ -238,6 +280,7 @@ export default function sliderScale(element, options = {}) {
         destroy()
     }
 
+    // Auto-mount
     mount()
 
     return {
@@ -245,8 +288,8 @@ export default function sliderScale(element, options = {}) {
         destroy,
         mount,
         unmount,
-        previous,
         next,
+        previous,
         snap,
         resize,
         get state() {
@@ -254,6 +297,15 @@ export default function sliderScale(element, options = {}) {
         },
         get elements() {
             return elements
+        },
+        get idx() {
+            return state.idx
+        },
+        get diff() {
+            return state.diff
+        },
+        get cache() {
+            return state.cache
         }
     }
 }

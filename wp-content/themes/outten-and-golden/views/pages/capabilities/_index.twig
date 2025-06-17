@@ -1,0 +1,35 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+	<article data-taxi-view class="page-capabilities">
+		<div class="app">
+			{% include 'partials/breadcrumb.twig' %}
+			
+			{# Hero #}
+			{% include 'pages/capabilities/partials/_hero.twig' with {
+				props: {
+					hero: hero
+				}
+			} %}
+
+			{# All Posts Layout #}
+			{% include 'pages/capabilities/partials/_all_posts.twig' with {
+				props: {
+					all_capabilities_layout: all_capabilities_layout,
+					categories: categories
+				}
+			} %}
+
+			{# Content Builder #}
+			{% include 'blocks/builder/index.twig' with {
+				props: {
+					data: {
+						items: content_builder.content_builder
+					}
+				}
+			} %}
+		</div>
+
+		{% include '_site-footer.twig' %}
+	</article>
+{% endblock %}
