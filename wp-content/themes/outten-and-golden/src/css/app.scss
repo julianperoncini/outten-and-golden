@@ -434,10 +434,8 @@ body.home {
 /**
 * Filter List
 */
-button {
-	&:[data-filter-status="active"] {
-		@apply bg-white-smoke;
-	}
+button[data-filter-status="active"] {
+	@apply bg-white-smoke;
 }
 
 .filter-list__item[data-filter-status="active"] {
