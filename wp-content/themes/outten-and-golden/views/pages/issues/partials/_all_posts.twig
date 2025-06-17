@@ -6,7 +6,7 @@
     <div class="relative js-issues-filter" data-component="listGrid(js-list-grid)">
         <div class="site-max site-grid pt-60 s:pt-160 pb-60 s:pb-80">
             <div class="col-span-3">
-                <button class="flex relative select-none js-list-filter" type="button" aria-label="Filter by grid or list">
+                <button class="flex w-full s:w-[inherit] relative select-none js-list-filter" type="button" aria-label="Filter by grid or list">
                     <div class="w-[6rem] h-full bg-white-smoke absolute top-0 left-0 z-0 js-list-filter-bg"></div>
                     <div class="overflow-hidden py-14 border border-solid border-grey-taupe relative z-1 w-1/2 s:w-[6rem] flex items-center justify-center">
                         <svg class="size-14 relative z-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
@@ -28,24 +28,24 @@
                 {% endfor %}
             </div>
 
-            <div class="relative col-span-3 col-start-6 flex s:hidden justify-end">
-                <div class="relative w-fit">
-                    <button class="relative h-full s:h-[inherit] py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center space-x-12 border-[0.1rem] border-solid border-grey-taupe">
+            <div class="relative col-span-4 col-start-5 flex s:hidden justify-end">
+                <div class="relative w-full">
+                    <button class="relative w-full h-full s:h-[inherit] py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center justify-center space-x-12 border-[0.1rem] border-solid border-grey-taupe js-mobile-filter-toggle">
                         <span class="inline-flex">Filter</span>
                         <span class="inline-flex">
-                            <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="w-[1.1rem] h-auto js-mobile-filter-arrow" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.86719 0.75L5.36719 5.25L0.867187 0.75" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </span>
                     </button>
 
-                    <div class="absolute top-full left-0 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe invisible">
+                    <div class="absolute top-full left-0 z-2 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe js-mobile-filter-dropdown">
                         <ul class="relative">
-                            {# {% for filter in all_filters %}
-                                <li class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">
-                                    {{ filter.name }}
+                            {% for category in categories %}
+                                <li class="relative w-full flex {{ loop.last ? 'border-b-0' : 'border-b border-solid border-grey-taupe' }}">
+                                    <button class="relative w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase js-mobile-filter-option" type="button" aria-label="Button to filter by all" data-filter="{{ category.slug }}">{{ category.name }}</button>
                                 </li>
-                            {% endfor %} #}
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>

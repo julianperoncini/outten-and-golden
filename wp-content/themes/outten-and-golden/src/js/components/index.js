@@ -17,6 +17,7 @@ import blogsFilter from './filters/blogsFilter'
 import casesFilter from './filters/casesFilter'
 import teamFilter from './filters/teamFilter'
 import searchFilter from './filters/searchFilter'
+import stickyAside from './stickyAside'
 
 export {
     search,
@@ -33,4 +34,5 @@ export {
     casesFilter,
     teamFilter,
     searchFilter,
+    stickyAside,
 }
