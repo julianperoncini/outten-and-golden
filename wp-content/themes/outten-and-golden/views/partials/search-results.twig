@@ -1,0 +1,53 @@
+{# partials/search-results.twig #}
+
+<div class="relative overflow-y-scroll h-full" data-lenis-prevent>
+
+
+    <div class="site-max pt-40">
+
+        {% if issues_results %}
+            <div class="relative pb-20">
+                <div class="pb-40">
+                    <p class="text-[4rem] leading-[1.1] tracking-[-0.01em] text-green">Related Issues</p>
+                </div>
+
+                <div class="search-results-wrapper relative pb-65">
+                    <div class="site-grid items-start gap-y-20 grid-layout">
+                        
+                        {% for item in issues_results %}
+                            {% include './partials/search-item.twig' %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <hr class="border-grey-taupe mb-30">
+
+        {% if cases_results %}
+            <div class="pb-40">
+                <p class="text-[4rem] leading-[1.1] tracking-[-0.01em] text-green">Related Cases</p>
+            </div>
+            <div class="search-results-wrapper relative space-y-[6rem] s:space-y-[16rem]">
+                <div class="site-grid items-start gap-y-20">
+                    {% for item in cases_results %}
+                        {% include './partials/search-case.twig' %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if post_results %}
+            <h2>Related Posts</h2>
+            <div class="search-results-wrapper relative space-y-[6rem] s:space-y-[16rem]">
+                <div class="site-grid items-start gap-y-20 grid-layout">
+                    {% for item in post_results %}
+                        {% include './partials/search-item.twig' %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</div>

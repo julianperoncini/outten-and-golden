@@ -1,0 +1,43 @@
+{# Get ACF fields using WordPress functions #}
+{% set post_id = post.ID %}
+{% set image = fn('get_field', 'feature_content_feature_image', post_id) %}
+{% set bg = fn('get_field', 'feature_content_background_color', post_id) %}
+{% set description = fn('get_field', 'feature_content_description', post_id) %}
+
+<div class="column w-full relative group overflow-hidden">
+    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block w-full relative js-search-link {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
+        {% if image %}
+            {% include "blocks/common/image.twig" with {
+                props : {
+                    data: {
+                        image : image
+                    },
+                    options: {
+                        container_class: 'column-image w-full overflow-hidden',
+                        class : 'w-full h-full object-cover group-hover:scale-105 transition-all duration-[1s]',
+                        size: 'large',
+                        aspect_ratio: '0%',
+                    }
+                }
+            } %}
+        {% endif %}
+
+        <div class="column-category absolute top-0 left-0 w-full p-16 l:p-24">
+            <span class="text-12 font-medium leading-none tracking-[0.12rem] uppercase">Issue</span>
+        </div>
+
+        <div class="absolute z-1 bottom-0 left-0 w-full p-16 l:p-24 leading-none flex justify-between items-end w-full">
+            <p class="column-title text-24 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem] max-w-[25rem] s:max-w-[31rem]">{{ post.post_title }}</p>
+            <p class="column-link text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center whitespace-nowrap">
+                <span class="column-link-text hidden">
+                    See more
+                </span>
+                <span class="inline-flex">
+                    <svg class="w-6 h-10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 0.999999L4.5 4.5L1 8" stroke="currentColor" stroke-width="1.01111" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </p>
+        </div>
+    </a>
+</div>

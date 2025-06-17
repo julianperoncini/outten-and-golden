@@ -1,0 +1,121 @@
+{% set post_id = post.ID %}
+{% set post_link = fn('get_permalink', post_id) %}
+{% set feature_content = fn('get_field', 'feature_content', post_id) %}
+{% set post_terms = fn('get_the_terms', post_id, 'post_tag') %}
+
+{% set post_tags = fn('get_the_terms', post_id, 'post_tag') %}
+{% set case_categories = fn('get_the_terms', post_id, 'case-categories') %}
+
+{# Build category slugs array #}
+{% set category_slugs = [] %}
+{% if case_categories %}
+    {% for category in case_categories %}
+        {% set category_slugs = category_slugs|merge([category.slug]) %}
+    {% endfor %}
+{% endif %}
+
+{# Safe fallbacks #}
+{% set post_title = feature_content.title|default(post.post_title)|default('Untitled') %}
+{% set bg_color = feature_content.background_color|lower|default('gray') %}
+
+<article class="case-study-card">
+    <a class="relative block w-full group" 
+       href="{{ post_link }}"
+       aria-label="View {{ post_title }} case study"
+
+
+    >
+        {# Category Tags Overlay #}
+        {% if case_categories %}
+            <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-10">
+                {% for category in case_categories %}
+                    {% include "/views/partials/tag.twig" with {
+                        data: {
+                            text: category.name,
+                        }
+                    } %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Featured Image/Background #}
+        <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
+            {% if feature_content and feature_content.feature_image %}
+                {% include "blocks/common/image.twig" with {
+                    props: {
+                        data: {
+                            image: feature_content.feature_image
+                        },
+                        options: {
+                            container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                            class: 'w-full h-full object-cover pointer-events-none select-none group-hover:scale-105 transition-all duration-[1s]',
+                            aspect_ratio: '67%',
+                            aspect_ratio_mobile: '67%',
+                            loading: 'lazy',
+                            alt: post_title ~ ' featured image'
+                        }
+                    }
+                } %}
+            {% else %}
+                <div class="pt-[150%] s:pt-[67%] bg-{{ bg_color }} flex items-center justify-center">
+                    <span class="text-white/60 text-sm font-medium">{{ post_title|slice(0, 1)|upper }}</span>
+                </div>
+            {% endif %}
+        </figure>
+
+        {# Content Section #}
+        <div class="relative w-full pt-24 s:pt-32 space-y-24 s:space-y-32">
+
+            {# Display post tags in content section #}
+            {% if post_tags %}
+                <div class="flex flex-wrap items-start justify-start gap-4">
+                    {% for tag in post_tags %}
+                        {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
+                        {% include "/views/partials/category.twig" with {
+                            data: {
+                                text: tag.name,
+                                bgColor: tag_background_color|default('green'),
+                            }
+                        } %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# Title and CTA Section #}
+            <div class="flex flex-row items-start justify-between gap-16">
+                <div class="relative pb-24 s:pb-0 flex-1">
+                    {% if post_title %}
+                        <h3 class="text-24 font-normal leading-[1.04] tracking-[-0.024rem] text-green group-hover:text-green/80 transition-colors duration-200">
+                            {{ post_title }}
+                        </h3>
+                    {% endif %}
+                    
+                    {# Optional excerpt/description #}
+                    {% if feature_content.excerpt %}
+                        <p class="mt-12 text-14 leading-[1.4] text-gray-600 line-clamp-2">
+                            {{ feature_content.excerpt }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                {# CTA Button #}
+                <div class="relative flex-shrink-0">
+                    <span class="relative inline-flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] text-green uppercase group-hover:text-green/80 transition-colors duration-200" 
+                          role="button" 
+                          aria-hidden="true">
+                        <span class="inline-flex">View</span>
+                        <span class="inline-flex transform group-hover:translate-x-2 transition-transform duration-200">
+                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" 
+                                      stroke="currentColor" 
+                                      stroke-width="1.3" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </a>
+</article>

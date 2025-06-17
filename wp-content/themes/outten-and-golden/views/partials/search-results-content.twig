@@ -1,0 +1,31 @@
+{# partials/search-results-content.twig #}
+{% if grouped_posts %}
+    {% for type, posts in grouped_posts %}
+        <div class="{{ type }}-section col-span-full mb-12">
+            <h3 class="text-18 font-medium mb-6 text-green">
+                {% if type == 'issues' %}
+                    Issues ({{ posts|length }})
+                {% elseif type == 'cases' %}
+                    Cases ({{ posts|length }})
+                {% elseif type == 'post' %}
+                    Blog Posts ({{ posts|length }})
+                {% else %}
+                    {{ type|title }} ({{ posts|length }})
+                {% endif %}
+            </h3>
+            
+            <div class="{{ type }}-grid space-y-4">
+                {% for post in posts %}
+                    {% include './partials/search-item.twig' with {'post': post} %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="col-span-full text-center py-12">
+        <p class="text-16 text-grey-taupe">No results found.</p>
+        {% if search_term %}
+            <p class="text-12 text-grey-taupe mt-2">Try searching with different keywords.</p>
+        {% endif %}
+    </div>
+{% endif %}
