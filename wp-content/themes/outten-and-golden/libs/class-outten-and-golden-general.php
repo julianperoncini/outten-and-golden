@@ -27,7 +27,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
 		// Init Timber.
 		$this->init_timber();
 
-       // Setup theme support.
+        // Setup theme support.
         $this->setup_theme_support();
 
         // Add our hooks.
@@ -45,7 +45,6 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
 
 		parent::__construct();
 	}
-
 
 	/**
 	 * Inits Timber.
@@ -74,10 +73,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
     }
 
     private function add_hooks() {
-        add_action('init',              [$this, 'register_menus']);
         add_action('wp_footer',         [$this, 'deregister_wp_scripts']);
         add_filter('timber/context',    [$this, 'add_base_timber_context']);
-        add_filter('upload_mimes',      [$this, 'add_svg_to_mime_types']);
         add_action('admin_menu',        [$this, 'remove_comment_from_menu']);
         add_filter('timber/twig',       [$this, 'add_to_twig']);
         add_action('after_setup_theme', [$this, 'register_menus']);
@@ -90,8 +87,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('admin_init', [$this, 'disable_content_editor']);
         add_action('do_meta_boxes', [$this, 'remove_featured_image_metabox']);
         add_filter('show_admin_bar',     '__return_false');
-        add_filter('taxi_namespace', [ $this, 'taxi_namespace' ] );
-        
+
         add_action('admin_head-profile.php', [$this, 'hide_gravatar_section']);
         add_action('admin_head-user-edit.php', [$this, 'hide_gravatar_section']);
 
@@ -253,6 +249,35 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
         $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
 
+        $context['all_tags'] = Timber::get_terms([
+            'taxonomy' => 'post_tag',
+            //'hide_empty' => true,
+            'number' => 20 
+        ]);
+
+        $search_related = get_field('search_category', 'option');
+
+        // Convert WP_Post objects to Timber Posts
+        if ($search_related) {
+            foreach ($search_related as &$category) {
+                if (isset($category['search_category_posts'])) {
+                    foreach ($category['search_category_posts'] as &$post_group) {
+                        if (isset($post_group['search_category_post'])) {
+                            foreach ($post_group['search_category_post'] as &$post) {
+                                // Handle WP_Post object
+                                if (is_object($post) && $post instanceof WP_Post) {
+                                    // Use Timber::get_post() instead
+                                    $post = Timber::get_post($post->ID);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $context['search_related'] = $search_related;
+
         $context['taxi_namespace'] = apply_filters('taxi_namespace', 'default');
 
         $context['options'] = get_fields('option');
@@ -264,6 +289,12 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['posts'] = Timber::get_posts($args);
         $context['breadcrumb'] = $this->get_breadcrumb();
         $context['is_home'] = is_front_page();
+
+        $context['page_data'] = [
+            'type' => $this->get_page_type(),
+            'template' => get_page_template_slug(),
+            'body_classes' => get_body_class(),
+        ];
 
         return $context;
     }
@@ -285,24 +316,6 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
     public function remove_featured_image_metabox() {
         remove_meta_box('postimagediv', 'page', 'side');
     }
-
-    /**
-     * Sets the correct highway namespace depending on
-     * what page the user is on.
-     * @param  string $ns
-     * @return string
-     */
-	public function taxi_namespace( $ns ) {
-		if ( is_page() ) {
-			$ns = 'page';
-		}
-
-		if ( is_front_page() ) {
-			$ns = 'home';
-		}
-
-		return $ns;
-	}
 
     public function hide_gravatar_section() {
         echo '<style>
@@ -507,6 +520,63 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         return $breadcrumb;
     }
     
+    public function taxi_namespace( $ns ) {
+        if ( is_page() ) {
+            $ns = 'page';
+        }
+    
+        if ( is_front_page() ) {
+            $ns = 'home';
+        }
+    
+        if ( is_search() ) {
+            global $wp_query;
+            
+            // Get current URL path
+            $current_path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+            
+            // Get search query from multiple sources
+            $search_query = get_search_query();
+            $search_param = isset($_GET['s']) ? trim($_GET['s']) : '';
+            
+            // Check if this is your clean URL format
+            $is_clean_search_url = strpos($current_path, 'search') === 0;
+            
+            // Determine if search is empty
+            $is_empty_search = false;
+            
+            if ($is_clean_search_url) {
+                // For clean URLs like /search/ or /search (no query)
+                $path_parts = explode('/', $current_path);
+                $is_empty_search = (count($path_parts) <= 1 || $current_path === 'search');
+            } else {
+                // For traditional URLs like /?s=
+                $is_empty_search = empty($search_query) && empty($search_param);
+            }
+            
+            if ( $is_empty_search ) {
+                $ns = 'search-empty';
+            } elseif ( $wp_query->found_posts == 0 ) {
+                $ns = 'search-no-results';
+            } else {
+                $ns = 'search';
+            }
+        }
+    
+        if ( is_single() ) {
+            $ns = 'single';
+        }
+    
+        if ( is_archive() ) {
+            $ns = 'archive';
+        }
+    
+        if ( is_category() ) {
+            $ns = 'category';
+        }
+    
+        return $ns;
+    }
 }
 
 new OUTTEN_AND_GOLDEN_Theme_General;

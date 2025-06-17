@@ -50,22 +50,68 @@ const initTaxi = new Taxi.Core({
 })
 
 initTaxi.on('NAVIGATE_IN', (e) => {
-	updateWpAdminBar(e.to.page)
+    const pageElement = e.to.page
+    const taxiNamespace = e.to.renderer.content.dataset.taxiNamespace || 'default'
+    const pageType = e.to.renderer.content.dataset.pageType || taxiNamespace
 
+	//updateWpAdminBar(pageElement)
+	updatePageState(taxiNamespace, pageType);
+})
+
+function initializePageState() {
+    const pageElement = document.querySelector('[data-taxi-view]');
+    const taxiNamespace = pageElement.dataset.taxiNamespace || 'default';
+    const pageType = pageElement.dataset.pageType || taxiNamespace;
+    
+    updatePageState(taxiNamespace, pageType);
+}
+
+initializePageState()
+
+function updatePageState(namespace, pageType) {
+    updateBodyClasses(namespace, pageType);
+    updateHeaderClasses(namespace, pageType);
+    //updateNavigationStates();
+    //updateSpecialFeatures(namespace, pageType);
+}
+
+function updateBodyClasses(namespace) {
+    const body = document.body;
+
+    // You can also mirror WordPress body classes
+    const wpClasses = ['page', 'home', 'search', 'search-empty', 'search-no-results', 'single', 'archive', 'category', 'tag', 'error404'];
+    body.classList.remove(...wpClasses);
+    
+    if (namespace === 'error') {
+        body.classList.add('error404');
+    } else {
+        body.classList.add(namespace);
+    }
+}
+
+function updateHeaderClasses(namespace, pageType) {
+	const header = document.querySelector('header')
+
+	if (header) {
+		header.classList.add(`taxi-${namespace}`, `taxi-${pageType}`);
+	}
+}	
+
+function updateNavigationStates() {
 	const links = document.querySelectorAll('header a')
 
 	for (let i = 0; i < links.length; i++) {
 		const link = links[i];
 
-		// Clean class
 		link.classList.remove('is-active');
-
-		// Active link
-		if (link.href === location.href) {
-			link.classList.add('is-active');
-		}
 	}
-})
+
+	const link = links.find(link => link.href === location.href)
+
+	if (link) {
+		link.classList.add('is-active');
+	}
+}
 
 const grid = document.querySelector('.js-template-grid')
 document.addEventListener('keydown', (e) => {

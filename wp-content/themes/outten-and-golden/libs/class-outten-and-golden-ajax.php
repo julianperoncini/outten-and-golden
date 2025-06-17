@@ -9,6 +9,8 @@
  * @package OUTTEN_AND_GOLDEN
  */
 
+use Timber\Timber;
+
 class OUTTEN_AND_GOLDEN_AJAX {
   public function __construct() {
     add_action( 'wp_head', array( $this, 'define_ajax_url' ) );
@@ -16,6 +18,79 @@ class OUTTEN_AND_GOLDEN_AJAX {
     // Register the AJAX action for logged in and non-logged in users
     add_action('wp_ajax_submit_gravity_form_ajax', array( $this, 'handle_gravity_form_ajax_submission' ));
     add_action('wp_ajax_nopriv_submit_gravity_form_ajax', array( $this, 'handle_gravity_form_ajax_submission' ));
+
+    add_action('wp_ajax_search', array( $this, 'handle_search_ajax' ));
+    add_action('wp_ajax_nopriv_search', array( $this, 'handle_search_ajax' ));
+  }
+
+  function handle_search_ajax() {
+    $tag_text = $_POST['tagText'] ?? '';
+    $active_tags = json_decode(stripslashes($_POST['activeTags'] ?? '[]'), true);
+    
+    $args = array(
+        'post_type' => ['issues', 'cases', 'post'],
+        'posts_per_page' => -1,
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'post_tag',
+                'field' => 'name',
+                'terms' => $active_tags,
+                'operator' => 'IN'
+            )
+        )
+    );
+
+    $number_of_posts = 0;
+
+    $context = [];
+    $timber_posts = Timber::get_posts($args);
+
+    foreach ($timber_posts as $post) {
+        $posttype = get_post_type($post->ID);
+
+        if ($posttype === 'issues') {
+            $post->fields = get_fields($post->ID);
+            
+            if (!is_array($context['issues_results'])) {
+                $context['issues_results'] = [];
+            }
+
+            $context['issues_results'][] = $post;
+            $number_of_posts++;
+        }
+
+        if ($posttype === 'cases') {
+            $post->fields = get_fields($post->ID);
+            
+            if (!is_array($context['cases_results'])) {
+                $context['cases_results'] = [];
+            }
+
+            $context['cases_results'][] = $post;
+            $number_of_posts++;
+        }
+
+        if ($posttype === 'post') {
+            $post->fields = get_fields($post->ID);
+            
+            if (!is_array($context['post_results'])) {
+                $context['post_results'] = [];
+            }
+
+            $context['post_results'][] = $post;
+            $number_of_posts++;
+        }
+    }
+
+    wp_send_json([
+        'success' => true,
+        'data' => [
+            'tagText' => $tag_text,
+            'activeTags' => $active_tags,
+            'html' => Timber::compile('partials/search-results.twig', $context),
+            'total' => $number_of_posts
+        ]
+    ]);
   }
 
   /**

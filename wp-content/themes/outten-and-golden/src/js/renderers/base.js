@@ -28,6 +28,8 @@ export default class extends Renderer {
             this.preloader?.loaded()
         }
 
+		components['search'](this.el);
+
 		this.onEnterCompleted()
     }
 
@@ -41,6 +43,13 @@ export default class extends Renderer {
         this.observers = [];
 
         evt.emit('scroll:header');
+
+        const searchLinks = qsa('.js-search-link');
+        searchLinks.forEach(searchLink => {
+            evt.on('click', searchLink, (e) => {
+                components['search'](this.el).clearSearch()
+            });
+        });
     }
 
     onEnterCompleted() {
