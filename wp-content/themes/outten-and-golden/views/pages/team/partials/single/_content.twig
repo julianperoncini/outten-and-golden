@@ -1,16 +1,16 @@
 <section class="relative bg-white">
     {# <pre>{{ post.feature_content|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
     
-    <div class="relative space-y-[12rem] s:space-y-[24rem] pt-60 s:pt-120">
+    <div class="relative space-y-[12rem] s:space-y-[24rem] pt-60 s:pt-120" data-component="stickyAside(js-aside-sticky)">
         {# My Story, Legal Practice, Values, Credentials, Notable Cases and Form #}
-        <div class="site-max site-grid">
+        <div class="site-max site-grid js-aside-sticky">
             {% include 'pages/team/partials/single/content/_legal-practice.twig' with {
                 props: {
                     post: post
                 }
             } %}
 
-            <div class="relative col-start-10 col-span-7 space-y-32">
+            <div class="relative col-start-10 col-span-7 space-y-32 js-main-sticky">
                 {% include 'pages/team/partials/single/content/_my-story.twig' with {
                     props: {
                         post: post
