@@ -3,7 +3,7 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 import { evt, utils, store } from '../core'
 
 const { qs, qsa, rect } = utils
-const { dom, features, bounds } = store
+const { dom, features, bounds, device } = store
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -59,11 +59,15 @@ export default function stickyAside(elm) {
     }
 
     const destroy = () => {
+        if (device.isMobile) return
+        
         evt.off('resize', onResize)  
         evt.off('scroll', onScroll)
     }
 
     const init = () => {
+        if (device.isMobile) return
+
         evt.on('resize', onResize)
         evt.on('scroll', onScroll)
     }
