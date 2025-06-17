@@ -20,7 +20,7 @@
             </div>
 
             <div class="col-start-1 col-span-full pt-30 s:pt-50 flex flex-col gap-25 js-all-posts-container">
-                <div class="relative flex flex-wrap s:gap-x-24 gap-y-32 s:gap-y-[6.4rem]">
+                <div class="relative grid grid-cols-3 gap-x-30 s:gap-x-24 gap-y-32 s:gap-y-[6.4rem]">
                     {% for post in cases_posts %}
                         {% set feature_content = function('get_field', 'feature_content', post.ID) %}
                         {% set post_link = function('get_permalink', post.ID) %}
@@ -35,7 +35,7 @@
                             {% endif %}
                         {% endfor %}
 
-                        <a class="relative block w-full min-w-full s:min-w-[44.3rem] max-w-full s:max-w-[44.3rem] js-all-posts-item" href="{{ post_link }}"
+                        <a class="relative block w-full js-all-posts-item" href="{{ post_link }}"
                             {% if post_terms['tags-cases'] %}
                                 {% set category_slugs = [] %}
                                 {% for tag in post_terms['tags-cases'] %}
@@ -79,18 +79,18 @@
                             <div class="relative w-full pt-24 s:pt-32 space-y-24 s:space-y-32">
                                 <div class="flex flex-wrap items-start justify-start gap-4">
                                     {# Category #}
-                                    {% if post_terms['tags-cases'] %}
-                                        <div class="case-tags">
-                                            {% for tag in post_terms['tags-cases'] %}
+                                    {% if post_terms['post_tag'] %}
+                                       
+                                            {% for tag in post_terms['post_tag'] %}
                                                 {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
                                                 {% include "/views/partials/category.twig" with {
                                                     data: {
                                                         text: tag.name,
-                                                        bgColor: tag_background_color,
+                                                        bgColor: tag_background_color|default('green'),
                                                     }
                                                 } %}
                                             {% endfor %}
-                                        </div>
+                                        
                                     {% endif %}
                                 </div>
 

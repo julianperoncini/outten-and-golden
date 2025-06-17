@@ -72,6 +72,7 @@
 
                 {% for taxonomy in all_taxonomies %}
                     {% set terms = function('get_the_terms', item.item.ID, taxonomy) %}
+
                     {% if terms and terms is not same as(false) %}
                         {% set post_terms = post_terms|merge({(taxonomy): terms}) %}
                     {% endif %}

@@ -35,7 +35,7 @@
             {
                 "param": "taxonomy",
                 "operator": "==",
-                "value": "tags-cases"
+                "value": "all"
             }
         ]
     ],
@@ -48,5 +48,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1748382680
+    "modified": 1750117425
 }

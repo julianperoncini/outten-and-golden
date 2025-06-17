@@ -649,11 +649,21 @@ export default function initPredictiveSearch(el) {
         async updateWithAPI(apiResults, searchValue) {
             console.log('updateSearchSuggestions called with:', { apiResults, searchValue, activeTags: state.activeTags });
             
+            // Hide all existing tags first
             elements.allTags.forEach(tag => {
                 tag.style.display = 'none';
                 tag.classList.remove('api-result');
             });
 
+            // Remove existing API results to prevent duplicates
+            const existingApiResults = elements.results.querySelectorAll('.api-result');
+            existingApiResults.forEach(result => {
+                if (result.parentNode) {
+                    result.parentNode.removeChild(result);
+                }
+            });
+
+            // Show matching existing tags
             elements.allTags.forEach(tag => {
                 const tagText = tag.textContent.trim();
                 const tagTextLower = tagText.toLowerCase();
@@ -680,51 +690,79 @@ export default function initPredictiveSearch(el) {
                 }
             });
 
+            // Filter API results to exclude active tags and existing DOM tags
             const filteredApiResults = apiResults.filter(result => {
                 const isActive = state.activeTags.some(activeTag => 
                     activeTag.toLowerCase() === result.text.toLowerCase()
                 );
-                console.log(`API result "${result.text}": isActive=${isActive}`);
-                return !isActive;
+                
+                const existsInDOM = Array.from(elements.allTags).some(tag => 
+                    tag.textContent.trim().toLowerCase() === result.text.toLowerCase()
+                );
+                
+                console.log(`API result "${result.text}": isActive=${isActive}, existsInDOM=${existsInDOM}`);
+                return !isActive && !existsInDOM;
             });
 
             console.log('Filtered API results:', filteredApiResults);
 
+            // Create new API suggestions
             filteredApiResults.forEach(result => {
-                const existingTag = Array.from(elements.allTags).find(tag => 
-                    tag.textContent.trim().toLowerCase() === result.text.toLowerCase()
-                );
-
-                if (!existingTag) {
-                    const newSuggestion = this.createTemporary(result);
-
-                    if (newSuggestion) {
-                        elements.results.appendChild(newSuggestion);
-                        console.log(`Added API suggestion: "${result.text}"`);
-                    }
-                } else {
-                    console.log(`Skipping API result "${result.text}" - already exists as tag`);
+                const newSuggestion = this.createTemporary(result);
+                if (newSuggestion) {
+                    elements.length.appendChild(newSuggestion);
+                    console.log(`Added API suggestion: "${result.text}"`);
                 }
             });
+
+            // Update ScrollBooster metrics if needed
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
         },
 
         createTemporary(result) {
-            const suggestion = document.createElement('div');
-            suggestion.className = 'predictive-search-results-item js-tag api-result';
+            // Check if this API result already exists to prevent duplicates
+            const existingApiResult = elements.results.querySelector(`.api-result[data-text="${result.text}"]`);
+            if (existingApiResult) {
+                console.log(`API result "${result.text}" already exists, skipping creation`);
+                return null;
+            }
+
+            const suggestion = document.createElement('li');
+            suggestion.className = 'inline-block will-change-transform predictive-search-results-item js-tag api-result';
             suggestion.setAttribute('data-type', result.type);
+            suggestion.setAttribute('data-text', result.text); // Important for deduplication
             
             const typeIndicator = result.type === 'tag' ? '🏷️' : 
                                 result.type === 'category' ? '📁' : 
                                 result.type === 'case-categories' ? '📂' : '';
             
             suggestion.innerHTML = `
-                <span class="suggestion-type">${typeIndicator}</span>
-                <span class="suggestion-text">${result.text}</span>
-                ${result.count ? `<span class="suggestion-count">(${result.count})</span>` : ''}
+                <button class="px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe">
+                    <span class="suggestion-text">${result.text}</span>
+                </button>
             `;
             
+            // Add click event listener
             suggestion.addEventListener('click', eventHandlers.handleResultItemClick);
-            suggestion.setAttribute('data-text', result.text);
+            
+            // Initial animation state
+            animate(suggestion, {
+                opacity: 0,
+                y: 20,
+                duration: 0
+            });
+            
+            // Animate in
+            requestAnimationFrame(() => {
+                animate(suggestion, {
+                    opacity: 1,
+                    y: 0
+                }, {
+                    duration: 0.3
+                });
+            });
             
             return suggestion;
         },
@@ -734,9 +772,23 @@ export default function initPredictiveSearch(el) {
             
             console.log('filterExistingSuggestions called:', { searchValue, activeTags: state.activeTags });
             
+            // Remove all API results when filtering existing
             const apiResults = elements.results.querySelectorAll('.api-result');
-            apiResults.forEach(result => result.remove());
+            apiResults.forEach(result => {
+                animate(result, {
+                    opacity: 0,
+                    y: -20
+                }, {
+                    duration: 0.2,
+                    onComplete: () => {
+                        if (result.parentNode) {
+                            result.parentNode.removeChild(result);
+                        }
+                    }
+                });
+            });
             
+            // Filter existing tags
             elements.allTags.forEach(tag => {
                 const tagText = tag.textContent.trim();
                 const tagTextLower = tagText.toLowerCase();
@@ -770,6 +822,11 @@ export default function initPredictiveSearch(el) {
                     });
                 }
             });
+
+            // Update ScrollBooster metrics
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
         }
     };
 
@@ -787,7 +844,10 @@ export default function initPredictiveSearch(el) {
             e.stopPropagation()
 
             const resultItem = e.currentTarget
-            const tagText = resultItem.textContent.trim()
+            // Get text from data attribute for API results, or textContent for existing tags
+            const tagText = resultItem.getAttribute('data-text') || resultItem.textContent.trim()
+
+            console.log('Result item clicked:', { tagText, isApiResult: resultItem.classList.contains('api-result') });
 
             if (tagText && !state.activeTags.includes(tagText)) {
                 state.activeTags.push(tagText)
@@ -795,16 +855,23 @@ export default function initPredictiveSearch(el) {
                 const tagElement = tagManager.create(tagText, resultItem)
                 
                 if (tagElement) {
-                    if (resultItem.parentNode) {
-                        animate(resultItem, {
-                            opacity: 0,
-                            y: -20,
-                        }, {
-                            duration: 0.3,
-                        });
-                        resultItem.style.display = 'none'
-                    }
+                    // Animate out and hide the clicked item
+                    animate(resultItem, {
+                        opacity: 0,
+                        y: -20,
+                    }, {
+                        duration: 0.3,
+                        onComplete: () => {
+                            resultItem.style.display = 'none'
+                            
+                            // Remove API results from DOM after animation
+                            if (resultItem.classList.contains('api-result') && resultItem.parentNode) {
+                                resultItem.parentNode.removeChild(resultItem);
+                            }
+                        }
+                    });
                     
+                    // Clear input and focus
                     elements.input.value = ''
                     state.lastInputValue = ''
                     state.lastCreatedTag = tagText

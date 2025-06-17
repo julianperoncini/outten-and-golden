@@ -115,15 +115,15 @@
                         </a>
                     </div>
 
-                    <div class="absolute right-0 flex border border-grey-taupe rounded-[0.4rem] overflow-hidden uppercase predictive-search-hidden">
-                        <div class="relative rounded-[0.4rem] flex">
-                            <button class="font-medium h-full text-green py-12 px-16 uppercase hidden s:flex items-center gap-x-8 text-12 h-48">
+                    <div class="absolute right-0 flex overflow-hidden uppercase predictive-search-hidden">
+                        <div class="relative rounded-[0.4rem] flex gap-x-10">
+                            <button class="border border-grey-taupe rounded-[0.4rem] font-medium h-full text-green py-12 px-16 uppercase hidden s:flex items-center gap-x-8 text-12 h-48">
                                 <svg class="w-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.35 14.7">
                                     <path d="M7.53,14.7H2.82c-1.56,0-2.82-1.27-2.82-2.82V2.82C0,1.27,1.27,0,2.82,0h4.71c1.56,0,2.82,1.27,2.82,2.82v9.05c0,1.56-1.27,2.82-2.82,2.82ZM2.82,1.3c-.84,0-1.52.68-1.52,1.52v9.05c0,.84.68,1.52,1.52,1.52h4.71c.84,0,1.52-.68,1.52-1.52V2.82c0-.84-.68-1.52-1.52-1.52H2.82ZM5.9,12.16h-1.45c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h1.45c.36,0,.65.29.65.65s-.29.65-.65.65Z"/>
                                 </svg>
                                 <span class="tracking-[0.1em] leading-none">877-468-8836</span>
                             </button>
-                            <button class="font-medium h-full text-green py-12 px-16 s:-ml-2 flex items-center s:border-l text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
+                            <button class="border border-grey-taupe rounded-[0.4rem] font-medium h-full text-green py-12 px-16 s:-ml-2 flex items-center text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
                                 <div class="hidden s:flex items-center">
                                     {% for item in items %}
                                         <img class="relative size-24 object-cover {{ loop.index == 1 ? '' : '-ml-15' }}" src="{{ item.image.url }}" alt="{{ item.image.alt }}">
@@ -150,33 +150,36 @@
                             <path d="M.65,10.3c-.17,0-.33-.06-.46-.19-.25-.25-.25-.67,0-.92l4.04-4.04L.19,1.11C-.06.86-.06.44.19.19S.86-.06,1.11.19l4.5,4.5c.25.25.25.67,0,.92L1.11,10.11c-.13.13-.29.19-.46.19Z"/>
                         </svg>
                     </button>
-                    
-                    <div class="relative w-full js-scrollboost">
-                        <div class="flex js-scrollboost-content">
-                            <ul class="gap-x-12 flex whitespace-nowrap text-12 js-scrollboost-length">
-                                {% for item in all_tags %}
-                                    <li class="inline-block will-change-transform predictive-search-results-item js-tag" data-tag="{{ item.name }}">
-                                        <button class="px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe">
-                                            <span>{{ item.name }}</span>
-                                        </button>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+
+                    {% if all_tags %}
+                        <div class="relative w-full js-scrollboost">
+                            <div class="flex js-scrollboost-content">
+                                <ul class="gap-x-12 flex whitespace-nowrap text-12 js-scrollboost-length">
+                                    {% for item in all_tags %}
+                                        <li class="inline-block will-change-transform predictive-search-results-item js-tag" data-tag="{{ item.name }}">
+                                            <button class="px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe">
+                                                <span>{{ item.name }}</span>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
 
-        {% if search_related %}
-            <div class="predictive-search-results-wrapper">
-                <div class="relative w-full bg-white overflow-hidden">
-                    <div class="site-max py-40">
-                        {% include './partials/search-related.twig' %}
-                    </div>
+        
+        <div class="predictive-search-results-wrapper">
+            <div class="relative w-full bg-white overflow-hidden">
+                <div class="site-max py-40">
+                    {% include './partials/search-related.twig' %}
                 </div>
             </div>
-        {% endif %}
+        </div>
+        
 </header>
 
 

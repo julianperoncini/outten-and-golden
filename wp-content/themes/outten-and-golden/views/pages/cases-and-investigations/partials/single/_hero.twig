@@ -9,9 +9,9 @@
 {% set text_color = text_color_map[bg_color] %}
 
 <section class="relative">
-    <div class="relative h-full h-screen h-[100dvh]">
-        <div class="relative w-full h-full flex">
-            <div class="relative w-1/2 h-full">
+    <div class="relative w-full s:h-[100dvh] max-h-[calc(100vh-11rem)] s:max-h-[calc(100vh-12rem)]">
+        <div class="relative w-full h-full flex flex-col s:flex-row">
+            <div class="relative w-full s:w-1/2 h-full">
                 {% if post.feature_content.feature_image %}
                     <figure class="relative w-full h-full">
                         {% include "blocks/common/image.twig" with {
@@ -29,7 +29,7 @@
                 {% endif %}
             </div>
 
-            <div class="relative w-1/2 h-full flex flex-col items-center justify-between p-32 {{ text_color }} bg-{{ bg_color }}">
+            <div class="relative w-full s:w-1/2 h-full flex flex-col items-center justify-between p-32 {{ text_color }} bg-{{ bg_color }}">
                 <div class="relative flex items-start gap-4">
                     {% for item in categories %}
                         {% include "/views/partials/tag.twig" with {

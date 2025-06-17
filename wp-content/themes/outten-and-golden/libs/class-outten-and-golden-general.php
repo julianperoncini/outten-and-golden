@@ -87,9 +87,12 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('admin_init', [$this, 'disable_content_editor']);
         add_action('do_meta_boxes', [$this, 'remove_featured_image_metabox']);
         add_filter('show_admin_bar',     '__return_false');
+        add_filter('taxi_namespace', [$this, 'taxi_namespace']);
 
         add_action('admin_head-profile.php', [$this, 'hide_gravatar_section']);
         add_action('admin_head-user-edit.php', [$this, 'hide_gravatar_section']);
+
+        add_action('init', [$this, 'modify_tags_to_hierarchical'], 0);
 
         add_filter( 'timmy/sizes', function( $sizes ) {
             return array_map( function( $size ) {
@@ -101,6 +104,36 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             }, $sizes );
         }, 50 );
     }
+
+    public function modify_tags_to_hierarchical() {
+        register_taxonomy('post_tag', 'post', array(
+            'hierarchical' => true,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => true,
+            'show_tagcloud' => true,
+            'meta_box_cb' => 'post_categories_meta_box', // This gives it the category-style metabox
+            'labels' => array(
+                'name' => 'Tags',
+                'singular_name' => 'Tag',
+                'menu_name' => 'Tags',
+                'all_items' => 'All Tags',
+                'edit_item' => 'Edit Tag',
+                'view_item' => 'View Tag',
+                'update_item' => 'Update Tag',
+                'add_new_item' => 'Add New Tag',
+                'new_item_name' => 'New Tag Name',
+                'parent_item' => 'Parent Tag',
+                'parent_item_colon' => 'Parent Tag:',
+                'search_items' => 'Search Tags',
+                'popular_items' => 'Popular Tags',
+                'not_found' => 'No tags found'
+            ),
+            'rewrite' => array('slug' => 'tag', 'hierarchical' => true),
+        ));
+    }
+    
 
     public function allow_svg_upload($mimes) {
         if (current_user_can('administrator')) {
@@ -249,13 +282,31 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
         $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
 
+        
         $context['all_tags'] = Timber::get_terms([
             'taxonomy' => 'post_tag',
-            //'hide_empty' => true,
-            'number' => 20 
+            'hide_empty' => false,
+            'number' => 20,
+            //'orderby' => 'count',
+            'order' => 'ASC'
+        ]);
+
+        $context['latest_cases'] = Timber::get_posts([
+            'post_type' => 'cases',
+            'posts_per_page' => 6,
+            'orderby' => 'date',
+            'order' => 'ASC'
+        ]);
+
+        $context['latest_posts'] = Timber::get_posts([
+            'post_type' => 'post',
+            'posts_per_page' => 6,
+            'orderby' => 'date',
+            'order' => 'ASC'
         ]);
 
         $search_related = get_field('search_category', 'option');
+
 
         // Convert WP_Post objects to Timber Posts
         if ($search_related) {
@@ -278,7 +329,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
 
         $context['search_related'] = $search_related;
 
-        $context['taxi_namespace'] = apply_filters('taxi_namespace', 'default');
+        $context['taxi_namespace'] = $this->taxi_namespace('default');
+
 
         $context['options'] = get_fields('option');
         $args = array(

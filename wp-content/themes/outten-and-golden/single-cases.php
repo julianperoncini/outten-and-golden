@@ -11,7 +11,7 @@ $post->content_post = get_field('content_post');
 $post->content_builder = get_field('content_builder');
 
 $context['categories'] = wp_get_post_terms($post->ID, 'case-categories');
-$tags = wp_get_post_terms($post->ID, 'tags-cases');
+$tags = wp_get_post_terms($post->ID, 'post_tag');
 if (!empty($tags)) {
     foreach ($tags as $tag) {
         $tag->background_color = get_field('background_color', 'tags-cases_' . $tag->term_id);
