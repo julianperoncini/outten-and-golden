@@ -116,20 +116,20 @@
                     </div>
 
                     <div class="absolute right-0 flex overflow-hidden uppercase predictive-search-hidden">
-                        <div class="relative rounded-[0.4rem] flex gap-x-10">
-                            <button class="border border-grey-taupe rounded-[0.4rem] font-medium h-full text-green py-12 px-16 uppercase hidden s:flex items-center gap-x-8 text-12 h-48">
-                                <svg class="w-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.35 14.7">
-                                    <path d="M7.53,14.7H2.82c-1.56,0-2.82-1.27-2.82-2.82V2.82C0,1.27,1.27,0,2.82,0h4.71c1.56,0,2.82,1.27,2.82,2.82v9.05c0,1.56-1.27,2.82-2.82,2.82ZM2.82,1.3c-.84,0-1.52.68-1.52,1.52v9.05c0,.84.68,1.52,1.52,1.52h4.71c.84,0,1.52-.68,1.52-1.52V2.82c0-.84-.68-1.52-1.52-1.52H2.82ZM5.9,12.16h-1.45c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h1.45c.36,0,.65.29.65.65s-.29.65-.65.65Z"/>
-                                </svg>
-                                <span class="tracking-[0.1em] leading-none">877-468-8836</span>
-                            </button>
-                            <button class="border border-grey-taupe rounded-[0.4rem] font-medium h-full text-green py-12 px-16 s:-ml-2 flex items-center text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
+                        <div class="relative rounded-[0.4rem] flex gap-x-10 px-5">
+                            <button class="js-bookacall-trigger hover:bg-grey-taupe/20 transition-colors duration-300 border border-grey-taupe rounded-[0.4rem] font-medium h-full text-green py-12 px-16 s:-ml-2 flex items-center text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
                                 <div class="hidden s:flex items-center">
                                     {% for item in items %}
                                         <img class="relative size-24 object-cover {{ loop.index == 1 ? '' : '-ml-15' }}" src="{{ item.image.url }}" alt="{{ item.image.alt }}">
                                     {% endfor %}
                                 </div>
                                 <span class="leading-none">Book a call</span>
+                            </button>
+                            <button class="border border-grey-taupe rounded-[0.4rem] hover:bg-grey-taupe/20 transition-colors duration-300 font-medium h-full text-green py-12 px-16 uppercase hidden s:flex items-center gap-x-8 text-12 h-48">
+                                <svg class="w-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.35 14.7">
+                                    <path d="M7.53,14.7H2.82c-1.56,0-2.82-1.27-2.82-2.82V2.82C0,1.27,1.27,0,2.82,0h4.71c1.56,0,2.82,1.27,2.82,2.82v9.05c0,1.56-1.27,2.82-2.82,2.82ZM2.82,1.3c-.84,0-1.52.68-1.52,1.52v9.05c0,.84.68,1.52,1.52,1.52h4.71c.84,0,1.52-.68,1.52-1.52V2.82c0-.84-.68-1.52-1.52-1.52H2.82ZM5.9,12.16h-1.45c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h1.45c.36,0,.65.29.65.65s-.29.65-.65.65Z"/>
+                                </svg>
+                                <span class="tracking-[0.1em] leading-none">877-468-8836</span>
                             </button>
                         </div>
                     </div>
@@ -182,6 +182,4 @@
         
 </header>
 
-
-
-   
+{% include './partials/book-a-call.twig' %}

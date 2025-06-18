@@ -29,6 +29,7 @@ export default class extends Renderer {
         }
 
 		components['search'](this.el);
+		components['bookACall'](this.el);
 
 		this.onEnterCompleted()
     }
