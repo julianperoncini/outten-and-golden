@@ -12,6 +12,8 @@ export default function stickyAside(elm) {
     const aside = qs('.js-aside-sticky-content', el)
     const main = qs('.js-main-sticky', el)
 
+    if (device.isMobile) return
+
     if (!aside || !main) {
         console.warn('stickyAside: Required elements not found')
         return

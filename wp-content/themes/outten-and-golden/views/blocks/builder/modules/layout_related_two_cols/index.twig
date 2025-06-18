@@ -1,7 +1,7 @@
 <section class="relative">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
     
-    <div class="site-max site-grid pt-60 s:pt-120 pb-60 s:pb-160">
+    <div class="site-max site-grid pt-120 pb-60 s:pb-160">
         <div class="relative col-start-1 col-span-8 space-y-40 pb-32 s:pb-40">
             <div class="relative">
                 <h2 class="text-grey text-center s:text-left text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</h2>
@@ -12,12 +12,12 @@
         </div>
 
         <div class="relative col-start-1 col-span-full">
-            <div class="site-grid">
+            <div class="site-grid gap-32 s:gap-0">
                 {% for item in item.cols_card %}
                     {% set feature_content = function('get_field', 'feature_content', item.cols.ID) %}
                     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-                    <article class="relative col-span-8 bg-green text-white w-full h-full min-h-[46.5rem] max-h-[46.5rem]">
+                    <article class="relative col-span-full s:col-span-8 bg-green text-white w-full h-full min-h-[46.5rem] max-h-[46.5rem]">
                         <div class="relative w-full h-full">
                             <div class="absolute inset-0 z-1">
                                 {% if feature_content.feature_image %}

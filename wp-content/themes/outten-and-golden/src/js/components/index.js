@@ -18,6 +18,7 @@ import casesFilter from './filters/casesFilter'
 import teamFilter from './filters/teamFilter'
 import searchFilter from './filters/searchFilter'
 import stickyAside from './stickyAside'
+import carouselIssueText from './carousel-issue-text'
 
 export {
     search,
@@ -35,4 +36,5 @@ export {
     teamFilter,
     searchFilter,
     stickyAside,
+    carouselIssueText
 }

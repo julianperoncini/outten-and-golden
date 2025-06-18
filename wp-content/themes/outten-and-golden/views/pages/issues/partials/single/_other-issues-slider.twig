@@ -31,9 +31,9 @@
                     {% set text_color = text_color_map[bg_color] %}
                 {% endif %}
 
-                <article class="relative w-full h-full {{ text_color }} max-w-[29rem] s:max-w-[67rem] min-w-[29rem] s:min-w-[67rem] min-h-[46.5rem] max-h-[46.5rem] mr-24 js-member-item">
+                <article class="relative w-full h-full {{ text_color }} max-w-[32rem] s:max-w-[67rem] min-w-[32rem] s:min-w-[67rem] min-h-[32rem] s:min-h-[46.5rem] max-h-[32rem] s:max-h-[46.5rem] mr-24 js-member-item">
                     <div class="relative w-full h-full">
-                        <div class="relative w-full h-full z-1">
+                        <div class="relative w-full s:h-full z-1">
                             {% if item.feature_content.feature_image %}
                                 <figure class="relative w-full h-full">
                                     {% include "blocks/common/image.twig" with {
@@ -45,13 +45,13 @@
                                                 container_class: 'w-full h-full overflow-hidden',
                                                 class : 'w-full h-full object-cover',
                                                 aspect_ratio: '67%',
-                                                aspect_ratio_mobile: '150%',
+                                                aspect_ratio_mobile: '100%',
                                             }
                                         }
                                     } %}
                                 </figure>
                             {% else %}
-                                <div class="pt-[150%] s:pt-[67%] bg-{{ item.feature_content.background_color|lower }}"></div>
+                                <div class="pt-[100%] s:pt-[67%] bg-{{ item.feature_content.background_color|lower }}"></div>
                             {% endif %}
                         </div>
 

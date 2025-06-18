@@ -3,16 +3,16 @@
 
     <div class="site-max pt-80 s:pt-160 border-t border-solid border-grey-taupe">
         <div class="site-grid items-center">
-            <div class="col-start-1 col-span-full s:col-span-8">
+            <div class="s:col-start-1 col-span-full s:col-span-8">
                 <h2 class="text-green text-40 font-normal leading-none tracking-[-0.1rem]">{{ item.title }}</h2>
             </div>
 
-            <div class="col-start-12 col-span-5">
+            <div class="s:col-start-12 col-span-full s:col-span-5">
                 <div class="recruiting-text-p-wysiwyg text-green text-20 font-normal leading-[1.3] space-y-20">{{ item.description}}</div>
             </div>
         </div>
 
-        <div class="site-grid pt-32 s:pt-64">
+        <div class="site-grid pt-32 s:pt-64 gap-16 s:gap-0">
             {% for item in item.accommodations %}
                 <article class="relative col-span-full s:col-span-8">
                     <div class="relative w-full h-full text-white">
@@ -27,13 +27,13 @@
                                         container_class: 'w-full relative',
                                         class : 'w-full relative h-full object-cover',
                                         aspect_ratio: '105%',
-                                        aspect_ratio_mobile: '110%',
+                                        aspect_ratio_mobile: '150%',
                                     }
                                 }
                             } %}
                         </figure>
 
-                        <div class="absolute bottom-0 left-0 p-32 space-y-20">
+                        <div class="absolute bottom-0 left-0 p-16 s:p-32 space-y-20">
                             {% if item.title %}
                                 <h4 class="text-32 font-normal leading-[1.16] tracking-[-0.032rem]">{{ item.title }}</h4>
                             {% endif %}

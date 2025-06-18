@@ -1,8 +1,20 @@
-<section class="relative bg-white py-160">
+<section class="relative bg-white py-120 s:py-160">
     {# <pre>{{ team_members_slider|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-    <div class="site-max">
-        <div class="team-members-list flex cursor-grab js-slider-team" data-component="sliderTeamMembers(js-slider-members)">
+    <div class="site-max relative flex s:hidden items-center justify-center pb-60">
+        <div class="relative s:max-w-[35rem] flex flex-col items-center justify-center space-y-40">
+            <div class="relative">
+                <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">Attorneys</p>
+            </div>
+
+            <div class="relative">
+                <h2 class="text-green font-sans text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem]">You may be interested</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-max" data-component="sliderTeamMembers(js-slider-members)">
+        <div class="team-members-list flex cursor-grab js-slider-team">
             {% for member in team_members_slider %}
                 <article data-member="true" class="team-members-item h-[50rem] relative max-w-[29rem] s:max-w-[43.3rem] min-w-[29rem] s:min-w-[43.3rem] mr-24 js-member-item">
                     <div class="team-member w-full flex flex-col gap-y-32">
@@ -86,6 +98,24 @@
                     </div>
                 </article>
             {% endfor %}
+        </div>
+
+        <div class="relative flex s:hidden items-center justify-center">
+            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid js-slider-team-prev" type="button">
+                <span class="inline-flex">
+                    <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </button>
+
+            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-slider-team-next" type="button">
+                <span class="inline-flex">
+                    <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </button>
         </div>
     </div>
 </section>

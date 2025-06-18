@@ -3,8 +3,8 @@
 {% set post = Post(feature_billboard.post) %}
 {% set feature_billboard_content = function('get_field', 'feature_content', post.ID) %}
 {% set feature_billboard_categories = function('get_the_terms', post.ID, 'case-categories') %}
-{% set feature_billboard_tags = function('get_the_terms', post.ID, 'tags-cases') %}
-{% set feature_billboard_post_link = function('get_permalink', post.story.ID) %}
+{% set feature_billboard_tags = function('get_the_terms', post.ID, 'post_tag') %}
+{% set feature_billboard_post_link = function('get_permalink', post.ID) %}
 
 {% set active_investigations = active_investigations %}
 {% set all_cases_and_investigations = all_cases_and_investigations %}

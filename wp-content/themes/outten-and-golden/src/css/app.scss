@@ -456,3 +456,7 @@ button[data-filter-status="active"] {
 	visibility: hidden; 
 	position: absolute;
 }
+
+.remove-br p br {
+	display: none;
+}

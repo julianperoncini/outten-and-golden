@@ -64,7 +64,7 @@ $context['categories'] = get_terms([
 ]);
 
 $context['tags'] = get_terms([
-    'taxonomy' => 'tags-cases',
+    'taxonomy' => 'post_tag',
     'hide_empty' => true,
 ]);
 

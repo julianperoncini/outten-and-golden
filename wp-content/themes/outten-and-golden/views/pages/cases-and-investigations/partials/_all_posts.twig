@@ -4,10 +4,10 @@
 {% set tags = props.tags %}
 
 <section class="relative">
-    <div class="site-max pt-80 s:pt-120 pb-32 s:pb-160" data-component="casesFilter(js-all-posts-container)">
+    <div class="site-max pt-80 s:pt-120 pb-80 s:pb-160" data-component="casesFilter(js-all-posts-container)">
         <div class="site-grid">
             <div class="s:col-start-1 col-span-full s:col-span-6 pb-65 s:pb-0">
-                <h2 class="font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_cases_and_investigations.title }}</h2>
+                <h2 class="font-sans text-32 s:text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_cases_and_investigations.title }}</h2>
             </div>
 
             <div class="s:col-start-9 col-span-full s:col-span-8 flex justify-end">
@@ -35,10 +35,10 @@
                             {% endif %}
                         {% endfor %}
 
-                        <a class="relative block w-full js-all-posts-item" href="{{ post_link }}"
-                            {% if post_terms['tags-cases'] %}
+                        <a class="relative block col-span-full s:col-span-1 w-full js-all-posts-item" href="{{ post_link }}"
+                            {% if post_terms['post_tag'] %}
                                 {% set category_slugs = [] %}
-                                {% for tag in post_terms['tags-cases'] %}
+                                {% for tag in post_terms['post_tag'] %}
                                     {% set category_slugs = tag.slug %}
                                 {% endfor %}
                                 data-filter-category="all,{{ category_slugs }}"
