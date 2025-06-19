@@ -1,18 +1,18 @@
-<section class="relative bg-green" data-component="slider(js-slider)">
+<section class="relative bg-green" data-component="slider(js-slider-container-timeline)">
     {# <pre class="text-white">{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 
-    <div class="site-max py-120">
+    <div class="site-max py-80 s:py-120">
         <div class="site-grid">
-            <div class="col-start-1 col-span-9 space-y-40">
+            <div class="s:col-start-1 col-span-full s:col-span-9 space-y-40 pb-50 s:pb-0">
                 <div class="relative">
-                    <p class="text-grey text-center s:text-left text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
+                    <p class="text-white s:text-grey text-left text-12 font-sans font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle }}</p>
                 </div>
                 <div class="relative s:max-w-[102.6rem] mx-auto">
-                    <h2 class="font-sans text-white-smoke text-center s:text-left text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem]">{{ item.title }}</h2>
+                    <h2 class="font-sans text-white-smoke text-left text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem]">{{ item.title }}</h2>
                 </div>
             </div>
 
-            <div class="col-start-11 col-span-6">
+            <div class="s:col-start-11 col-span-full s:col-span-6">
                 <figure class="relative w-full">
                     {% include "blocks/common/image.twig" with {
                         props : {
@@ -23,7 +23,7 @@
                                 container_class: 'w-full h-full overflow-hidden',
                                 class : 'w-full h-full object-cover',
                                 aspect_ratio: '135%',
-                                aspect_ratio_mobile: '100%' 
+                                aspect_ratio_mobile: '150%' 
                             }
                         }
                     } %}
@@ -32,8 +32,8 @@
         </div>
     </div>
 
-    <div class="relative site-max site-grid select-none cursor-grab w-full pb-60 s:pb-120 js-slider">
-        <div class="slider-container col-start-1 col-span-full flex w-full z-1 min-h-auto s:min-h-[48rem] js-slider-container">
+    <div class="relative site-max site-grid select-none cursor-grab w-full pt-40 s:pt-0 pb-120 s:pb-120 js-slider-container-timeline">
+        <div class="slider-container col-start-1 col-span-full flex w-full z-1 min-h-auto s:min-h-[48rem] js-slides">
             {% for item in item.timeline %}
                 {% set text_color_map = {
                     'grey': 'text-grey-taupe',
@@ -53,7 +53,7 @@
                 {% set sizeCard = item.card.size|lower | default('small') %}
                 {% set sizeCardClassHeight = sizeCard == 'small' ? 'min-h-full s:min-h-[46rem] max-h-full s:max-h-[46rem]' : 'min-h-full s:min-h-[65rem] max-h-full s:max-h-[65rem]' %}
 
-                <article class="slider-item relative mr-25 {{ isYearCoverSizeCardWidth }} {{ isYearCover ? isYearCoverSizeCardHeight : sizeCardClassHeight }} {{ text_color }} {{ 'bg-' ~ bg_color }} js-slider-item">
+                <article class="slider-item relative mr-25 {{ isYearCoverSizeCardWidth }} {{ isYearCover ? isYearCoverSizeCardHeight : sizeCardClassHeight }} {{ text_color }} {{ 'bg-' ~ bg_color }} js-slide">
                     {% if isYearCover %}
                         <div class="relative w-full h-full flex flex-col items-center justify-center space-y-40 max-w-[35rem] mx-auto">
                             <h2 class="font-disp text-120 leading-[1.1] tracking-[-0.02rem] text-center">{{ item.card.content.card_year }}</h2>

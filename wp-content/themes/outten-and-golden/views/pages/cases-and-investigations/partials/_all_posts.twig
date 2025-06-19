@@ -10,12 +10,21 @@
                 <h2 class="font-sans text-32 s:text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_cases_and_investigations.title }}</h2>
             </div>
 
-            <div class="s:col-start-9 col-span-full s:col-span-8 flex justify-end">
+            <div class="relative s:col-start-9 col-span-full s:col-span-8 flex justify-end">
                 <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex items-start s:items-center justify-start s:justify-center flex-nowrap s:flex-wrap">
                     <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
                     {% for tag in tags %}
                         <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.last ? 'border-r-[0.1rem]' : '!border-r-0' }} border-solid border-grey-taupe" type="button" aria-label="Button to filter by all" data-filter="{{ tag.slug }}">{{ tag.name }}</button>
                     {% endfor %}
+                </div>
+
+                <div class="newsroom-gradient select-none pointer-events-none absolute top-0 -right-20 w-[15rem] h-full block s:hidden"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 -right-10 block s:hidden select-none pointer-events-none">
+                    <button class="relative pointer-events-auto flex items-center justify-center bg-white-smoke p-8 rounded-[0.4rem]" type="button" aria-label="Button to scroll the filters">
+                        <svg class="w-[0.7rem] h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.57813 1L6.07813 5.5L1.57812 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
