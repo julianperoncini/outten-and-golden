@@ -9,8 +9,8 @@
         {% endif %}
     </button>
 
-    <div class="accordion-css__item-bottom relative overflow-hidden {{ open ? 'h-auto' : 's:h-auto' }} s:pb-5">
-        <div class="accordion-css__item-bottom-wrap flex flex-col gap-y-8 text-green leading-[1.36]">
+    <div class="relative overflow-hidden {{ open ? 'h-auto' : 'accordion-css__item-bottom s:h-auto' }} s:pb-5">
+        <div class="{{ open ? '' : 'accordion-css__item-bottom-wrap' }} flex flex-col gap-y-8 text-green leading-[1.36]">
             <ul class="flex flex-col gap-y-8 pb-20 s:pb-0">
                 {% for item in menu.items %}
                     <li class="relative px-20 s:px-0">
