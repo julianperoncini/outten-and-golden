@@ -21,6 +21,7 @@ import stickyAside from './stickyAside'
 import carouselIssueText from './carousel-issue-text'
 import bookACall from './bookacall'
 import highlight from './highlight'
+import accordion from './accordion'
 
 export {
     search,
@@ -40,5 +41,6 @@ export {
     stickyAside,
     carouselIssueText,
     bookACall,
-    highlight
+    highlight,
+    accordion
 }
