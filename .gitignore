@@ -5,12 +5,20 @@ wp-config.php
 .env
 .env.*
 
+/wp-admin/
+
 # Uploads directory
 /wp-content/uploads/
 
 # Plugins and themes managed by Composer
-/wp-content/plugins/*
-/wp-content/themes/*
+/wp-content/index.php
+/wp-content/languages
+/wp-content/plugins/index.php
+/wp-content/themes/index.php
+/wp-includes/
+/index.php
+
+/wp-*.php
 
 # But keep custom plugins/themes
 !/wp-content/plugins/my-custom-plugin/
@@ -20,6 +28,8 @@ wp-config.php
 /wp-content/cache/
 /wp-content/advanced-cache.php
 
+/wp-content/plugins/hello.php
+
 # Debug logs
 /wp-content/debug.log
 
@@ -28,11 +38,12 @@ wp-config.php
 Thumbs.db
 
 # Ignore all files in the uploads directory
-uploads/*
+/wp-content/uploads/
 
 # Ignore all files in the uploads directory
 uploads/*
 
 dist/*
 
-dist
+# htaccess
+/.htaccess

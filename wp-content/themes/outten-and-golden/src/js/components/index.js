@@ -20,6 +20,7 @@ import searchFilter from './filters/searchFilter'
 import stickyAside from './stickyAside'
 import carouselIssueText from './carousel-issue-text'
 import bookACall from './bookacall'
+import highlight from './highlight'
 
 export {
     search,
@@ -38,5 +39,6 @@ export {
     searchFilter,
     stickyAside,
     carouselIssueText,
-    bookACall
+    bookACall,
+    highlight
 }
