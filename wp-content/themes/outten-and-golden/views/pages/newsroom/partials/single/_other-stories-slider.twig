@@ -58,8 +58,8 @@
                 {% set bg_color = item.feature_content.background_color|lower %}
                 {% set text_color = text_color_map[bg_color] %}
 
-                <article data-member="true" class="bg-{{ bg_color }} {{ text_color }} h-[50rem] relative max-w-[29rem] s:max-w-[44.3rem] min-w-[29rem] s:min-w-[44.3rem] mr-24 js-member-item">
-                    <div class="relative flex flex-col items-start p-32 space-y-32">
+                <article data-member="true" class="bg-{{ bg_color }} {{ text_color }} h-[32rem] s:h-[50rem] relative max-w-[32rem] s:max-w-[44.3rem] min-w-[32rem] s:min-w-[44.3rem] mr-24 js-member-item">
+                    <div class="relative h-full s:h-[inherit] flex flex-col items-start justify-between s:justify-start p-16 s:p-32 space-y-32">
                         <div class="relative flex items-start gap-4">
                             {% for cat in item.categories %}
                                 {% include "/views/partials/tag.twig" with {
@@ -70,11 +70,11 @@
                             {% endfor %}
                         </div>
 
-                        <h3 class="font-disp font-normal text-32 leading-[1.2] tracking-[-2%]">{{ item.feature_content.title }}</h3>
+                        <h3 class="font-disp tc-4 font-normal text-24 s:text-32 leading-[1.2] tracking-[-2%]">{{ item.feature_content.title }}</h3>
 
-                        <div class="font-normal text-16 leadin-[1.32] select-none">{{ item.feature_content.description }}</div>
+                        <div class="font-normal hidden s:block text-16 leadin-[1.32] select-none">{{ item.feature_content.description }}</div>
 
-                        <div class="relative flex s:block items-center justify-center w-full s:w-[inherit]">
+                        <div class="relative flex s:block items-start s:items-center justify-start s:justify-center w-full s:w-[inherit]">
                             <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" href="{{ item.link }}">
                                 <span class="inline-flex">Read the full story</span>
                                 <span class="inline-flex">

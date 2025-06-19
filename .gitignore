@@ -11,6 +11,7 @@ wp-config.php
 /wp-content/uploads/
 
 # Plugins and themes managed by Composer
+<<<<<<< Updated upstream
 /wp-content/index.php
 /wp-content/languages
 /wp-content/plugins/index.php
@@ -19,6 +20,9 @@ wp-config.php
 /index.php
 
 /wp-*.php
+=======
+/wp-content/plugins/*
+>>>>>>> Stashed changes
 
 # But keep custom plugins/themes
 !/wp-content/plugins/my-custom-plugin/

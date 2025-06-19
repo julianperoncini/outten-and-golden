@@ -1,17 +1,17 @@
 <section class="relative bg-white">
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
-    <div class="site-max pt-150 pb-135">
+    <div class="site-max pt-65 s:pt-150 pb-80 s:pb-135">
         <div class="site-grid">
-            <div class="flex flex-col items-center justify-center col-span-6 col-start-6 space-y-40 pb-95">
+            <div class="flex flex-col items-center justify-center col-span-full s:col-span-6 s:col-start-6 space-y-40 pb-95">
                 <span class="text-grey text-center text-12 font-medium leading-none tracking-[0.1em] uppercase">
                     {{ item.subtitle }}
                 </span>
 
-                <h1 class="text-green text-center text-120 font-normal leading-[0.88] tracking-[-0.02em]">
+                <h1 class="text-green text-center text-56 s:text-120 font-normal leading-[0.88] tracking-[-0.02em]">
                     {{ item.title }}
                 </h1>
             
-                <p class="text-green text-center max-w-[40.5rem] text-16 font-normal leading-[1.32]">
+                <p class="remove-br text-green text-center max-w-[40.5rem] text-16 font-normal leading-[1.32]">
                     {{ item.description }}
                 </p>
             </div> 
@@ -27,6 +27,7 @@
                                 container_class: 'w-full h-full overflow-hidden',
                                 class : 'w-full h-full object-cover',
                                 aspect_ratio: '58%',
+                                aspect_ratio_mobile: '150%',
                             }
                         }
                     } %}

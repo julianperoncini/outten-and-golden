@@ -2,13 +2,13 @@
     {# <pre>{{ item|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
     
     <div class="site-max site-grid py-60 s:py-160">
-        <div class="relative col-start-5 col-span-8 space-y-40 pb-32 s:pb-40">
+        <div class="relative s:col-start-5 col-span-full s:col-span-8 space-y-40 pb-32 s:pb-40">
             <div class="relative s:max-w-[102.6rem] mx-auto">
                 <h3 class="h3 text-center s:text-left text-24 s:text-40 font-normal leading-[1.16] tracking-[-0.04rem] text-green">Attorneys on the Case</h3>
             </div>
         </div>
 
-        <div class="relative col-start-5 col-span-8">
+        <div class="relative s:col-start-5 col-span-full s:col-span-8">
             <div class="team-members-list site-grid-8 gap-24 s:gap-32">
                 {% for member in post.attorneys_on_the_case.attorneys_list %}
                     {% set member_id = member.attorney.ID %}
