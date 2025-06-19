@@ -59,7 +59,7 @@
                                 {% endif %}
                             {% endfor %}
 
-                            <li class="relative min-w-[55rem] max-w-[55rem] min-h-[40rem] max-h-[40rem] mr-24 js-slide">
+                            <li class="relative min-w-[32rem] s:min-w-[55rem] max-w-[32rem] s:max-w-[55rem] min-h-[32rem] s:min-h-[40rem] max-h-[32rem] s:max-h-[40rem] mr-24 js-slide">
                                 <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
                                     {% if post_terms['case-categories'] %}
                                         {% for category in post_terms['case-categories'] %}
@@ -72,7 +72,7 @@
                                     {% endif %}
                                 </div>
 
-                                <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
+                                <figure class="relative overflow-hidden w-full h-full s:h-auto pointer-events-none select-none">
                                     {% if feature_content.feature_image %}
                                         {% include "blocks/common/image.twig" with {
                                             props : {
@@ -93,24 +93,7 @@
                                 </figure>
 
                                 <div class="relative s:absolute w-full pt-24 s:pt-32 space-y-24 s:space-y-40">
-                                    <div class="flex flex-wrap items-center justify-center s:justify-start gap-4">
-                                        {# Category #}
-                                        {% if post_terms['tags-cases'] %}
-                                            <div class="case-tags">
-                                                {% for tag in post_terms['tags-cases'] %}
-                                                    {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
-                                                    {% include "/views/partials/category.twig" with {
-                                                        data: {
-                                                            text: tag.name,
-                                                            bgColor: tag_background_color,
-                                                        }
-                                                    } %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="flex flex-col s:flex-row items-center justify-center s:justify-between">
+                                    <div class="flex flex-col s:flex-row items-start s:items-center justify-start s:justify-between">
                                         <div class="relative pb-24 s:pb-0">
                                             <h4 class="text-24 font-normal leading-[1.04] tracking-[-0.024rem] text-green">{{ feature_content.title }}</h4>
                                         </div>

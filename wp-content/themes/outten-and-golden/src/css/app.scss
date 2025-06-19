@@ -496,3 +496,7 @@ button[data-filter-status="active"] {
 		transform: scale(0.95) rotate(0.001deg);
 	}
 }
+
+.remove-br p br {
+	display: none;
+}

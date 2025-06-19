@@ -6,12 +6,12 @@
                     <div class="relative">
                         <div class="relative space-y-[2.4rem]">
                             <p class="text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">Contact {{ post.feature_content.first_name }}</p>
-                            <h2 class="text-black font-normal text-40 leading-[1.15] tracking-[-1%]">Need legal <em class="font-disp font-normal italic">advice</em>?</h2>
+                            <h2 class="text-black font-normal text-32 s:text-40 leading-[1.15] tracking-[-1%]">Need legal <em class="font-disp font-normal italic">advice</em>?</h2>
                         </div>
                     </div>
 
                     {% if post.feature_media.image %}
-                        <div class="relative w-[9.9rem] h-[11.1rem]">
+                        <div class="relative shrink-0 w-[9.9rem] h-[11.1rem]">
                             <figure class="relative w-full h-full">
                                 {% include "blocks/common/image.twig" with {
                                     props : {
@@ -29,7 +29,7 @@
                     {% endif %}
                 </div>
 
-                <div class="relative w-full flex items-center justify-between">
+                <div class="relative w-full gap-2 s:gap-0 flex flex-wrap s:flex-auto items-start s:items-center s:justify-between">
                     <div class="relative flex gap-2 text-grey">
                         {% if post.contact_info.phone %}
                             <a 
@@ -92,12 +92,12 @@
                 </div>
             </div>
 
-            <div class="relative w-full flex items-start justify-between border-t border-solid border-grey-taupe pt-32">
-                <div class="relative">
+            <div class="relative w-full flex flex-col s:flex-row items-start justify-between border-t border-solid border-grey-taupe pt-32">
+                <div class="relative pb-32 s:pb-0">
                     <p class="text-20 font-normal leading-[1.24] tracking-[-2%] font-disp"><em class="font-normal italic">Areas</em> of expertise:</p>
                 </div>
 
-                <div class="relative">
+                <div class="relative pl-12 s:pl-0">
                     <ul class="relative flex flex-col items-start space-y-10">
                         {% for item in post.feature_content.contact_form.areas_of_expertise %}
                             <li class="relative list-disc">
@@ -114,25 +114,25 @@
                 </div>
 
                 <form class="relative w-full space-y-32">
-                    <div class="relative w-full flex items-start justify-between gap-32">
-                        <div class="relative w-1/2">
+                    <div class="relative w-full flex flex-col s:flex-row items-start justify-between gap-32">
+                        <div class="relative w-full s:w-1/2">
                             <label for="name" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">First Name*</label>
                             <input type="text" id="name" name="name" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
                         </div>
 
-                        <div class="relative w-1/2">
+                        <div class="relative w-full s:w-1/2">
                             <label for="lastname" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Last Name*</label>
                             <input type="text" id="lastname" name="lastname" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
                         </div>
                     </div>
 
-                    <div class="relative w-full flex items-start justify-between gap-32">
-                        <div class="relative w-1/2">
+                    <div class="relative w-full flex flex-col s:flex-row items-start justify-between gap-32">
+                        <div class="relative w-full s:w-1/2">
                             <label for="phone" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Phone Number</label>
                             <input type="number" id="phone" name="phone" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
                         </div>
 
-                        <div class="relative w-1/2">
+                        <div class="relative w-full s:w-1/2">
                             <label for="email" class="absolute -top-16 left-0 text-16 font-normal leading-[1.32] text-green">Email*</label>
                             <input type="email" id="email" name="email" class="relative w-full text-16 font-normal leading-[1.32] text-green !border-b border-solid border-grey-taupe placeholder:text-green placeholder:-top-40">
                         </div>

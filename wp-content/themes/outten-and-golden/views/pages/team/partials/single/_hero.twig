@@ -1,9 +1,9 @@
 <section class="relative">
-    <div class="relative h-screen h-[78.6rem]">
-        <div class="relative w-full h-full flex">
-            <div class="relative w-1/2 h-full">
+    <div class="relative h-auto s:h-screen s:h-[78.6rem] bg-grey">
+        <div class="relative p-32 s:p-0 w-full h-auto s:h-full flex flex-col s:flex-row items-center s:items-start justify-center s:justify-start gap-y-32 s:gap-y-0">
+            <div class="relative s:w-1/2 h-[35rem] s:h-full">
                 {% if post.feature_media.image %}
-                    <figure class="relative w-full h-full">
+                    <figure class="relative w-[32rem] s:w-full h-full">
                         {% include "blocks/common/image.twig" with {
                             props : {
                                 data: {
@@ -19,16 +19,16 @@
                 {% endif %}
             </div>
 
-            <div class="relative w-1/2 h-full">
+            <div class="relative w-full s:w-1/2 h-full">
                 <div class="relative w-full h-full bg-grey text-grey-taupe">
                     <div class="relative w-full h-full flex flex-col items-center justify-center s:justify-end">
-                        <div class="relative flex flex-col items-center justify-center space-y-32 s:mb-[25rem]">
+                        <div class="relative flex flex-col items-center justify-center space-y-32 mb-32 s:mb-[25rem]">
                             {% if post.feature_content.pronouns %}
                                 <p class="text-center font-medium text-12 leading-none tracking-[10%] uppercase">{{ post.feature_content.pronouns }}</p>
                             {% endif %}
 
                             {% if post.feature_content.first_name and post.feature_content.last_name %}
-                                <h1 class="relative flex flex-col items-center justify-center font-disp font-normal text-center text-64 leading-[1.1] tracking-[-2%]">
+                                <h1 class="relative flex flex-col items-center justify-center font-disp font-normal text-center text-48 s:text-64 leading-[1.1] tracking-[-2%]">
                                     <span>{{ post.feature_content.first_name }}</span>
                                     <span>{{ post.feature_content.last_name }}</span>
                                 </h1>
@@ -45,7 +45,7 @@
                             {% endif %}
                         </div>
 
-                        <div class="relative s:bottom-40 w-full flex items-center justify-between px-24">
+                        <div class="relative s:bottom-40 w-full flex flex-wrap s:flex-auto gap-2 s:gap-0 items-center justify-center s:justify-between s:px-24">
                             <div class="relative flex gap-2 text-grey">
                                 {% if post.contact_info.phone %}
                                     <a 
@@ -108,7 +108,7 @@
                         </div>
                     </div>
 
-                    <div class="absolute top-1/2 -right-20 -translate-y-1/2">
+                    <div class="absolute top-1/2 -right-30 s:-right-20 -translate-y-1/2 pointer-events-none select-none">
                         <svg class="w-[21.6rem] h-auto" viewBox="0 0 216 574" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_4970_16298)">
                             <path d="M378.375 247.515L332.102 266.179C350.503 290.757 362.842 319.24 362.842 355.591C362.842 436.16 297.465 501.7 217.096 501.7C136.728 501.7 71.3506 436.16 71.3506 355.591C71.3506 306.979 100.089 270.194 144.738 228.852L185.436 264.497C153.072 293.958 134.401 323.798 134.401 358.847C134.401 404.584 171.527 441.748 217.096 441.748C262.666 441.748 299.792 404.529 299.792 358.847C299.792 319.132 274.951 286.85 253.249 266.179C288.427 233.246 340.274 184.091 340.274 108.731C340.274 87.1376 336.702 66.4122 330.208 46.989H277.819C286.587 65.7612 291.512 86.6494 291.512 108.731C291.512 157.344 262.774 194.128 218.125 235.471L177.427 199.825C209.79 170.365 228.462 140.525 228.462 105.476C228.462 59.7389 191.335 22.5742 145.766 22.5742C100.197 22.5742 63.0701 59.7931 63.0701 105.476C63.0701 145.19 87.9114 177.472 109.614 198.143C74.4354 231.076 22.5881 280.231 22.5881 355.591C22.5881 463.125 109.83 550.584 217.096 550.584C324.363 550.584 411.605 463.125 411.605 355.591C411.605 311.102 397.317 275.728 378.375 247.461V247.515ZM217.042 292.276C229.761 303.723 256.983 331.665 256.983 361.885C256.983 383.967 239.069 401.925 217.042 401.925C195.015 401.925 177.102 383.967 177.102 361.885C177.102 331.665 204.324 303.669 217.042 292.276ZM105.825 102.438C105.825 80.3558 123.739 62.3974 145.766 62.3974C167.793 62.3974 185.707 80.3558 185.707 102.438C185.707 132.658 158.484 160.653 145.766 172.047C133.048 160.599 105.825 132.658 105.825 102.438Z" fill="white" fill-opacity="0.03"/>

@@ -18,6 +18,7 @@ import casesFilter from './filters/casesFilter'
 import teamFilter from './filters/teamFilter'
 import searchFilter from './filters/searchFilter'
 import stickyAside from './stickyAside'
+import carouselIssueText from './carousel-issue-text'
 import bookACall from './bookacall'
 
 export {
@@ -36,5 +37,6 @@ export {
     teamFilter,
     searchFilter,
     stickyAside,
+    carouselIssueText,
     bookACall
 }

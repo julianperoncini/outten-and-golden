@@ -38,7 +38,7 @@
                                 </span>
                             </button>
 
-                            <div class="absolute top-full left-0 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe invisible js-all-team-members-locations-container">
+                            <div class="absolute top-full left-0 z-3 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe invisible js-all-team-members-locations-container">
                                 <div class="relative js-all-team-members-locations">
                                     <button class="relative w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="all" aria-label="Button to filter by all">All</button>
                                     {% for location in all_locations %}

@@ -4,12 +4,12 @@
 <section class="relative">
     <div class="site-max">
         <div class="site-grid">
-            <div class="s:col-start-1 col-span-full s:col-span-5">
+            <div class="s:col-start-1 col-span-full s:col-span-5 pb-32 s:pb-0">
                 <h2 class="font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_client_stories.title }}</h2>
             </div>
 
-            <div class="s:col-start-12 col-span-full s:col-span-5">
-                <p class="text-green text-16 font-normal leading-[1.32] px-12 s:px-0">
+            <div class="s:col-start-12 col-span-full s:col-span-5 pb-65 s:pb-0">
+                <p class="text-green text-16 font-normal leading-[1.32] ">
                     {{ all_client_stories.description }}
                 </p>
             </div>
@@ -52,7 +52,7 @@
                         {% endfor %}
 
                         {% if is_large %}
-                            <a class="relative flex flex-col s:flex-row items-start w-full max-w-full {{ text_color ? text_color : 'text-white' }} {% if image_position == 'left' %}s:flex-row-reverse{% endif %}" href="{{ post_link }}">
+                            <a class="relative h-fit s:h-[inherit] flex flex-col-reverse s:flex-row items-start w-full max-w-full {{ text_color ? text_color : 'text-white' }} {% if image_position == 'left' %}flex-col-reverse s:flex-row-reverse{% endif %}" href="{{ post_link }}">
                                 <div class="relative p-24 s:p-32 w-full h-full bg-{{ feature_content.background_color|lower }}">
                                     <div class="flex flex-col items-start space-y-24 s:space-y-32">
                                         <div class="relative w-full flex flex-wrap items-center gap-4 z-2">
@@ -72,7 +72,7 @@
                                         </div>
 
                                         <div class="relative max-w-full s:max-w-[39.5rem]">
-                                            <div class="text-16 font-normal leading-[1.32] px-12 s:px-0">
+                                            <div class="text-16 font-normal leading-[1.32]">
                                                 {{ feature_content.description }}
                                             </div>
                                         </div>
@@ -103,7 +103,7 @@
                                                     container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
                                                     class : 'w-full h-full object-cover pointer-events-none select-none',
                                                     aspect_ratio: '95%',
-                                                    aspect_ratio_mobile: '95%',
+                                                    aspect_ratio_mobile: '100%',
                                                 }
                                             }
                                         } %}
@@ -115,7 +115,7 @@
                         {% else %}
                             <a class="relative block w-full min-w-full s:min-w-[44.3rem] max-w-full s:max-w-[44.3rem] {{ text_color ? text_color : 'text-white' }}" href="{{ post_link }}">
                                 <div class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
-                                    <div class="pt-[150%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
+                                    <div class="pt-[100%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
                                 </div>
 
                                 <div class="absolute inset-0 p-24 s:p-32">
@@ -137,7 +137,7 @@
                                         </div>
 
                                         <div class="relative">
-                                            <div class="text-16 font-normal leading-[1.32] px-12 s:px-0">
+                                            <div class="text-16 font-normal leading-[1.32]">
                                                 {{ feature_content.description }}
                                             </div>
                                         </div>

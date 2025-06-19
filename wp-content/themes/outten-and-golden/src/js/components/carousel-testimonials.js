@@ -28,6 +28,8 @@ export default function carouselTestimonials() {
         dots: qsa('.js-carousel-testimonials-dots'),
     }
 
+    let st = null
+
     const cache = elements.items.map((item, i) => {
         const items = qsa('.js-ct-fade', item)
 
@@ -78,58 +80,105 @@ export default function carouselTestimonials() {
         }
     }
 
+    const createScrollTrigger = () => {
+        // Kill existing ScrollTrigger first
+        if (st) {
+            st.kill()
+            st = null
+        }
+
+        // Only create if element exists
+        if (!elements.el) {
+            console.warn('Carousel element not found')
+            return
+        }
+
+        st = ScrollTrigger.create({
+            trigger: elements.el,
+            start: "top bottom-=100px",
+            end: "bottom top+=100px",
+            onEnter: () => {
+                state.isVisible = true
+                startAutoplay()
+            },
+            onLeave: () => {
+                state.isVisible = false
+                stopAutoplay()
+            },
+            onEnterBack: () => {
+                state.isVisible = true
+                startAutoplay()
+            },
+            onLeaveBack: () => {
+                state.isVisible = false
+                stopAutoplay()
+            },
+            // Add these for better debugging
+            onUpdate: (self) => {
+                // Optional: add debug logging
+                // console.log('ScrollTrigger progress:', self.progress)
+            }
+        })
+
+        // Refresh ScrollTrigger after creation
+        ScrollTrigger.refresh()
+    }
+
     const mount = () => {
+        // Check if required elements exist
+        if (!elements.el || !elements.items.length) {
+            console.warn('Required carousel elements not found')
+            return
+        }
+
         evt.on('click', elements.next, next)
         evt.on('click', elements.prev, prev)
         evt.on('click', elements.dots, click)
         
         updateDots()
 
-        if (elements.el) {
-            this.st = ScrollTrigger.create({
-                trigger: elements.el,
-                start: "top bottom-=100px",
-                end: "bottom top+=100px",
-                onEnter: () => {
-                    state.isVisible = true
-                    startAutoplay()
-                },
-                onLeave: () => {
-                    state.isVisible = false
-                    stopAutoplay()
-                },
-                onEnterBack: () => {
-                    state.isVisible = true
-                    startAutoplay()
-                },
-                onLeaveBack: () => {
-                    state.isVisible = false
-                    stopAutoplay()
-                }
-            })
+        // Add mouse event listeners with proper cleanup
+        const handleMouseEnter = () => stopAutoplay()
+        const handleMouseLeave = () => {
+            if (state.isVisible) startAutoplay()
         }
 
-        if (elements.el) {
-            elements.el.addEventListener('mouseenter', stopAutoplay)
-            elements.el.addEventListener('mouseleave', () => {
-                if (state.isVisible) startAutoplay()
-            })
-        }
+        elements.el.addEventListener('mouseenter', handleMouseEnter)
+        elements.el.addEventListener('mouseleave', handleMouseLeave)
+
+        // Store references for cleanup
+        elements.el._handleMouseEnter = handleMouseEnter
+        elements.el._handleMouseLeave = handleMouseLeave
+
+        // Create ScrollTrigger with a slight delay to ensure DOM is ready
+        requestAnimationFrame(() => {
+            createScrollTrigger()
+        })
     }
 
     const unmount = () => {
-        this.st?.kill()
+        // Kill ScrollTrigger
+        if (st) {
+            st.kill()
+            st = null
+        }
+        console.log('unmount')
+        
         stopAutoplay()
 
+        // Remove event listeners
         evt.off('click', elements.next, next)
         evt.off('click', elements.prev, prev)
         evt.off('click', elements.dots, click)
 
+        // Clean up mouse event listeners
         if (elements.el) {
-            elements.el.removeEventListener('mouseenter', stopAutoplay)
-            elements.el.removeEventListener('mouseleave', () => {
-                if (state.isVisible) startAutoplay()
-            })
+            if (elements.el._handleMouseEnter) {
+                elements.el.removeEventListener('mouseenter', elements.el._handleMouseEnter)
+            }
+            if (elements.el._handleMouseLeave) {
+                elements.el.removeEventListener('mouseleave', elements.el._handleMouseLeave)
+            }
         }
     }
 
@@ -148,6 +197,7 @@ export default function carouselTestimonials() {
         
         animate()
         updateDots()
+        resetAutoplay() // Added resetAutoplay for consistency
     }
 
     const prev = () => {
@@ -163,28 +213,39 @@ export default function carouselTestimonials() {
         const l = cache[state.last]
         const c = cache[state.current]
 
-        l && l.tl.clear()
-        .to(l.items, {
-            y: '-1.5rem',
-            opacity: 0,
-            duration: 1,
-            stagger: .05,
-            ease: 'expo.inOut'
-        }, 0)
-        .set([l.item], { alpha: 0 })
-        .restart()
+        if (l) {
+            l.tl.clear()
+            .to(l.items, {
+                y: '-1.5rem',
+                opacity: 0,
+                duration: 1,
+                stagger: .05,
+                ease: 'expo.inOut'
+            }, 0)
+            .set([l.item], { autoAlpha: 0 }) // Changed from alpha to autoAlpha for consistency
+            .restart()
+        }
 
-        c && c.tl.clear()
-        .set([c.item], { autoAlpha: 1 })
-        .fromTo(c.items, {
-            y: '3rem',
-            alpha: 0,
-        }, {
-            y: 0,
-            alpha: 1,
-            stagger: .1,
-        }, 1)
-        .restart()
+        if (c) {
+            c.tl.clear()
+            .set([c.item], { autoAlpha: 1 })
+            .fromTo(c.items, {
+                y: '3rem',
+                autoAlpha: 0, // Changed from alpha to autoAlpha for consistency
+            }, {
+                y: 0,
+                autoAlpha: 1,
+                stagger: .1,
+            }, 1)
+            .restart()
+        }
+    }
+
+    // Add a method to refresh ScrollTrigger manually
+    const refresh = () => {
+        if (st) {
+            ScrollTrigger.refresh()
+        }
     }
 
     mount()
@@ -198,6 +259,7 @@ export default function carouselTestimonials() {
         },
         startAutoplay,
         stopAutoplay,
+        refresh, // Add refresh method
         unmount
     }
 }
