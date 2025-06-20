@@ -281,8 +281,8 @@ header {
 		//overflow-y: scroll;
 		//clip-path: inset(0 0 0 0);
 
-		height: 100vh;
-		overflow-y: scroll;
+		//height: 100vh;
+		//overflow-y: scroll;
 
 		.predictive-search-tags {
 			opacity: 1;
@@ -346,6 +346,10 @@ body.search:not(.search-no-results) {
 	@apply absolute w-full;
 	clip-path: inset(0 0 100% 0);
 	transition: clip-path 0.4s;
+	margin-top: -1px;
+	top: 100%;
+    overflow-y: scroll;
+    height: calc(100vh + -12rem);
 
 	.is-active & {
 		clip-path: inset(0 0 0 0);

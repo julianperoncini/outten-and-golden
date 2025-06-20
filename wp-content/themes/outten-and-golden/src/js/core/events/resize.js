@@ -1,35 +1,25 @@
-import { evt, store } from '../index'
 import debounce from 'lodash.debounce'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { gsap } from 'gsap'
-const { bounds } = store
+import { evt } from '@/core'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 
 export default function () {
-    function resize() {
-        bounds.ww = gsap.utils.wrap(0, window.innerWidth)
-        bounds.wh = gsap.utils.wrap(0, window.innerHeight)
+    const resize = debounce(() => {
+        const ww = document.documentElement.clientWidth
+        const wh = document.documentElement.clientHeight
 
-        let ww = bounds.ww
-        let wh = bounds.wh
+        evt.emit('resize', { 
+            ww, wh
+        })
 
         ScrollTrigger.refresh()
+    }, 50)
+   
+    const observer = new ResizeObserver(resize)
+    observer.observe(document.documentElement)
 
-        evt.emit('resize', { ww, wh })
-    }
-
-    const debouncedResize = debounce(resize, 200)
-
-    function mount() {
-        window.addEventListener('resize', debouncedResize)
-    }
-
-    function unmount() {
-        window.removeEventListener('resize', debouncedResize)
-    }
-
-    mount()
-
+    resize()
+    
     return {
-        unmount
-    }
+        resize
+    } 
 }

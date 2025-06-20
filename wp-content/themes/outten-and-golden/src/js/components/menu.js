@@ -218,7 +218,7 @@ export default function menuController(el, options = {}) {
    */
   const handlers = {
     resize: () => {
-      if (state.isOpen) closeMenu();
+      //if (state.isOpen) closeMenu();
     },
     
     keydown: (e) => {
