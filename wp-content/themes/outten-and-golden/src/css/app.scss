@@ -601,3 +601,30 @@ input:focus:-ms-input-placeholder {
 input:focus::placeholder {
     color: transparent;
 }
+
+.js-mobile-bottom-search {
+	transform: translateY(4.5rem);
+	transition: transform 0.3s;
+
+	.js-mini-search-submit {
+		transform: translateX(100%);
+		transition: transform 0.3s;
+	}
+
+	.js-mini-search-clear {
+		transform: translateX(80%) translateY(-50%);
+		transition: transform 0.3s;
+	}
+
+	.mobile-search-open &  {
+		transform: none;
+
+		.js-mini-search-submit {
+			transform: none;
+		}
+
+		.js-mini-search-clear {
+			transform: translateX(0%) translateY(-50%);
+		}
+	}
+}

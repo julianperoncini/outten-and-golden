@@ -13,6 +13,13 @@ export default function initEnhancedSearch(el) {
     if (!el.section) return;
 
     // ============================================================================
+    // UTILITIES FOR PREVENTING DUPLICATES
+    // ============================================================================
+    
+    // Track which buttons have handlers to prevent multiple bindings
+    const buttonHandlerTracker = new WeakSet();
+
+    // ============================================================================
     // DOM ELEMENTS
     // ============================================================================
     
@@ -48,7 +55,8 @@ export default function initEnhancedSearch(el) {
         isInitialLoad: true, // Track if this is the initial load
         // ScrollBooster state
         isScrolling: false,
-        hasMoved: false
+        hasMoved: false,
+        isOpen: false
     };
 
     // Create all available tags data structure for better searching
@@ -58,7 +66,8 @@ export default function initEnhancedSearch(el) {
         originalText: tagElement.textContent.trim(),
         button: tagElement.querySelector('button'),
         isVisible: true, // Start with all tags visible
-        matchScore: 1
+        matchScore: 1,
+        isProcessing: false // Track if tag is being processed
     }));
 
     // ============================================================================
@@ -154,6 +163,56 @@ export default function initEnhancedSearch(el) {
     };
 
     // ============================================================================
+    // SEARCH MANAGER
+    // ============================================================================
+
+    const searchManager = {
+        open() {
+            if (state.isOpen) return; // Already open
+            
+            state.isOpen = true;
+            console.log('Search opened');
+
+            document.body.classList.add('mobile-search-open')
+            
+            // Reset ScrollBooster position when search opens
+            if (state.sb) {
+                // Update metrics first to ensure accurate calculations
+                state.sb.updateMetrics();
+                
+                // Reset to starting position (leftmost)
+                state.sb.scrollTo({ x: 0 });
+                state.sb.setPosition({ x: 0 });
+                
+                console.log('ScrollBooster position reset to start');
+            }
+            
+            // Focus the input
+            if (elements.input) {
+                elements.input.focus();
+            }
+            
+            // You can add visual feedback here later, like:
+            // el.section.classList.add('is-open');
+            // gsap.to(someElement, { opacity: 1, duration: 0.3 });
+        },
+    
+        close() {
+            if (!state.isOpen) return; // Already closed
+            
+            state.isOpen = false;
+            console.log('Search closed');
+
+            document.body.classList.remove('mobile-search-open')
+            
+            // Remove focus from input
+            if (elements.input && elements.input === document.activeElement) {
+                elements.input.blur();
+            }
+        }
+    };
+
+    // ============================================================================
     // UI MANAGEMENT
     // ============================================================================
     
@@ -236,22 +295,16 @@ export default function initEnhancedSearch(el) {
                         ease: "power2.out"
                     });
                 } else {
-                    // Animate out active tags
-                    gsap.to(tagData.element, {
-                        opacity: 0,
-                        scale: 0.8,
-                        y: -10,
-                        duration: 0.2,
-                        onComplete: () => {
-                            tagData.element.style.display = 'none';
-                        }
-                    });
+                    // Ensure active tags remain hidden
+                    tagData.element.style.display = 'none';
                 }
             });
             
-            // Update state to show all tags are now visible (except active ones)
+            // Update state to show all non-active tags are now visible
             state.filteredTags = allTagsData.filter(tagData => 
-                !state.activeTags.includes(tagData.text)
+                !state.activeTags.some(activeTag => 
+                    activeTag.toLowerCase() === tagData.text.toLowerCase()
+                )
             );
             
             state.filteredTags.forEach(tagData => {
@@ -500,19 +553,6 @@ export default function initEnhancedSearch(el) {
                             duration: 0.3,
                             ease: "power2.out"
                         });
-                        
-                        // Add a subtle pulse effect
-                        gsap.delayedCall(0.3, () => {
-                            if (highlightedTag.element.classList.contains('highlighted')) {
-                                gsap.to(highlightedTag.button, {
-                                    scale: 1.02,
-                                    duration: 0.15,
-                                    yoyo: true,
-                                    repeat: 1,
-                                    ease: "power2.inOut"
-                                });
-                            }
-                        });
                     }
                     
                     // Scroll to highlighted item if needed
@@ -557,6 +597,22 @@ export default function initEnhancedSearch(el) {
             if (state.highlightedIndex >= 0 && state.highlightedIndex < state.filteredTags.length) {
                 const selectedTag = state.filteredTags[state.highlightedIndex];
                 if (selectedTag) {
+                    // Check if tag is already active or exists in DOM (same checks as handleTagClick)
+                    if (state.activeTags.includes(selectedTag.text)) {
+                        console.log('Select highlighted: Tag already active, ignoring');
+                        return false;
+                    }
+                    
+                    if (elements.tagContainer) {
+                        const existingTagSpans = elements.tagContainer.querySelectorAll('.search-tag span');
+                        for (let span of existingTagSpans) {
+                            if (span.textContent.trim() === selectedTag.text) {
+                                console.log('Select highlighted: Tag already exists in DOM, ignoring');
+                                return false;
+                            }
+                        }
+                    }
+                    
                     tagManager.createFromTagData(selectedTag);
                     return true;
                 }
@@ -582,70 +638,104 @@ export default function initEnhancedSearch(el) {
         },
 
         createFromTagData(tagData) {
-            if (state.activeTags.includes(tagData.text)) return null;
-            
-            const tag = document.createElement('div');
-            tag.className = 'search-tag inline-flex items-center px-3 py-1 rounded-full text-sm mr-2 mb-2';
-            
-            const tagText = document.createElement('span');
-            tagText.textContent = tagData.text;
-            tag.appendChild(tagText);
-            
-            const removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'search-tag-remove ml-2 rounded-full w-4 h-4 flex items-center justify-center';
-            removeBtn.innerHTML = '×';
-            
-            removeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.remove(tagData.text, tag);
-            });
-            
-            tag.appendChild(removeBtn);
-            elements.tagContainer.appendChild(tag);
-            
-            state.activeTags.push(tagData.text);
-            
-            // Hide the tag from available tags with animation
-            gsap.to(tagData.element, {
-                opacity: 0,
-                scale: 0.8,
-                y: -10,
-                duration: 0.2,
-                onComplete: () => {
-                    tagData.element.style.display = 'none';
-                }
-            });
-            
-            // Clear input and re-filter to show all available tags
-            elements.input.value = '';
-            filterManager.filterTags('');
-            utils_internal.updateClearButtonVisibility();
-            
-            // Update ScrollBooster
-            if (state.sb) {
-                state.sb.updateMetrics();
+            // Early return if tag already exists
+            if (state.activeTags.includes(tagData.text)) {
+                console.log(`Tag "${tagData.text}" already exists, skipping creation`);
+                return null;
             }
             
-            // Animate in the new tag with a more sophisticated animation
-            gsap.fromTo(tag, {
-                opacity: 0,
-                scale: 0.3,
-                y: 20,
-                rotationX: -90
-            }, {
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                rotationX: 0,
-                duration: 0.5,
-                ease: "back.out(1.7)"
-            });
+            // Double-check for existing tags in DOM to prevent duplicates (like predictive search)
+            if (elements.tagContainer) {
+                const existingTagSpans = elements.tagContainer.querySelectorAll('.search-tag span');
+                for (let span of existingTagSpans) {
+                    if (span.textContent.trim() === tagData.text) {
+                        console.log('Tag already exists in DOM, skipping creation');
+                        return null;
+                    }
+                }
+            }
             
-            elements.input.focus();
+            // Check if currently processing this tag (prevent rapid clicks)
+            if (tagData.isProcessing) {
+                console.log(`Tag "${tagData.text}" is currently being processed, skipping`);
+                return null;
+            }
             
-            console.log(`Tag "${tagData.text}" created successfully`);
-            return tag;
+            // Mark as processing
+            tagData.isProcessing = true;
+
+            try {
+                const tag = document.createElement('div');
+                tag.className = 'search-tag inline-flex items-center px-3 py-1 rounded-full text-sm mr-2 mb-2';
+                
+                const tagText = document.createElement('span');
+                tagText.textContent = tagData.text;
+                tag.appendChild(tagText);
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'search-tag-remove ml-2 rounded-full w-4 h-4 flex items-center justify-center';
+                removeBtn.innerHTML = '×';
+                
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.remove(tagData.text, tag);
+                });
+                
+                tag.appendChild(removeBtn);
+                elements.tagContainer.appendChild(tag);
+                
+                // Add to active tags ONLY after successful DOM insertion
+                state.activeTags.push(tagData.text);
+                
+                // Hide the tag from available tags with animation
+                gsap.to(tagData.element, {
+                    opacity: 0,
+                    scale: 0.8,
+                    y: -10,
+                    duration: 0.2,
+                    onComplete: () => {
+                        tagData.element.style.display = 'none';
+                        // Clear processing flag after animation
+                        tagData.isProcessing = false;
+                    }
+                });
+                
+                // Clear input and re-filter to show all available tags
+                elements.input.value = '';
+                filterManager.filterTags('');
+                utils_internal.updateClearButtonVisibility();
+                
+                // Update ScrollBooster
+                if (state.sb) {
+                    state.sb.updateMetrics();
+                }
+                
+                // Animate in the new tag with a more sophisticated animation
+                gsap.fromTo(tag, {
+                    opacity: 0,
+                    scale: 0.3,
+                    y: 20,
+                    rotationX: -90
+                }, {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    rotationX: 0,
+                    duration: 0.5,
+                    ease: "back.out(1.7)"
+                });
+                
+                elements.input.focus();
+                
+                console.log(`Tag "${tagData.text}" created successfully`);
+                return tag;
+                
+            } catch (error) {
+                console.error('Error creating tag:', error);
+                tagData.isProcessing = false;
+                return null;
+            }
         },
 
         createFreeText(text) {
@@ -745,6 +835,12 @@ export default function initEnhancedSearch(el) {
                 });
             }
             
+            // Clear processing flag for the corresponding tag data
+            const tagData = allTagsData.find(data => data.text === text);
+            if (tagData) {
+                tagData.isProcessing = false;
+            }
+            
             // Re-filter with current search value (will show all tags if no search)
             filterManager.filterTags(state.searchValue);
 
@@ -762,6 +858,11 @@ export default function initEnhancedSearch(el) {
             if (elements.tagContainer) {
                 elements.tagContainer.innerHTML = '';
             }
+            
+            // Clear all processing flags
+            allTagsData.forEach(tagData => {
+                tagData.isProcessing = false;
+            });
             
             // Show all available tags instead of empty state
             filterManager.filterTags('');
@@ -814,6 +915,19 @@ export default function initEnhancedSearch(el) {
             filterManager.filterTags(query);
         },
 
+        handleInputClick(e) {
+            console.log('Input clicked');
+            searchManager.open();
+        },
+
+        handleClickOutside(e) {
+            // Check if the click is outside the el.section
+            if (state.isOpen && el.section && !el.section.contains(e.target)) {
+                console.log('Clicked outside search section');
+                searchManager.close();
+            }
+        },
+
         handleKeydown(e) {
             // Handle arrow keys for navigation
             if (e.key === 'ArrowDown') {
@@ -846,8 +960,29 @@ export default function initEnhancedSearch(el) {
             if (e.key === 'Tab') {
                 e.preventDefault();
                 
+                console.log('Tab pressed, filtered tags:', state.filteredTags.length);
+                
                 if (state.filteredTags.length > 0) {
                     const firstTag = state.filteredTags[0];
+                    console.log('First tag to process:', firstTag.text);
+                    
+                    // Check if tag is already active or exists in DOM (like predictive search)
+                    if (state.activeTags.includes(firstTag.text)) {
+                        console.log('Tab: Tag already active, ignoring');
+                        return;
+                    }
+                    
+                    if (elements.tagContainer) {
+                        const existingTagSpans = elements.tagContainer.querySelectorAll('.search-tag span');
+                        for (let span of existingTagSpans) {
+                            if (span.textContent.trim() === firstTag.text) {
+                                console.log('Tab: Tag already exists in DOM, ignoring');
+                                return;
+                            }
+                        }
+                    }
+                    
+                    console.log('Creating tag via Tab:', firstTag.text);
                     tagManager.createFromTagData(firstTag);
                 }
                 return;
@@ -877,8 +1012,39 @@ export default function initEnhancedSearch(el) {
             }
         },
 
+        // Tag click handler - removed debounce for better responsiveness
         handleTagClick(tagData) {
             console.log('Tag clicked:', tagData.text);
+            
+            // Prevent creating duplicate tags
+            if (state.activeTags.includes(tagData.text)) {
+                console.log(`Tag "${tagData.text}" already active, ignoring click`);
+                return;
+            }
+            
+            // Check if tag is already in DOM (like predictive search)
+            if (elements.tagContainer) {
+                const existingTagSpans = elements.tagContainer.querySelectorAll('.search-tag span');
+                for (let span of existingTagSpans) {
+                    if (span.textContent.trim() === tagData.text) {
+                        console.log('Tag already exists in DOM, ignoring click');
+                        return;
+                    }
+                }
+            }
+            
+            // Prevent multiple rapid clicks during animations
+            if (state.isFiltering || tagData.isProcessing) {
+                console.log('Currently processing, ignoring click');
+                return;
+            }
+            
+            // Check if the element is currently hidden (already selected)
+            if (tagData.element.style.display === 'none') {
+                console.log(`Tag "${tagData.text}" element is hidden, ignoring click`);
+                return;
+            }
+            
             tagManager.createFromTagData(tagData);
         },
 
@@ -887,6 +1053,8 @@ export default function initEnhancedSearch(el) {
             e.stopPropagation();
         
             console.log('Active tags before processing:', state.activeTags);
+
+            searchManager.close();
         
             // Add current input as tag if it exists
             const inputValue = elements.input.value.trim();
@@ -944,14 +1112,26 @@ export default function initEnhancedSearch(el) {
         // Initialize ScrollBooster
         state.sb = scrollManager.init();
         
-        // Setup available tag handlers
+        // Setup available tag handlers with prevention of multiple bindings
         allTagsData.forEach(tagData => {
-            if (tagData.button) {
-                tagData.button.addEventListener('click', (e) => {
+            if (tagData.button && !buttonHandlerTracker.has(tagData.button)) {
+                // Mark this button as having a handler
+                buttonHandlerTracker.add(tagData.button);
+                
+                // Create the click handler
+                const clickHandler = (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     eventHandlers.handleTagClick(tagData);
-                });
+                };
+                
+                // Store handler for cleanup
+                tagData.clickHandler = clickHandler;
+                
+                // Add the event listener
+                tagData.button.addEventListener('click', clickHandler, { once: false });
+                
+                console.log(`Added click handler for tag: ${tagData.text}`);
             }
         });
         
@@ -959,11 +1139,16 @@ export default function initEnhancedSearch(el) {
         if (elements.input) {
             utils_internal.addTrackedEventListener(elements.input, 'input', eventHandlers.handleInput);
             utils_internal.addTrackedEventListener(elements.input, 'keydown', eventHandlers.handleKeydown);
+
+            utils_internal.addTrackedEventListener(elements.input, 'click', eventHandlers.handleInputClick);
         }
         
         if (elements.form) {
             utils_internal.addTrackedEventListener(elements.form, 'submit', eventHandlers.handleSubmit);
         }
+
+        utils_internal.addTrackedEventListener(document, 'click', eventHandlers.handleClickOutside);
+
         
         // Clear button handler
         if (elements.clearButton) {
@@ -1005,7 +1190,17 @@ export default function initEnhancedSearch(el) {
             elements.noResultsMessage
         ].filter(Boolean));
         
-        // Remove event listeners
+        // Remove tag button event listeners and clear tracking
+        allTagsData.forEach(tagData => {
+            if (tagData.button && tagData.clickHandler) {
+                tagData.button.removeEventListener('click', tagData.clickHandler);
+                buttonHandlerTracker.delete(tagData.button);
+                delete tagData.clickHandler;
+                delete tagData.isProcessing;
+            }
+        });
+        
+        // Remove other event listeners
         state.eventListeners.forEach(({ element, event, handler }) => {
             evt.off(event, element, handler);
         });
@@ -1046,6 +1241,9 @@ export default function initEnhancedSearch(el) {
         filter: (query) => filterManager.filterTags(query),
         destroy: cleanup,
         // Additional methods for ScrollBooster UI
-        showAllTags: () => uiManager.showAllTags()
+        showAllTags: () => uiManager.showAllTags(),
+        open: () => searchManager.open(),
+        close: () => searchManager.close(),
+        isOpen: () => state.isOpen
     };
 }

@@ -28,7 +28,7 @@ export default class extends Renderer {
             this.preloader?.loaded()
         }
 
-		components['search'](this.el);
+		components['search']({ section: qs('.js-header-search') });
 		components['bookACall'](this.el);
 
 		this.onEnterCompleted()

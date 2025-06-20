@@ -1,9 +1,10 @@
 import ScrollBooster from 'scrollbooster'
 import { gsap } from 'gsap'
-import { utils, evt } from '@/core'
+import { utils, store, evt } from '@/core'
 import { initTaxi } from '@/app.js'
 
 const { qs, qsa } = utils;
+const { device } = store;
 
 /**
  * Predictive Search Component
@@ -12,32 +13,34 @@ const { qs, qsa } = utils;
 export default function initPredictiveSearch(el) {
     if (!el) return;
 
+    if (device.isMobile) return;
+
     // ============================================================================
     // DOM ELEMENTS (keeping predictive search selectors)
     // ============================================================================
     
     const elements = {
         form: qs('form', el.section),
-        input: qs('input', qs('form', el.section)),
-        header: qs('header'),
-        close: qs('.predictive-search-close', qs('header')),
-        hidden: qsa('.predictive-search-hidden', qs('header')),
-        results: qs('.predictive-search-results', qs('header')),
-        resultsItems: qsa('.predictive-search-results-item', qs('.predictive-search-results', qs('header'))),
-        tagContainer: qs('.predictive-search-tags', qs('header')),
-        submit: qs('.js-predictive-search-submit', qs('form', el.section)),
-        availableTags: qsa('.js-tag', qs('header')), // Main tags for filtering
-        relatedLinks: qsa('.column-inner', qs('header')),
-        clearButton: qs('.js-predictive-search-clear', qs('header')),
-        nextButton: qs('.js-scrollboost-next'),
-        gradient: qs('.js-scrollboost-gradient'),
-        length: qs('.js-scrollboost-length'),
-        resetButton: qs('.js-scrollboost-reset'),
-        searchLinks: qsa('.js-search-link'), // Search links that should clear everything
+        input: qs('input', el.section),
+        header: qs('header', el.section),
+        close: qs('.predictive-search-close', el.section),
+        hidden: qsa('.predictive-search-hidden', el.section),
+        results: qs('.predictive-search-results', el.section),
+        resultsItems: qsa('.predictive-search-results-item', el.section),
+        tagContainer: qs('.predictive-search-tags', el.section),
+        submit: qs('.js-predictive-search-submit', el.section),
+        availableTags: qsa('.js-tag', el.section), // Main tags for filtering
+        relatedLinks: qsa('.column-inner', el.section),
+        clearButton: qs('.js-predictive-search-clear', el.section),
+        nextButton: qs('.js-scrollboost-next', el.section),
+        gradient: qs('.js-scrollboost-gradient', el.section),
+        length: qs('.js-scrollboost-length', el.section),
+        resetButton: qs('.js-scrollboost-reset', el.section),
+        searchLinks: qsa('.js-search-link', el.section), // Search links that should clear everything
         
         // Mini-search equivalents for scroll
-        scrollContent: qs('.js-scrollboost-content', qs('header')),
-        scrollViewport: qs('.js-scrollboost', qs('header')),
+        scrollContent: qs('.js-scrollboost-content', el.section),
+        scrollViewport: qs('.js-scrollboost', el.section),
         noResultsMessage: null // Will be created dynamically
     };
 
@@ -1327,13 +1330,13 @@ export default function initPredictiveSearch(el) {
     const searchManager = {
         open() {
             state.isOpen = true
-            elements.header.classList.add('is-active')
-            elements.header.setAttribute('data-lenis-prevent', '');
+            el.section.classList.add('is-active')
+            el.section.setAttribute('data-lenis-prevent', '');
             
             if (!utils_internal.isOnSearchPage()) {
                 elements.input.focus()
             }
-
+    
             document.body.classList.add('overflow-hidden')
             
             gsap.to(elements.hidden, { opacity: 0, duration: 0.3 });
@@ -1355,7 +1358,7 @@ export default function initPredictiveSearch(el) {
                     ease: "back.out(1.7)"
                 })
             }
-
+    
             requestAnimationFrame(() => {
                 gsap.to(elements.submit, { 
                     x: 0,
@@ -1363,21 +1366,44 @@ export default function initPredictiveSearch(el) {
                     ease: "power2.out"
                 })
             })
-
+    
+            // Reset ScrollBooster position when search opens
+            if (state.sb) {
+                // Update metrics first to ensure accurate calculations
+                state.sb.updateMetrics();
+                
+                // Reset to starting position (leftmost)
+                state.sb.scrollTo({ x: 0 });
+                state.sb.setPosition({ x: 0 });
+                
+                console.log('ScrollBooster position reset to start');
+            }
+    
             elements.input.focus()
             elements.submit.style.pointerEvents = 'auto'
             uiManager.updateClearButtonVisibility();
         },
 
+        openAndScrollTo(targetX = 0) {
+            this.open();
+            
+            // Wait for the opening animation to settle before scrolling
+            gsap.delayedCall(0.4, () => {
+                if (state.sb) {
+                    state.sb.scrollTo({ x: targetX });
+                }
+            });
+        },
+
         close(preserveInput = false, preserveTags = false) {
             state.isOpen = false
-            elements.header.classList.remove('is-active')
+            el.section.classList.remove('is-active')
             gsap.to(elements.close, { scale: 1, duration: 0.2 })
             gsap.to(elements.hidden, { opacity: 1, duration: 0.3 })
             gsap.to(elements.results, { height: 0, duration: 0.3 })
             gsap.to(elements.submit, { x: '101%', duration: 0.4, ease: "power2.out" })
 
-            elements.header.removeAttribute('data-lenis-prevent');
+            el.section.removeAttribute('data-lenis-prevent');
             document.body.classList.remove('overflow-hidden')
 
             gsap.set(elements.resultsItems, {
@@ -1673,7 +1699,7 @@ export default function initPredictiveSearch(el) {
             }
             
             // Remove focus from any other focused element in the header
-            if (elements.header && elements.header.contains(document.activeElement)) {
+            if (el.section && el.section.contains(document.activeElement)) {
                 document.activeElement.blur();
             }
             
@@ -1688,7 +1714,7 @@ export default function initPredictiveSearch(el) {
         },
 
         handleClickOutside(e) {
-            if (state.isOpen && elements.header && !elements.header.contains(e.target)) {
+            if (state.isOpen && el.section && !el.section.contains(e.target)) {
                 searchManager.close(false)
             }
         }
