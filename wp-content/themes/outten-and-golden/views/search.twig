@@ -11,41 +11,41 @@
                 }
             } %}
 
+            {% include './partials/mobile-search.twig' %}
+
             {# Check if this is an empty search first #}
             {% if taxi_namespace == 'search-empty' %}
-            
                 <div class="relative w-full bg-white overflow-hidden">
-                    <div class="site-max py-80">
+                    <div class="site-max py-30 s:py-80">
                         {% include './partials/search-related.twig' %}
                     </div>
                 </div>
-            
             {% elseif grouped_posts %}
                 <div data-component="searchFilter">
-                    <div class="filter border-b border-grey-taupe pt-70 bg-white z-1">
-                        <div class="site-grid site-max items-center pb-60 s:pb-80">
+                    <div class="filter s:border-b border-grey-taupe pt-30 s:pt-70 bg-white z-1">
+                        <div class="site-grid site-max items-center s:pb-80">
 
-                            <div class="col-span-3">
+                            <div class="col-span-4 s:col-span-3">
                                 Filter
                             </div>
 
-                            <div class="col-span-10 hidden s:flex items-center justify-center flex-wrap text-green">
-                                <button data-filter-target="all" class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by all" data-filter="all" data-filter-status="active" aria-pressed="true" aria-controls="filter-list">All</button>
-
-                                {% for post_type, group in grouped_posts %}
-                                    <button data-filter-target="{{ post_type }}" class="relative ml-[-1px] py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ group.label }}" data-filter="{{ post_type }}" data-filter-status="not-active" aria-pressed="false" aria-controls="filter-list">
-                                        {{ group.label }}  ({{ group.count }})
-                                    </button>
-                                {% endfor %}
+                            <div class="mt-20 s:mt-0 col-span-8 s:col-span-10 flex items-center s:justify-center overflow-x-auto scrollbar-hide text-green order-3 s:order-2">
+                                <div class="flex items-center flex-nowrap min-w-max pb-2">                                <button data-filter-target="all" class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by all" data-filter="all" data-filter-status="active" aria-pressed="true" aria-controls="filter-list">All</button>
+                                    {% for post_type, group in grouped_posts %}
+                                        <button data-filter-target="{{ post_type }}" class="relative ml-[-1px] py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ group.label }}" data-filter="{{ post_type }}" data-filter-status="not-active" aria-pressed="false" aria-controls="filter-list">
+                                            {{ group.label }}  ({{ group.count }})
+                                        </button>
+                                    {% endfor %}
+                                </div>
                             </div>
 
-                            <div class="relative col-span-3 flex justify-end">
-                            {{ total_results}} Results
+                            <div class="relative col-span-4 s:col-span-3 flex justify-end text-right order-2 s:order-3">
+                                {{ total_results}} Results
                             </div>
                         </div>
                     </div>
    
-                    <div class="-mt-30 filter-listgrouped-search-results site-max pt-100 pb-100 flex flex-col overflow-hidden gap-y-60" aria-live="polite" role="list">
+                    <div class="s:-mt-30 filter-listgrouped-search-results site-max pt-30 s:pt-100 pb-100 flex flex-col overflow-hidden gap-y-60" aria-live="polite" role="list">
                         {% for post_type, group in grouped_posts %}
                             <div class="post-type-group filter-list__item" data-post-type="{{ post_type }}" role="listitem" aria-label="Group of posts by {{ group.label }}" data-filter-name="{{ post_type }}" data-filter-status="active">
                                 <div class="post-type-header mb-20 pb-10">
@@ -57,7 +57,7 @@
 
                                 <div class="relative">
                                     {% if post_type == 'cases' %}
-                                        <div class="grid gap-x-25 grid-cols-3 items-start gap-y-65">
+                                        <div class="grid gap-x-25 grid-cols-1 s:grid-cols-3 items-start gap-y-65">
                                             {% for post in group.posts %}
                                                 {% include 'partials/search-case.twig' with { post: post } %}
                                             {% endfor %}
@@ -68,7 +68,7 @@
                                                 {% include 'partials/search-item.twig' with { post: post } %}
                                             {% endfor %}
                                         </div>
-                                    {% elseif post_type == 'posts' %}
+                                    {% elseif post_type == 'post' %}
                                         <div class="site-grid items-start gap-y-20 grid-layout">
                                             {% for post in group.posts %}
                                                 {% include 'partials/search-item.twig' with { post: post } %}
@@ -85,8 +85,8 @@
                 {# Check if this is truly an empty search (no query, no tags) or no results #}
                 {% if search_query or has_search_tags %}
                     
-                    <div class="no-results text-center h-[calc(100vh-8rem)] flex flex-col items-center justify-center">
-                        <h2 class="text-96 font-sans font-normal leading-[1.04] tracking-[-0.032rem] text-green mb-20">0 Result</h2>
+                    <div class="no-results text-center h-[calc(100vh-15rem)] s:h-[calc(100vh-8rem)] flex flex-col items-center justify-center">
+                        <h2 class="text-64 s:text-96 font-sans font-normal leading-[1.04] tracking-[-0.032rem] text-green mb-20">0 Result</h2>
                         
                         <div class="suggested-actions">
                             <a href="/?s=" class="relative gap-x-5 inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase js-search-link">
@@ -101,13 +101,19 @@
                     </div>
                 {% else %}
                     {# Empty search landing page #}
-                    <div class="search-landing text-center py-100">
-                        <h1 class="text-48 font-sans font-normal leading-[1.04] tracking-[-0.032rem] text-green mb-20">
-                            Search Our Content
-                        </h1>
-                        <p class="text-grey-600 mb-30 max-w-2xl mx-auto">
-                            Use the search above to find cases, issues, posts, and more. You can search by keywords or filter by tags.
-                        </p>
+                    <div class="no-results text-center h-[calc(100vh-15rem)] s:h-[calc(100vh-8rem)] flex flex-col items-center justify-center">
+                        <h2 class="text-64 s:text-96 font-sans font-normal leading-[1.04] tracking-[-0.032rem] text-green mb-20">0 Result</h2>
+                        
+                        <div class="suggested-actions">
+                            <a href="/?s=" class="relative gap-x-5 inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase js-search-link">
+                                <span>
+                                    Clear
+                                </span>
+                                <svg class="size-10 fill-white" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3.5 7.5C2.52291 7.5 1.69531 7.16094 1.01719 6.48281C0.339062 5.80469 0 4.97708 0 4C0 3.02292 0.339062 2.19531 1.01719 1.51719C1.69531 0.839064 2.52291 0.500002 3.5 0.500002C4.00312 0.500002 4.48437 0.603835 4.94375 0.811501C5.40312 1.01917 5.79687 1.31638 6.125 1.70313V0.937501C6.125 0.813543 6.167 0.70971 6.251 0.626002C6.33499 0.542293 6.43883 0.500293 6.56249 0.500002C6.68616 0.49971 6.79014 0.54171 6.87443 0.626002C6.95872 0.710293 7.00058 0.814126 6.99999 0.937501V3.125C6.99999 3.24896 6.95799 3.35294 6.87399 3.43694C6.78999 3.52094 6.68616 3.56279 6.56249 3.5625H4.375C4.25104 3.5625 4.1472 3.5205 4.0635 3.4365C3.97979 3.3525 3.93779 3.24867 3.9375 3.125C3.93721 3.00133 3.97921 2.8975 4.0635 2.8135C4.14779 2.7295 4.25162 2.6875 4.375 2.6875H5.775C5.54166 2.27917 5.22272 1.95833 4.81818 1.725C4.41364 1.49167 3.97425 1.375 3.5 1.375C2.77083 1.375 2.15104 1.63021 1.64062 2.14063C1.13021 2.65104 0.874999 3.27083 0.874999 4C0.874999 4.72917 1.13021 5.34896 1.64062 5.85938C2.15104 6.36979 2.77083 6.625 3.5 6.625C3.99583 6.625 4.44981 6.49929 4.86193 6.24788C5.27406 5.99646 5.593 5.65915 5.81875 5.23594C5.87708 5.13385 5.95918 5.06283 6.06506 5.02288C6.17093 4.98292 6.27841 4.98102 6.3875 5.01719C6.50416 5.05365 6.58802 5.13021 6.63906 5.24688C6.6901 5.36354 6.68645 5.47292 6.62812 5.575C6.32916 6.15833 5.9026 6.625 5.34843 6.975C4.79427 7.325 4.17812 7.5 3.5 7.5Z"></path>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 {% endif %}
             {% endif %}

@@ -235,6 +235,7 @@ input::placeholder {
 	@apply text-grey-taupe;
 }
 
+.js-mini-scrollboost-next,
 .js-scrollboost-next {
 	@apply opacity-0;
 	pointer-events: none;
@@ -245,11 +246,20 @@ input::placeholder {
 	}
 }
 
-.js-scrollboost-gradient {
+.js-scrollboost-gradient,
+.js-mini-scrollboost-gradient {
 	@apply opacity-0;
 
 	&.is-active {
 		@apply opacity-100;
+	}
+}
+
+.mini-search-section {
+	&.is-active {
+		.mini-search-section__wrapper {
+			overflow: inherit;
+		}
 	}
 }
 
@@ -294,11 +304,17 @@ header {
 		opacity: 0;
 		pointer-events: none;
 	}
+
+	&-tag {
+		@apply flex items-center gap-x-8 whitespace-nowrap mr-8 px-12 py-[0.7rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe;
+	}
 }
 
-.predictive-search-tag {
+.search-tag {
 	@apply flex items-center gap-x-8 whitespace-nowrap mr-8 px-12 py-[0.7rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe;
 }
+
+
 
 body.search-results {
 	header {
@@ -563,4 +579,25 @@ button[data-filter-status="active"] {
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+
+input:focus:-moz-placeholder { /* Firefox 18- */
+    color: transparent;
+}
+
+input:focus::-moz-placeholder { /* Firefox 19+ */
+    color: transparent;
+}
+
+input:focus:-ms-input-placeholder {
+    color: transparent;
+}
+
+/* Modern browsers */
+input:focus::placeholder {
+    color: transparent;
 }

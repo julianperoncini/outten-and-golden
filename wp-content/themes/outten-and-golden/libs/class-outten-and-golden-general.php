@@ -579,6 +579,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
     }
     
     public function taxi_namespace( $ns ) {
+        global $wp_query;
+    
         if ( is_page() ) {
             $ns = 'page';
         }
@@ -587,34 +589,22 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             $ns = 'home';
         }
     
-        if ( is_search() ) {
-            global $wp_query;
-            
-            // Get current URL path
+        // Detect custom search or enhanced search
+        $is_custom_search = is_search() || get_query_var('search_tags') || get_query_var('search_type');
+    
+        if ( $is_custom_search ) {
             $current_path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-            
-            // Get search query from multiple sources
+    
             $search_query = get_search_query();
-            $search_param = isset($_GET['s']) ? trim($_GET['s']) : '';
-            
-            // Check if this is your clean URL format
+            $search_tags  = get_query_var('search_tags');
+            $has_tags     = !empty($search_tags);
+    
             $is_clean_search_url = strpos($current_path, 'search') === 0;
-            
-            // Determine if search is empty
-            $is_empty_search = false;
-            
-            if ($is_clean_search_url) {
-                // For clean URLs like /search/ or /search (no query)
-                $path_parts = explode('/', $current_path);
-                $is_empty_search = (count($path_parts) <= 1 || $current_path === 'search');
-            } else {
-                // For traditional URLs like /?s=
-                $is_empty_search = empty($search_query) && empty($search_param);
-            }
-            
+            $is_empty_search     = empty($search_query) && !$has_tags;
+    
             if ( $is_empty_search ) {
                 $ns = 'search-empty';
-            } elseif ( $wp_query->found_posts == 0 ) {
+            } elseif ( isset($wp_query->found_posts) && $wp_query->found_posts == 0 ) {
                 $ns = 'search-no-results';
             } else {
                 $ns = 'search';
@@ -635,6 +625,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
     
         return $ns;
     }
+    
 }
 
 new OUTTEN_AND_GOLDEN_Theme_General;

@@ -70,7 +70,7 @@ initializePageState()
 
 function updatePageState(namespace, pageType) {
     updateBodyClasses(namespace, pageType);
-    updateHeaderClasses(namespace, pageType);
+    //updateHeaderClasses(namespace, pageType);
     //updateNavigationStates();
     //updateSpecialFeatures(namespace, pageType);
 }

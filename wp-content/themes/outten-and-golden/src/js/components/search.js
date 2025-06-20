@@ -1,6 +1,5 @@
 import ScrollBooster from 'scrollbooster'
-import gsap from 'gsap'
-import { motion, animate, hover, spring, stagger, press } from 'motion'
+import { gsap } from 'gsap'
 import { utils, evt } from '@/core'
 import { initTaxi } from '@/app.js'
 
@@ -8,13 +7,13 @@ const { qs, qsa } = utils;
 
 /**
  * Predictive Search Component
- * A comprehensive search interface with tag management, URL state sync, and API integration
+ * Based on mini-search logic with predictive search UI and API integration
  */
 export default function initPredictiveSearch(el) {
     if (!el) return;
 
     // ============================================================================
-    // DOM ELEMENTS
+    // DOM ELEMENTS (keeping predictive search selectors)
     // ============================================================================
     
     const elements = {
@@ -27,22 +26,34 @@ export default function initPredictiveSearch(el) {
         resultsItems: qsa('.predictive-search-results-item', qs('.predictive-search-results', qs('header'))),
         tagContainer: qs('.predictive-search-tags', qs('header')),
         submit: qs('.js-predictive-search-submit', qs('form', el.section)),
-        allTags: qsa('.js-tag', qs('header')),
+        availableTags: qsa('.js-tag', qs('header')), // Main tags for filtering
         relatedLinks: qsa('.column-inner', qs('header')),
         clearButton: qs('.js-predictive-search-clear', qs('header')),
         nextButton: qs('.js-scrollboost-next'),
         gradient: qs('.js-scrollboost-gradient'),
         length: qs('.js-scrollboost-length'),
-        resetButton: qs('.js-scrollboost-reset')
+        resetButton: qs('.js-scrollboost-reset'),
+        searchLinks: qsa('.js-search-link'), // Search links that should clear everything
+        
+        // Mini-search equivalents for scroll
+        scrollContent: qs('.js-scrollboost-content', qs('header')),
+        scrollViewport: qs('.js-scrollboost', qs('header')),
+        noResultsMessage: null // Will be created dynamically
     };
 
     // ============================================================================
-    // STATE MANAGEMENT
+    // STATE (from mini-search)
     // ============================================================================
     
     const state = {
         activeTags: [],
+        filteredTags: [],
+        highlightedIndex: -1,
         sb: null,
+        eventListeners: [],
+        searchValue: '',
+        isFiltering: false,
+        // Predictive search specific
         isScrolling: false,
         hasMoved: false,
         isOpen: false,
@@ -50,17 +61,23 @@ export default function initPredictiveSearch(el) {
         lastCreatedTag: null,
         isPopulatingFromURL: false,
         populateTimeout: null,
-        eventListeners: [],
-        pressHandlers: []
+        // Prevent rapid key presses
+        isProcessingKey: false,
+        lastKeyTime: 0
     };
 
-    const originalResultsItems = Array.from(elements.resultsItems).map(item => ({
-        element: item,
-        text: item.textContent.trim()
+    // Create all available tags data structure (from mini-search)
+    const allTagsData = Array.from(elements.availableTags || []).map(tagElement => ({
+        element: tagElement,
+        text: tagElement.getAttribute('data-tag') || tagElement.textContent.trim(),
+        originalText: tagElement.textContent.trim(),
+        button: tagElement.querySelector('button'),
+        isVisible: true,
+        matchScore: 0
     }));
 
     // ============================================================================
-    // UTILITY FUNCTIONS
+    // UTILITIES (from mini-search)
     // ============================================================================
     
     const utils_internal = {
@@ -69,12 +86,7 @@ export default function initPredictiveSearch(el) {
             state.eventListeners.push({ element, event, handler });
         },
 
-        addTrackedPressHandler(element, handler) {
-            const pressHandler = press(element, handler);
-            state.pressHandlers.push({ element, handler: pressHandler });
-            return pressHandler;
-        },
-
+        // Predictive search specific utilities
         isOnSearchPage() {
             const currentPath = window.location.pathname;
             const searchParams = new URLSearchParams(window.location.search);
@@ -92,84 +104,1224 @@ export default function initPredictiveSearch(el) {
                 .map(span => span.textContent.trim());
             
             if (state.activeTags.length !== domTags.length) {
-                console.warn('State mismatch detected, resetting...', {
-                    activeTags: state.activeTags.length,
-                    domTags: domTags.length
-                });
-                tagManager.clearAll();
+                tagManager.clear();
                 return false;
             }
             
             return true;
+        },
+
+        // Fuzzy search scoring (from mini-search)
+        getFuzzyScore(text, query) {
+            if (!query) return 1;
+            
+            const textLower = text.toLowerCase();
+            const queryLower = query.toLowerCase();
+            
+            // Exact match gets highest score
+            if (textLower === queryLower) return 100;
+            
+            // Starts with query gets high score
+            if (textLower.startsWith(queryLower)) return 90;
+            
+            // Contains query gets medium score
+            if (textLower.includes(queryLower)) return 70;
+            
+            // Fuzzy matching - check if all query characters appear in order
+            let textIndex = 0;
+            let queryIndex = 0;
+            let matchCount = 0;
+            
+            while (textIndex < textLower.length && queryIndex < queryLower.length) {
+                if (textLower[textIndex] === queryLower[queryIndex]) {
+                    matchCount++;
+                    queryIndex++;
+                }
+                textIndex++;
+            }
+            
+            if (queryIndex === queryLower.length) {
+                // All query characters found, score based on density
+                return Math.max(10, 50 * (matchCount / textLower.length));
+            }
+            
+            return 0;
+        },
+
+        // Highlight matching text (from mini-search)
+        highlightText(text, query) {
+            if (!query) return text;
+            
+            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(regex, '<mark class="bg-yellow px-1 rounded">$1</mark>');
+        },
+
+        // Create "no results" message (from mini-search)
+        createNoResultsMessage() {
+            // Check if message already exists
+            if (elements.noResultsMessage) {
+                console.log('No results message already exists, skipping creation');
+                return elements.noResultsMessage;
+            }
+            
+            const message = document.createElement('div');
+            message.className = 'no-results-message text-center py-8 text-gray-500';
+            message.innerHTML = `
+                <div class="text-sm">No matching tags found</div>
+            `;
+            message.style.display = 'none';
+            
+            if (elements.scrollContent) {
+                elements.scrollContent.appendChild(message);
+                elements.noResultsMessage = message;
+                console.log('No results message created');
+            }
+            
+            return message;
         }
     };
 
     // ============================================================================
-    // UI MANAGEMENT
+    // URL PARSING AND STATE RESTORATION
+    // ============================================================================
+
+    const urlManager = {
+        // Parse tags from current URL
+        parseTagsFromURL() {
+            const path = window.location.pathname;
+            const searchParams = new URLSearchParams(window.location.search);
+            
+            let tagsFromURL = [];
+            
+            // Check URL path for tags (e.g., /search/tags/tag1+tag2)
+            const tagMatch = path.match(/\/tags\/([^\/]+)/);
+            if (tagMatch) {
+                tagsFromURL = tagMatch[1]
+                    .split('+')
+                    .map(tag => tag.replace(/-/g, ' ').trim())
+                    .filter(tag => tag.length > 0);
+            }
+            
+            // Also check search params for tags
+            const searchTags = searchParams.get('search_tags');
+            if (searchTags) {
+                const paramTags = searchTags.split(',').map(tag => tag.trim());
+                tagsFromURL = [...tagsFromURL, ...paramTags];
+            }
+            
+            return [...new Set(tagsFromURL)]; // Remove duplicates
+        },
+        
+        // Check if we're on a search page with existing tags
+        hasExistingTags() {
+            return this.parseTagsFromURL().length > 0;
+        }
+    };
+
+    // ============================================================================
+    // SIMPLE TAG VISIBILITY MANAGEMENT
     // ============================================================================
     
-    const uiManager = {
-        updateClearButtonVisibility() {
-            if (!elements.clearButton) return;
+    const simpleTagManager = {
+        // Simple function to show/hide tags based on active state
+        updateAllTagsVisibility() {
+            console.log('Updating all tags visibility. Active tags:', state.activeTags);
             
-            if (!state.isOpen) {
-                animate(elements.clearButton, { opacity: 0 });
-                elements.clearButton.style.pointerEvents = 'none';
+            allTagsData.forEach(tagData => {
+                if (tagData.element) {
+                    const isActive = state.activeTags.includes(tagData.text);
+                    
+                    if (isActive) {
+                        // Hide active tags
+                        tagData.element.style.display = 'none';
+                        tagData.isVisible = false;
+                    } else {
+                        // Show non-active tags
+                        tagData.element.style.display = '';
+                        tagData.isVisible = true;
+                        
+                        // Reset to clean state
+                        gsap.set(tagData.element, {
+                            opacity: 1,
+                            scale: 1,
+                            y: 0,
+                            clearProps: "transform"
+                        });
+                        
+                        // Reset button content
+                        if (tagData.button) {
+                            tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                            gsap.set(tagData.button, {
+                                backgroundColor: '',
+                                color: '',
+                                scale: 1,
+                                clearProps: "all"
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // Update filtered tags to match visibility
+            state.filteredTags = allTagsData.filter(tagData => tagData.isVisible);
+            
+            // Update ScrollBooster
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            console.log('Visible tags:', state.filteredTags.length);
+        },
+        
+        // Simple clear all function
+        clearAll() {
+            console.log('Simple clear all');
+            
+            // Clear state
+            state.activeTags = [];
+            
+            // Clear DOM
+            if (elements.tagContainer) {
+                elements.tagContainer.innerHTML = '';
+            }
+            
+            // Clear input
+            if (elements.input) {
+                elements.input.value = '';
+            }
+            
+            // Show all tags
+            this.updateAllTagsVisibility();
+            
+            // Update UI
+            uiManager.updateClearButtonVisibility();
+        }
+    };
+
+    const stateManager = {
+        // Restore from URL (assumes we're starting from clean state)
+        restoreFromURL() {
+            console.log('Restoring from URL (starting from clean state)...');
+            
+            const urlTags = urlManager.parseTagsFromURL();
+            
+            if (urlTags.length === 0) {
+                console.log('No tags in URL - keeping all tags visible');
+                // Keep all tags visible since there are no active tags
+                allTagsData.forEach(tagData => {
+                    if (tagData.element) {
+                        tagData.element.style.display = '';
+                        tagData.isVisible = true;
+                    }
+                });
+                state.filteredTags = [...allTagsData];
                 return;
             }
             
-            const currentInputValue = elements.input ? elements.input.value.trim() : '';
-            const hasInput = currentInputValue.length > 0;
-            const hasTags = state.activeTags.length > 0;
+            console.log('Restoring tags from URL:', urlTags);
             
-            console.log('Clear button visibility check:', { 
-                isOpen: state.isOpen, 
-                hasInput, 
-                hasTags, 
-                inputValue: currentInputValue,
-                activeTags: state.activeTags.length 
+            // Set the flag to indicate we're populating from URL
+            state.isPopulatingFromURL = true;
+            
+            // Create tags in the container for each URL tag
+            urlTags.forEach(tagText => {
+                // Create tag element first
+                this.createTagElement(tagText);
+                // Add to active tags
+                state.activeTags.push(tagText);
             });
             
-            if (hasInput || hasTags) {
-                animate(elements.clearButton, { opacity: 1 });
-                elements.clearButton.style.pointerEvents = 'auto';
-                console.log('Showing clear button');
+            // Now hide the active tags and show the rest
+            allTagsData.forEach(tagData => {
+                const isActive = state.activeTags.includes(tagData.text);
+                
+                if (!isActive) {
+                    tagData.element.style.display = '';
+                    tagData.isVisible = true;
+                } else {
+                    tagData.element.style.display = 'none';
+                    tagData.isVisible = false;
+                }
+            });
+            
+            // Update filtered tags
+            state.filteredTags = allTagsData.filter(tagData => tagData.isVisible);
+            
+            // Update the UI
+            uiManager.updateClearButtonVisibility();
+            
+            // Update ScrollBooster
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            // Reset the flag
+            state.isPopulatingFromURL = false;
+            
+            console.log('State restored. Active tags:', state.activeTags);
+            console.log('Visible tags:', state.filteredTags.length);
+        },
+        
+        // Clear all tags (both from DOM and state)
+        clearAllTags(silent = false) {
+            console.log('Clearing all tags...', silent ? '(silent mode)' : '');
+            
+            // Clear the state FIRST
+            state.activeTags = [];
+            
+            // Update clear button visibility immediately after clearing state
+            // This ensures it hides right away based on the cleared state
+            uiManager.updateClearButtonVisibility();
+            
+            // Clear the DOM
+            if (elements.tagContainer) {
+                if (silent) {
+                    // Instant clear without animations
+                    elements.tagContainer.innerHTML = '';
+                } else {
+                    // Animated clear (for user actions)
+                    const existingTags = elements.tagContainer.querySelectorAll('.predictive-search-tag');
+                    
+                    // Animate out existing tags
+                    existingTags.forEach((tag, index) => {
+                        gsap.to(tag, {
+                            opacity: 0,
+                            scale: 0.8,
+                            duration: 0.2,
+                            delay: index * 0.02, // Small stagger for removal
+                            onComplete: () => {
+                                if (tag && tag.isConnected) {
+                                    tag.remove();
+                                }
+                                
+                                // Update clear button again after last tag is removed
+                                if (index === existingTags.length - 1) {
+                                    uiManager.updateClearButtonVisibility();
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+            
+            // Show all available tags again with proper animations AND reset GSAP properties
+            if (silent) {
+                // SILENT MODE: Show all tags instantly but reset GSAP properties
+                allTagsData.forEach(tagData => {
+                    if (tagData.element) {
+                        tagData.element.style.display = '';
+                        tagData.isVisible = true;
+                        
+                        // IMPORTANT: Reset GSAP properties to default values
+                        gsap.set(tagData.element, {
+                            opacity: 1,
+                            scale: 1,
+                            y: 0,
+                            clearProps: "transform,opacity" // Clear any lingering GSAP transforms
+                        });
+                        
+                        // Reset button content to original text
+                        if (tagData.button) {
+                            tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                            
+                            // Also reset button GSAP properties
+                            gsap.set(tagData.button, {
+                                backgroundColor: '',
+                                color: '',
+                                scale: 1,
+                                clearProps: "all"
+                            });
+                        }
+                    }
+                });
             } else {
-                animate(elements.clearButton, { opacity: 0 });
+                // ANIMATED MODE: Show all tags with staggered animation (for user actions)
+                // Wait a bit for tag removal animations to start
+                gsap.delayedCall(0.1, () => {
+                    allTagsData.forEach((tagData, index) => {
+                        if (tagData.element) {
+                            // Reset button content to original text
+                            if (tagData.button) {
+                                tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                            }
+                            
+                            // Show the element but start it hidden for animation
+                            tagData.element.style.display = '';
+                            tagData.isVisible = true;
+                            
+                            // Set initial animation state
+                            gsap.set(tagData.element, {
+                                opacity: 0,
+                                scale: 0.8,
+                                y: 20
+                            });
+                            
+                            // Animate in with staggered delay
+                            gsap.to(tagData.element, {
+                                opacity: 1,
+                                scale: 1,
+                                y: 0,
+                                duration: 0.4,
+                                delay: index * 0.03, // Staggered animation
+                                ease: "back.out(1.7)"
+                            });
+                        }
+                    });
+                    
+                    // Update ScrollBooster after all animations complete
+                    gsap.delayedCall(0.5 + (allTagsData.length * 0.03), () => {
+                        if (state.sb) {
+                            state.sb.updateMetrics();
+                        }
+                    });
+                });
+            }
+            
+            // Clear any search input
+            if (elements.input) {
+                elements.input.value = '';
+            }
+            
+            // Update filtered tags to show all
+            state.filteredTags = [...allTagsData];
+            
+            // Update ScrollBooster immediately for silent mode
+            if (silent && state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            console.log('All tags cleared');
+        },
+
+        // Show a specific tag back in the available tags (for single tag removal)
+        showAvailableTag(text) {
+            const tagData = allTagsData.find(data => 
+                data.text.toLowerCase() === text.toLowerCase()
+            );
+            
+            if (tagData && tagData.element) {
+                console.log(`Showing tag back in available tags: ${text}`);
+                
+                // Reset button content to original text first
+                if (tagData.button) {
+                    tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                }
+                
+                // Show the element (but start it hidden for animation)
+                tagData.element.style.display = '';
+                tagData.isVisible = true;
+                
+                // Set initial animation state (hidden)
+                gsap.set(tagData.element, {
+                    opacity: 0,
+                    scale: 0.8,
+                    y: 10
+                });
+                
+                // Animate back into view with a nice bounce
+                gsap.to(tagData.element, {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    duration: 0.4,
+                    ease: "back.out(1.7)",
+                    delay: 0.1 // Small delay for better visual effect
+                });
+                
+                // Add to filtered tags if not already there
+                if (!state.filteredTags.find(t => t.text === tagData.text)) {
+                    state.filteredTags.push(tagData);
+                }
+                
+                // Update ScrollBooster after animation completes
+                gsap.delayedCall(0.5, () => {
+                    if (state.sb) {
+                        state.sb.updateMetrics();
+                    }
+                });
+            }
+        },
+        
+        // Create a tag element in the DOM
+        createTagElement(text) {
+            // Check if tag already exists
+            if (elements.tagContainer) {
+                const existingTagSpans = elements.tagContainer.querySelectorAll('.predictive-search-tag span');
+                for (let span of existingTagSpans) {
+                    if (span.textContent.trim() === text) {
+                        console.log('Tag already exists in DOM, skipping creation');
+                        return null;
+                    }
+                }
+            }
+            
+            const tag = document.createElement('div');
+            tag.className = 'predictive-search-tag';
+            
+            const tagText = document.createElement('span');
+            tagText.textContent = text;
+            tag.appendChild(tagText);
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'predictive-search-tag-remove';
+            removeBtn.innerHTML = '×';
+            
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                tagManager.remove(text, tag);
+            });
+            
+            tag.appendChild(removeBtn);
+            elements.tagContainer.appendChild(tag);
+            
+            return tag;
+        },
+        
+        // Hide an available tag from the scroll booster
+        hideAvailableTag(tagData) {
+            if (tagData && tagData.element) {
+                tagData.element.style.display = 'none';
+            }
+        },
+        
+        // Validate and sync state with DOM
+        validateAndSync() {
+            if (!elements.tagContainer) return;
+            
+            // Get tags from DOM
+            const domTags = Array.from(elements.tagContainer.querySelectorAll('.predictive-search-tag span'))
+                .map(span => span.textContent.trim());
+            
+            // Sync state with DOM
+            state.activeTags = [...domTags];
+            
+            // Hide corresponding available tags
+            domTags.forEach(tagText => {
+                const tagData = allTagsData.find(data => 
+                    data.text.toLowerCase() === tagText.toLowerCase()
+                );
+                if (tagData) {
+                    this.hideAvailableTag(tagData);
+                }
+            });
+            
+            // Re-filter to update the display
+            filterManager.filterTags('');
+            
+            console.log('State validated and synced. Active tags:', state.activeTags);
+        }
+    };
+
+    // ============================================================================
+    // UI MANAGEMENT (predictive search specific)
+    // ============================================================================
+    
+    const uiManager = {
+        // Updated uiManager.updateClearButtonVisibility function
+        updateClearButtonVisibility() {
+            if (!elements.clearButton) return;
+            
+            const currentInputValue = elements.input ? elements.input.value.trim() : '';
+            const hasInput = currentInputValue.length > 0;
+            
+            // Check for active tags in the DOM within the header
+            const activeTagsInHeader = elements.tagContainer ? 
+                elements.tagContainer.querySelectorAll('.predictive-search-tag').length > 0 : false;
+            
+            // Show clear button if search is open AND (has input OR has active tags in header)
+            // This means: Hide when search is empty (no input AND no active tags)
+            if (state.isOpen && (hasInput || activeTagsInHeader)) {
+                gsap.to(elements.clearButton, { opacity: 1, duration: 0.2 });
+                elements.clearButton.style.pointerEvents = 'auto';
+            } else {
+                gsap.to(elements.clearButton, { opacity: 0, duration: 0.2 });
                 elements.clearButton.style.pointerEvents = 'none';
-                console.log('Hiding clear button');
+            }
+            
+            // Optional: Log for debugging
+            console.log(`Clear button visibility - Input: "${currentInputValue}", Active tags: ${activeTagsInHeader}, Search open: ${state.isOpen}`);
+        },
+
+        handleUpdate(scrollState) {
+            if (!elements.nextButton) return;
+        
+            // Track scrolling state
+            if (scrollState.isMoving) {
+                state.isScrolling = true
+            } else if (state.isScrolling) {
+                state.isScrolling = false
+                setTimeout(() => {
+                    state.hasMoved = false
+                }, 100)
+            }
+        
+            // Handle drag movement
+            if (Math.abs(scrollState.dragOffset.x) > 10 && scrollState.isMoving) {
+                state.hasMoved = true;
+                if (elements.length) {
+                    elements.length.style.pointerEvents = 'none'
+                }
+            } else {
+                if (elements.length) {
+                    elements.length.style.pointerEvents = 'auto'
+                }
+            }
+        
+            // Handle border collision states
+            const bothBordersColliding = scrollState.borderCollision.right && scrollState.borderCollision.left;
+            
+            if (bothBordersColliding) {
+                elements.nextButton.classList.remove('is-active')
+                if (elements.gradient) {
+                    elements.gradient.classList.remove('is-active')
+                }
+            } else if (scrollState.borderCollision.left) {
+                elements.nextButton.classList.add('is-active')
+                if (elements.gradient) {
+                    elements.gradient.classList.add('is-active')
+                }
+            } else {
+                elements.nextButton.classList.remove('is-active')
+                if (elements.gradient) {
+                    elements.gradient.classList.remove('is-active')
+                }
             }
         },
 
         showAllTags() {
-            console.log('showAllTags called, activeTags:', state.activeTags);
-            
-            elements.allTags.forEach(tag => {
-                const tagText = tag.textContent.trim();
+            // Show all non-active tags with enhanced animation
+            allTagsData.forEach((tagData, index) => {
                 const isActive = state.activeTags.some(activeTag => 
-                    activeTag.toLowerCase() === tagText.toLowerCase()
+                    activeTag.toLowerCase() === tagData.text.toLowerCase()
                 );
                 
-                console.log(`showAllTags - Tag "${tagText}": isActive=${isActive}`);
-                
                 if (!isActive) {
-                    tag.style.display = ''
-                    animate(tag, {
-                        opacity: 1,
-                        y: 0
+                    tagData.element.style.display = '';
+                    
+                    // Reset button content to original text
+                    if (tagData.button) {
+                        tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                    }
+                    
+                    // Enhanced animation for showing tags
+                    gsap.fromTo(tagData.element, {
+                        opacity: 0,
+                        scale: 0.8,
+                        y: 20
                     }, {
-                        duration: 0.3
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        duration: 0.4,
+                        delay: index * 0.05,
+                        ease: "power2.out"
                     });
                 } else {
-                    tag.style.display = 'none'
-                    console.log(`Hiding active tag: "${tagText}"`);
+                    // Animate out active tags
+                    gsap.to(tagData.element, {
+                        opacity: 0,
+                        scale: 0.8,
+                        y: -10,
+                        duration: 0.2,
+                        onComplete: () => {
+                            tagData.element.style.display = 'none';
+                        }
+                    });
                 }
-            })
+            });
+            
+            // Update state to show all tags are now visible (except active ones)
+            state.filteredTags = allTagsData.filter(tagData => 
+                !state.activeTags.includes(tagData.text)
+            );
+            
+            state.filteredTags.forEach(tagData => {
+                tagData.isVisible = true;
+                tagData.matchScore = 1;
+            });
+            
+            // Reset search value
+            state.searchValue = '';
+            
+            // Hide no results message if visible
+            if (elements.noResultsMessage && elements.noResultsMessage.style.display !== 'none') {
+                gsap.to(elements.noResultsMessage, {
+                    opacity: 0,
+                    y: -20,
+                    duration: 0.3,
+                    onComplete: () => {
+                        elements.noResultsMessage.style.display = 'none';
+                    }
+                });
+            }
         }
     };
 
     // ============================================================================
-    // SEARCH MANAGEMENT
+    // TAG FILTERING (exact copy from mini-search)
+    // ============================================================================
+    
+    const filterManager = {
+        filterTags(query) {
+            state.searchValue = query;
+            state.isFiltering = true;
+            
+            console.log('Filtering tags with query:', query);
+            
+            // Reset all tags first
+            allTagsData.forEach(tagData => {
+                tagData.matchScore = 0;
+                tagData.isVisible = false;
+            });
+            
+            if (!query.trim()) {
+                // Show all non-active tags when no query
+                state.filteredTags = allTagsData.filter(tagData => 
+                    !state.activeTags.includes(tagData.text)
+                );
+                
+                state.filteredTags.forEach(tagData => {
+                    tagData.isVisible = true;
+                    tagData.matchScore = 1;
+                });
+            } else {
+                // Filter and score tags based on query
+                const queryTrimmed = query.trim();
+                
+                state.filteredTags = allTagsData
+                    .filter(tagData => !state.activeTags.includes(tagData.text))
+                    .map(tagData => {
+                        const score = utils_internal.getFuzzyScore(tagData.text, queryTrimmed);
+                        return { ...tagData, matchScore: score };
+                    })
+                    .filter(tagData => tagData.matchScore > 0)
+                    .sort((a, b) => b.matchScore - a.matchScore);
+                
+                state.filteredTags.forEach(tagData => {
+                    tagData.isVisible = true;
+                });
+            }
+            
+            this.updateTagDisplay(query);
+            this.resetHighlight();
+            
+            console.log('Filtered tags:', state.filteredTags.length);
+        },
+
+        updateTagDisplay(query) {
+            // Prepare animations for hiding tags that should no longer be visible
+            const tagsToHide = allTagsData.filter(tagData => 
+                !state.filteredTags.some(filteredTag => filteredTag.text === tagData.text) &&
+                tagData.element.style.display !== 'none'
+            );
+            
+            // Animate out tags that should be hidden
+            const hidePromises = tagsToHide.map((tagData, index) => {
+                return new Promise(resolve => {
+                    gsap.to(tagData.element, {
+                        opacity: 0,
+                        scale: 0.8,
+                        y: -10,
+                        duration: 0.2,
+                        onComplete: () => {
+                            tagData.element.style.display = 'none';
+                            tagData.element.classList.remove('highlighted');
+                            
+                            // Reset button content
+                            if (tagData.button) {
+                                tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                            }
+                            resolve();
+                        }
+                    });
+                });
+            });
+            
+            // Wait for hide animations to complete, then show new tags
+            Promise.all(hidePromises).then(() => {
+                const visibleTags = [];
+                
+                // Process tags that should be visible
+                state.filteredTags.forEach((tagData, index) => {
+                    if (tagData.isVisible) {
+                        visibleTags.push(tagData);
+                        
+                        // Check if this tag was previously hidden
+                        const wasHidden = tagData.element.style.display === 'none';
+                        
+                        // Update button content with highlighting
+                        if (tagData.button) {
+                            const highlightedText = utils_internal.highlightText(tagData.originalText, query);
+                            tagData.button.innerHTML = `<span>${highlightedText}</span>`;
+                        }
+                        
+                        // Show the element
+                        tagData.element.style.display = '';
+                        
+                        if (wasHidden) {
+                            // Set initial state for animation
+                            gsap.set(tagData.element, {
+                                opacity: 0,
+                                scale: 0.8,
+                                y: 10
+                            });
+                            
+                            // Animate in newly visible tags
+                            gsap.to(tagData.element, {
+                                opacity: 1,
+                                scale: 1,
+                                y: 0,
+                                duration: 0.3,
+                                delay: index * 0.03,
+                                ease: "back.out(1.7)"
+                            });
+                        } else {
+                            // For tags that were already visible, just animate the text change
+                            if (query.trim()) {
+                                gsap.to(tagData.button, {
+                                    scale: 1.02,
+                                    duration: 0.1,
+                                    yoyo: true,
+                                    repeat: 1,
+                                    ease: "power2.inOut"
+                                });
+                            }
+                        }
+                    }
+                });
+                
+                // Handle no results message
+                if (elements.noResultsMessage) {
+                    if (visibleTags.length === 0 && query.trim()) {
+                        // Only show if not already visible
+                        if (elements.noResultsMessage.style.display === 'none') {
+                            elements.noResultsMessage.style.display = 'block';
+                            
+                            gsap.fromTo(elements.noResultsMessage, {
+                                opacity: 0,
+                                y: 20
+                            }, {
+                                opacity: 1,
+                                y: 0,
+                                duration: 0.4,
+                                delay: 0.1,
+                                ease: "power2.out"
+                            });
+                        }
+                    } else {
+                        // Only hide if currently visible
+                        if (elements.noResultsMessage.style.display !== 'none') {
+                            gsap.to(elements.noResultsMessage, {
+                                opacity: 0,
+                                y: -20,
+                                duration: 0.3,
+                                onComplete: () => {
+                                    elements.noResultsMessage.style.display = 'none';
+                                }
+                            });
+                        }
+                    }
+                }
+                
+                // Update ScrollBooster after animations
+                gsap.delayedCall(0.35, () => {
+                    if (state.sb) {
+                        state.sb.updateMetrics();
+                    }
+                });
+                
+                state.isFiltering = false;
+            });
+        },
+
+        resetHighlight() {
+            state.highlightedIndex = -1;
+            this.updateHighlight();
+        },
+
+        updateHighlight() {
+            // Remove previous highlights with animation
+            allTagsData.forEach(tagData => {
+                if (tagData.element.classList.contains('highlighted')) {
+                    // Animate out the highlight
+                    gsap.to(tagData.button, {
+                        backgroundColor: '',
+                        color: '',
+                        scale: 1,
+                        duration: 0.2,
+                        onComplete: () => {
+                            tagData.element.classList.remove('highlighted');
+                        }
+                    });
+                } else {
+                    tagData.element.classList.remove('highlighted');
+                    if (tagData.button) {
+                        gsap.set(tagData.button, {
+                            backgroundColor: '',
+                            color: '',
+                            scale: 1
+                        });
+                    }
+                }
+            });
+            
+            // Add current highlight with animation
+            if (state.highlightedIndex >= 0 && state.highlightedIndex < state.filteredTags.length) {
+                const highlightedTag = state.filteredTags[state.highlightedIndex];
+                if (highlightedTag && highlightedTag.element) {
+                    highlightedTag.element.classList.add('highlighted');
+                    
+                    if (highlightedTag.button) {
+                        // Animate in the new highlight
+                        gsap.to(highlightedTag.button, {
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            scale: 1.05,
+                            duration: 0.3,
+                            ease: "power2.out"
+                        });
+                        
+                        // Add a subtle pulse effect
+                        gsap.delayedCall(0.3, () => {
+                            if (highlightedTag.element.classList.contains('highlighted')) {
+                                gsap.to(highlightedTag.button, {
+                                    scale: 1.02,
+                                    duration: 0.15,
+                                    yoyo: true,
+                                    repeat: 1,
+                                    ease: "power2.inOut"
+                                });
+                            }
+                        });
+                    }
+                    
+                    // Scroll to highlighted item if needed
+                    this.scrollToHighlighted(highlightedTag.element);
+                }
+            }
+        },
+
+        scrollToHighlighted(element) {
+            if (!state.sb || !elements.scrollViewport) return;
+            
+            const containerRect = elements.scrollViewport.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+            
+            const relativeLeft = elementRect.left - containerRect.left;
+            const relativeRight = elementRect.right - containerRect.left;
+            
+            if (relativeLeft < 0) {
+                // Element is to the left of viewport
+                state.sb.scrollTo({ x: state.sb.position.x + relativeLeft - 20 });
+            } else if (relativeRight > containerRect.width) {
+                // Element is to the right of viewport
+                state.sb.scrollTo({ x: state.sb.position.x + (relativeRight - containerRect.width) + 20 });
+            }
+        },
+
+        navigateHighlight(direction) {
+            const visibleCount = state.filteredTags.filter(tag => tag.isVisible).length;
+            
+            if (visibleCount === 0) return;
+            
+            if (direction === 'down') {
+                state.highlightedIndex = Math.min(state.highlightedIndex + 1, visibleCount - 1);
+            } else if (direction === 'up') {
+                state.highlightedIndex = Math.max(state.highlightedIndex - 1, -1);
+            }
+            
+            this.updateHighlight();
+        },
+
+        selectHighlighted() {
+            if (state.highlightedIndex >= 0 && state.highlightedIndex < state.filteredTags.length) {
+                const selectedTag = state.filteredTags[state.highlightedIndex];
+                if (selectedTag) {
+                    // Check if tag is already active or exists in DOM (same checks as handleTagClick)
+                    if (state.activeTags.includes(selectedTag.text)) {
+                        console.log('Select highlighted: Tag already active, ignoring');
+                        return false;
+                    }
+                    
+                    if (elements.tagContainer) {
+                        const existingTagSpans = elements.tagContainer.querySelectorAll('.predictive-search-tag span');
+                        for (let span of existingTagSpans) {
+                            if (span.textContent.trim() === selectedTag.text) {
+                                console.log('Select highlighted: Tag already exists in DOM, ignoring');
+                                return false;
+                            }
+                        }
+                    }
+                    
+                    tagManager.createFromTagData(selectedTag);
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
+
+    // ============================================================================
+    // TAG MANAGEMENT (updated with fixed removal logic)
+    // ============================================================================
+    
+    const tagManager = {
+        create(text) {
+            // Find the tag data
+            const tagData = allTagsData.find(data => data.text === text);
+            if (tagData) {
+                return this.createFromTagData(tagData);
+            }
+            
+            // Fallback for free text
+            return this.createFreeText(text);
+        },
+
+        createFromTagData(tagData) {
+            if (state.activeTags.includes(tagData.text)) return null;
+            
+            // Double-check for existing tags in DOM to prevent duplicates
+            if (elements.tagContainer) {
+                const existingTagSpans = elements.tagContainer.querySelectorAll('.predictive-search-tag span');
+                for (let span of existingTagSpans) {
+                    if (span.textContent.trim() === tagData.text) {
+                        console.log('Tag already exists in DOM, skipping creation');
+                        return null;
+                    }
+                }
+            }
+            
+            const tag = document.createElement('div');
+            tag.className = 'predictive-search-tag'; // Only change: class name
+            
+            const tagText = document.createElement('span');
+            tagText.textContent = tagData.text;
+            tag.appendChild(tagText);
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'predictive-search-tag-remove'; // Only change: class name
+            removeBtn.innerHTML = '×';
+            
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.remove(tagData.text, tag);
+            });
+            
+            tag.appendChild(removeBtn);
+            elements.tagContainer.appendChild(tag);
+            
+            state.activeTags.push(tagData.text);
+            
+            // Hide the tag from available tags with animation
+            gsap.to(tagData.element, {
+                opacity: 0,
+                scale: 0.8,
+                y: -10,
+                duration: 0.2,
+                onComplete: () => {
+                    tagData.element.style.display = 'none';
+                }
+            });
+            
+            // Clear input and re-filter
+            elements.input.value = '';
+            filterManager.filterTags('');
+            
+            // Update ScrollBooster
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            // Update clear button visibility
+            uiManager.updateClearButtonVisibility();
+            
+            // Animate in the new tag with a more sophisticated animation
+            gsap.fromTo(tag, {
+                opacity: 0,
+                scale: 0.3,
+                y: 20,
+                rotationX: -90
+            }, {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                rotationX: 0,
+                duration: 0.5,
+                ease: "back.out(1.7)"
+            });
+            
+            uiManager.updateClearButtonVisibility(); // Added for predictive search
+            elements.input.focus();
+            
+            console.log(`Tag "${tagData.text}" created successfully`);
+            return tag;
+        },
+
+        createFreeText(text) {
+            if (state.activeTags.includes(text)) return null;
+            
+            const tag = document.createElement('div');
+            tag.className = 'predictive-search-tag'; // Only change: class name
+            
+            const tagText = document.createElement('span');
+            tagText.textContent = text;
+            tag.appendChild(tagText);
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'predictive-search-tag-remove'; // Only change: class name
+            removeBtn.innerHTML = '×';
+            
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.remove(text, tag);
+            });
+            
+            tag.appendChild(removeBtn);
+            elements.tagContainer.appendChild(tag);
+            
+            state.activeTags.push(text);
+            
+            // Clear input and re-filter
+            elements.input.value = '';
+            filterManager.filterTags('');
+            
+            // Update ScrollBooster
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            // Update clear button visibility
+            uiManager.updateClearButtonVisibility();
+            
+            // Animate in the new tag with a more sophisticated animation
+            gsap.fromTo(tag, {
+                opacity: 0,
+                scale: 0.3,
+                y: 20,
+                rotationX: -90
+            }, {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                rotationX: 0,
+                duration: 0.5,
+                ease: "back.out(1.7)"
+            });
+            
+            // Add a subtle glow effect
+            gsap.delayedCall(0.2, () => {
+                gsap.to(tag, {
+                    boxShadow: '0 0 0 3px rgba(156, 163, 175, 0.3)',
+                    duration: 0.3,
+                    onComplete: () => {
+                        gsap.to(tag, {
+                            boxShadow: '0 0 0 0 rgba(156, 163, 175, 0)',
+                            duration: 0.5
+                        });
+                    }
+                });
+            });
+            
+            uiManager.updateClearButtonVisibility(); // Added for predictive search
+            elements.input.focus();
+            
+            console.log(`Free text tag "${text}" created successfully`);
+            return tag;
+        },
+
+        // SIMPLE REMOVE METHOD
+        remove(text, tagElement) {
+            state.activeTags = state.activeTags.filter(tag => tag !== text);
+            
+            if (tagElement) {
+                gsap.to(tagElement, {
+                    opacity: 0,
+                    scale: 0.8,
+                    duration: 0.2,
+                    onComplete: () => {
+                        try {
+                            if (tagElement && tagElement.isConnected) {
+                                if (tagElement.remove) {
+                                    tagElement.remove();
+                                } else if (tagElement.parentNode) {
+                                    tagElement.parentNode.removeChild(tagElement);
+                                }
+                            }
+                        } catch (error) {
+                            console.warn('Error removing tag element:', error);
+                        }
+                        
+                        // SIMPLE: Update all tag visibility after removal
+                        simpleTagManager.updateAllTagsVisibility();
+                        uiManager.updateClearButtonVisibility();
+                        
+                        if (state.sb) {
+                            state.sb.updateMetrics();
+                        }
+                    }
+                });
+            } else {
+                // If no element animation, update immediately
+                simpleTagManager.updateAllTagsVisibility();
+                uiManager.updateClearButtonVisibility();
+            }
+            
+            if (elements.input) {
+                elements.input.focus();
+            }
+            
+            console.log(`Tag "${text}" removed successfully`);
+        },
+
+        clear() {
+            state.activeTags = [];
+            if (elements.tagContainer) {
+                elements.tagContainer.innerHTML = '';
+            }
+            
+            // Re-filter to show all tags
+            filterManager.filterTags('');
+            
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            uiManager.updateClearButtonVisibility(); // Added for predictive search
+            console.log('All tags cleared');
+        }
+    };
+
+    // ============================================================================
+    // SCROLL MANAGEMENT (from mini-search)
+    // ============================================================================
+    
+    // Fix the scrollManager.init() method
+    const scrollManager = {
+        init() {
+            if (!elements.scrollViewport || !elements.scrollContent) return null;
+            
+            const scrollBooster = new ScrollBooster({
+                viewport: elements.scrollViewport,
+                content: elements.scrollContent,
+                scrollMode: 'transform',
+                direction: 'horizontal',
+                friction: 0.2,
+                bounce: false,
+                emulateScroll: true,
+                onUpdate: (state) => {  // Pass the state parameter
+                    uiManager.handleUpdate(state); // Now state is available
+                }
+            });
+
+            return scrollBooster;
+        }
+    };
+
+    // ============================================================================
+    // SEARCH MANAGEMENT (predictive search specific)
     // ============================================================================
     
     const searchManager = {
@@ -184,79 +1336,72 @@ export default function initPredictiveSearch(el) {
 
             document.body.classList.add('overflow-hidden')
             
-            animate(elements.hidden, { opacity: 0 });
-            animate(elements.results, { height: 'auto' });
+            gsap.to(elements.hidden, { opacity: 0, duration: 0.3 });
+            gsap.to(elements.results, { height: 'auto', duration: 0.3 });
             
             const visibleResultItems = elements.resultsItems.filter(item => 
                 item.style.display !== 'none'
             );
             
             if (visibleResultItems.length > 0) {
-                animate(visibleResultItems, {
-                    opacity: 1,
-                    y: 0
+                gsap.fromTo(visibleResultItems, {
+                    opacity: 0,
+                    y: 40
                 }, {
-                    delay: stagger(0.03),
-                    type: spring,
-                    bounce: 0.5,
-                    duration: 1
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.03,
+                    ease: "back.out(1.7)"
                 })
             }
 
             requestAnimationFrame(() => {
-                animate(elements.submit, { 
-                    transform: 'translateX(0)'
-                }, { 
-                    ease: 'easeOut'
+                gsap.to(elements.submit, { 
+                    x: 0,
+                    duration: 0.4,
+                    ease: "power2.out"
                 })
             })
 
             elements.input.focus()
             elements.submit.style.pointerEvents = 'auto'
             uiManager.updateClearButtonVisibility();
-
-            if (elements.nextButton) {
-                utils_internal.addTrackedPressHandler(elements.nextButton, () => {
-                    animate(elements.nextButton, { scale: 0.9 })
-
-                    return () => {
-                        animate(elements.nextButton, { scale: 1 })
-                        if (state.sb) {
-                            state.sb.scrollTo({ x: 250 })
-                        }
-                    }
-                })
-            }
         },
 
-        close(preserveInput = false) {
+        close(preserveInput = false, preserveTags = false) {
             state.isOpen = false
             elements.header.classList.remove('is-active')
-            animate(elements.close, { scale: 1 })
-            animate(elements.hidden, { opacity: 1 })
-            animate(elements.results, { height: 0 })
-            animate(elements.submit, { transform: 'translateX(101%)' }, { ease: 'easeOut' })
-        
+            gsap.to(elements.close, { scale: 1, duration: 0.2 })
+            gsap.to(elements.hidden, { opacity: 1, duration: 0.3 })
+            gsap.to(elements.results, { height: 0, duration: 0.3 })
+            gsap.to(elements.submit, { x: '101%', duration: 0.4, ease: "power2.out" })
+
             elements.header.removeAttribute('data-lenis-prevent');
             document.body.classList.remove('overflow-hidden')
-        
-            elements.resultsItems.forEach(item => {
-                animate(item, {
-                    opacity: 0,
-                    y: 40,
-                    duration: 0
-                })
+
+            gsap.set(elements.resultsItems, {
+                opacity: 0,
+                y: 40
             })
-        
+
             elements.submit.style.pointerEvents = 'none'
-        
+
             if (!preserveInput) {
                 elements.input.value = ''
             }
-        
-            animate(elements.clearButton, { opacity: 0 })
-            elements.clearButton.style.pointerEvents = 'none'
-        
+
+            // Don't clear tags if preserveTags is true
+            if (!preserveTags) {
+                if (!preserveInput) {
+                    gsap.to(elements.clearButton, { opacity: 0, duration: 0.2 })
+                    elements.clearButton.style.pointerEvents = 'none'
+                }
+            } else {
+                // Keep clear button visible if there are tags
+                uiManager.updateClearButtonVisibility();
+            }
+
             if (state.sb) {
                 state.sb.scrollTo({ x: 0 })
                 state.sb.setPosition({ x: 0 })
@@ -264,682 +1409,188 @@ export default function initPredictiveSearch(el) {
         },
 
         clearAll() {
-            console.log('clearAllSearch called');
-            
-            state.isPopulatingFromURL = true;
-            
-            if (state.populateTimeout) {
-                clearTimeout(state.populateTimeout);
-                state.populateTimeout = null;
-            }
-            
-            tagManager.clearAll();
+            stateManager.clearAllTags(false); // Use new clearAllTags method
             this.close(false);
-            
-            state.lastInputValue = '';
-            state.lastCreatedTag = null;
             
             if (elements.input) {
                 elements.input.value = '';
             }
-            
-            setTimeout(() => {
-                state.isPopulatingFromURL = false;
-                console.log('clearAllSearch complete - re-enabling URL population');
-            }, 300);
-            
-            console.log('Search cleared completely');
         }
     };
 
     // ============================================================================
-    // TAG MANAGEMENT
-    // ============================================================================
-    
-    const tagManager = {
-        create(text, relatedResultItem) {
-            if (elements.tagContainer) {
-                const existingTagSpans = elements.tagContainer.querySelectorAll('.predictive-search-tag span');
-                for (let span of existingTagSpans) {
-                    if (span.textContent.trim() === text) {
-                        console.log(`Tag element for "${text}" already exists in DOM`);
-                        return null;
-                    }
-                }
-            }
-            
-            const tag = document.createElement('div')
-            tag.className = 'predictive-search-tag'
-            
-            const tagText = document.createElement('span');
-            tagText.textContent = text;
-            tag.appendChild(tagText);
-            
-            const removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'predictive-search-tag-remove';
-            removeBtn.innerHTML = '&times;';
-            
-            const removeHandler = (e) => {
-                e.stopPropagation();
-                this.remove(text, tag, relatedResultItem)
-
-                removeBtn.removeEventListener('click', removeHandler);
-
-                if (state.activeTags.length === 0) {
-                    uiManager.showAllTags()
-                }
-            }
-            
-            evt.on('click', removeBtn, removeHandler)
-            
-            tag.appendChild(removeBtn)
-            elements.tagContainer.appendChild(tag)
-
-            if (state.sb) {
-                state.sb.updateMetrics()
-            }
-            
-            uiManager.updateClearButtonVisibility();
-            
-            console.log(`Tag "${text}" created successfully`);
-            return tag
-        },
-
-        remove(text, tagElement, relatedResultItem) {
-            state.activeTags = state.activeTags.filter(tag => tag !== text)
-            
-            if (tagElement && tagElement.parentNode) {
-                tagElement.parentNode.removeChild(tagElement);
-            }
-            
-            if (relatedResultItem) {
-                relatedResultItem.style.display = ''
-                animate(relatedResultItem, {
-                    opacity: 1,
-                    y: 0,
-                }, {
-                    duration: 0.3
-                });
-
-                if (state.sb) {
-                    state.sb.updateMetrics()
-                }
-            } else {
-                const matchingItem = originalResultsItems.find(item => item.text === text)
-                if (matchingItem && matchingItem.element) {
-                    matchingItem.element.style.display = ''
-                    animate(matchingItem.element, {
-                        opacity: 1,
-                        y: 0,
-                    }, {
-                        duration: 0.3
-                    })
-
-                    if (state.sb) {
-                        state.sb.updateMetrics()
-                    }
-                }
-            }
-            
-            uiManager.updateClearButtonVisibility();
-            elements.input.focus()
-        },
-
-        removeAndPutInInput(tagText) {
-            state.activeTags = state.activeTags.filter(tag => tag !== tagText);
-            
-            const tagElements = Array.from(elements.tagContainer.querySelectorAll('.predictive-search-tag span'));
-            const targetTagSpan = tagElements.find(span => span.textContent.trim() === tagText);
-            
-            if (targetTagSpan) {
-                const tagElement = targetTagSpan.closest('.predictive-search-tag');
-                if (tagElement && tagElement.parentNode) {
-                    tagElement.parentNode.removeChild(tagElement);
-                }
-            }
-            
-            elements.input.value = tagText;
-            state.lastInputValue = tagText;
-            
-            const matchingItem = originalResultsItems.find(item => item.text === tagText);
-            if (matchingItem && matchingItem.element) {
-                matchingItem.element.style.display = '';
-                animate(matchingItem.element, {
-                    opacity: 1,
-                    y: 0,
-                }, {
-                    duration: 0.3
-                });
-            }
-            
-            if (state.sb) {
-                state.sb.updateMetrics()
-            }
-            
-            if (state.activeTags.length === 0) {
-                uiManager.showAllTags()
-            }
-
-            uiManager.updateClearButtonVisibility();
-
-            elements.input.focus()
-            elements.input.setSelectionRange(elements.input.value.length, elements.input.value.length)
-            
-            console.log(`Tag "${tagText}" removed and text put back in input`)
-        },
-
-        clearAll() {
-            state.activeTags = [];
-            
-            if (elements.tagContainer) {
-                const existingTags = elements.tagContainer.querySelectorAll('.predictive-search-tag');
-                existingTags.forEach(tag => {
-                    if (tag.parentNode) {
-                        tag.parentNode.removeChild(tag);
-                    }
-                });
-                elements.tagContainer.innerHTML = '';
-            }
-            
-            originalResultsItems.forEach(item => {
-                if (item.element) {
-                    item.element.style.display = '';
-                    item.element.style.opacity = '1';
-                }
-            });
-            
-            uiManager.updateClearButtonVisibility();
-            
-            console.log('All tags cleared and result items restored');
-        }
-    };
-
-    // ============================================================================
-    // URL STATE MANAGEMENT
-    // ============================================================================
-    
-    const urlManager = {
-        populateFromURL() {
-            if (state.isPopulatingFromURL) {
-                console.log('Already populating from URL, skipping...');
-                return;
-            }
-            
-            state.isPopulatingFromURL = true;
-            
-            const currentPath = window.location.pathname;
-            const searchParams = new URLSearchParams(window.location.search);
-            
-            console.log('Populating search from URL:', { currentPath, searchParams: searchParams.toString() });
-            
-            tagManager.clearAll();
-            
-            let searchQuery = '';
-            if (searchParams.has('s')) {
-                searchQuery = searchParams.get('s');
-            } else if (currentPath.startsWith('/search/')) {
-                const pathParts = currentPath.split('/');
-                if (pathParts.length >= 3 && pathParts[2] !== 'tags') {
-                    searchQuery = decodeURIComponent(pathParts[2]);
-                }
-            }
-            
-            if (searchQuery && elements.input) {
-                elements.input.value = searchQuery;
-                state.lastInputValue = searchQuery;
-            }
-            
-            let tagsToAdd = [];
-            
-            if (searchParams.has('search_tags')) {
-                const tagsParam = searchParams.get('search_tags');
-                if (Array.isArray(tagsParam)) {
-                    tagsToAdd = tagsParam;
-                } else {
-                    tagsToAdd = [tagsParam];
-                }
-            }
-            
-            if (currentPath.includes('/tags/')) {
-                const tagsPart = currentPath.split('/tags/')[1];
-                if (tagsPart) {
-                    tagsToAdd = tagsPart.split('+').map(tag => 
-                        tag.replace(/-/g, ' ').trim()
-                    );
-                }
-            }
-            
-            const uniqueTags = [];
-            const seenTags = new Set();
-            
-            tagsToAdd.forEach(tag => {
-                const normalizedTag = tag.trim();
-                const lowerTag = normalizedTag.toLowerCase();
-                
-                if (normalizedTag && !seenTags.has(lowerTag)) {
-                    seenTags.add(lowerTag);
-                    uniqueTags.push(normalizedTag);
-                }
-            });
-            
-            console.log('Tags to add (after deduplication):', uniqueTags);
-            
-            uniqueTags.forEach(tagText => {
-                const isAlreadyActive = state.activeTags.some(activeTag => 
-                    activeTag.toLowerCase() === tagText.toLowerCase()
-                );
-                
-                if (tagText && !isAlreadyActive) {
-                    const matchingItem = originalResultsItems.find(item => 
-                        item.text.toLowerCase() === tagText.toLowerCase()
-                    );
-                    
-                    const finalTagText = matchingItem ? matchingItem.text : tagText;
-                    
-                    state.activeTags.push(finalTagText);
-                    
-                    const tagElement = tagManager.create(finalTagText, matchingItem?.element);
-                    
-                    if (tagElement && matchingItem?.element) {
-                        matchingItem.element.style.display = 'none';
-                        matchingItem.element.style.opacity = '0';
-                    } else if (!tagElement) {
-                        state.activeTags = state.activeTags.filter(tag => tag !== finalTagText);
-                        console.log(`Failed to create tag "${finalTagText}" during URL population`);
-                    }
-                } else {
-                    console.log(`Skipping duplicate or empty tag: "${tagText}"`);
-                }
-            });
-            
-            uiManager.updateClearButtonVisibility();
-            
-            setTimeout(() => {
-                state.isPopulatingFromURL = false;
-            }, 100);
-            
-            console.log('Populated search from URL:', { searchQuery, tagsAdded: state.activeTags });
-        },
-
-        debouncedPopulateFromURL() {
-            if (state.isPopulatingFromURL) {
-                console.log('Skipping URL population - currently clearing search');
-                return;
-            }
-            
-            if (state.populateTimeout) {
-                clearTimeout(state.populateTimeout);
-            }
-            
-            state.populateTimeout = setTimeout(() => {
-                if (!state.isPopulatingFromURL) {
-                    this.populateFromURL();
-                } else {
-                    console.log('Skipping URL population - still clearing');
-                }
-                state.populateTimeout = null;
-            }, 50);
-        }
-    };
-
-    // ============================================================================
-    // SCROLL MANAGEMENT
-    // ============================================================================
-    
-    const scrollManager = {
-        handleUpdate(scrollState) {
-            if (!elements.nextButton) return;
-
-            if (scrollState.isMoving) {
-                state.isScrolling = true
-            } else if (state.isScrolling) {
-                state.isScrolling = false
-                setTimeout(() => {
-                    state.hasMoved = false
-                }, 100)
-            }
-
-            if (Math.abs(scrollState.dragOffset.x) > 10 && scrollState.isMoving) {
-                state.hasMoved = true;
-                elements.length.style.pointerEvents = 'none'
-            } else {
-                elements.length.style.pointerEvents = 'auto'
-            }
-
-            const bothBordersColliding = scrollState.borderCollision.right && scrollState.borderCollision.left;
-            
-            if (bothBordersColliding) {
-                elements.nextButton.classList.remove('is-active')
-                elements.gradient.classList.remove('is-active')
-            } else if (scrollState.borderCollision.left) {
-                elements.nextButton.classList.add('is-active')
-                elements.gradient.classList.add('is-active')
-            } else {
-                elements.nextButton.classList.remove('is-active')
-                elements.gradient.classList.remove('is-active')
-            }
-        },
-
-        initScrollBooster() {
-            const scrollBooster = new ScrollBooster({
-                viewport: qs('.js-scrollboost'),
-                content: qs('.js-scrollboost-content'),
-                scrollMode: 'transform',
-                direction: 'horizontal',
-                friction: 0.2,
-                bounce: false,
-                emulateScroll: true,
-                onUpdate: this.handleUpdate,
-            });
-
-            if (qs('.js-scrollboost')) {
-                qs('.js-scrollboost').scrollBooster = scrollBooster
-            }
-
-            return scrollBooster;
-        }
-    };
-
-    // ============================================================================
-    // SEARCH SUGGESTIONS
-    // ============================================================================
-    
-    const suggestionsManager = {
-        async updateWithAPI(apiResults, searchValue) {
-            console.log('updateSearchSuggestions called with:', { apiResults, searchValue, activeTags: state.activeTags });
-            
-            // Hide all existing tags first
-            elements.allTags.forEach(tag => {
-                tag.style.display = 'none';
-                tag.classList.remove('api-result');
-            });
-
-            // Remove existing API results to prevent duplicates
-            const existingApiResults = elements.results.querySelectorAll('.api-result');
-            existingApiResults.forEach(result => {
-                if (result.parentNode) {
-                    result.parentNode.removeChild(result);
-                }
-            });
-
-            // Show matching existing tags
-            elements.allTags.forEach(tag => {
-                const tagText = tag.textContent.trim();
-                const tagTextLower = tagText.toLowerCase();
-                const searchLower = searchValue.toLowerCase();
-                
-                const isActive = state.activeTags.some(activeTag => 
-                    activeTag.toLowerCase() === tagTextLower
-                );
-                const matchesSearch = tagTextLower.includes(searchLower);
-                
-                console.log(`Existing tag "${tagText}": isActive=${isActive}, matchesSearch=${matchesSearch}`);
-                
-                if (matchesSearch && !isActive) {
-                    tag.style.display = '';
-                    animate(tag, {
-                        opacity: 1,
-                        y: 0
-                    }, {
-                        duration: 0.3
-                    });
-                    console.log(`Showing existing tag: "${tagText}"`);
-                } else {
-                    console.log(`Hiding existing tag: "${tagText}" (isActive: ${isActive}, matchesSearch: ${matchesSearch})`);
-                }
-            });
-
-            // Filter API results to exclude active tags and existing DOM tags
-            const filteredApiResults = apiResults.filter(result => {
-                const isActive = state.activeTags.some(activeTag => 
-                    activeTag.toLowerCase() === result.text.toLowerCase()
-                );
-                
-                const existsInDOM = Array.from(elements.allTags).some(tag => 
-                    tag.textContent.trim().toLowerCase() === result.text.toLowerCase()
-                );
-                
-                console.log(`API result "${result.text}": isActive=${isActive}, existsInDOM=${existsInDOM}`);
-                return !isActive && !existsInDOM;
-            });
-
-            console.log('Filtered API results:', filteredApiResults);
-
-            // Create new API suggestions
-            filteredApiResults.forEach(result => {
-                const newSuggestion = this.createTemporary(result);
-                if (newSuggestion) {
-                    elements.length.appendChild(newSuggestion);
-                    console.log(`Added API suggestion: "${result.text}"`);
-                }
-            });
-
-            // Update ScrollBooster metrics if needed
-            if (state.sb) {
-                state.sb.updateMetrics();
-            }
-        },
-
-        createTemporary(result) {
-            // Check if this API result already exists to prevent duplicates
-            const existingApiResult = elements.results.querySelector(`.api-result[data-text="${result.text}"]`);
-            if (existingApiResult) {
-                console.log(`API result "${result.text}" already exists, skipping creation`);
-                return null;
-            }
-
-            const suggestion = document.createElement('li');
-            suggestion.className = 'inline-block will-change-transform predictive-search-results-item js-tag api-result';
-            suggestion.setAttribute('data-type', result.type);
-            suggestion.setAttribute('data-text', result.text); // Important for deduplication
-            
-            const typeIndicator = result.type === 'tag' ? '🏷️' : 
-                                result.type === 'category' ? '📁' : 
-                                result.type === 'case-categories' ? '📂' : '';
-            
-            suggestion.innerHTML = `
-                <button class="px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe">
-                    <span class="suggestion-text">${result.text}</span>
-                </button>
-            `;
-            
-            // Add click event listener
-            suggestion.addEventListener('click', eventHandlers.handleResultItemClick);
-            
-            // Initial animation state
-            animate(suggestion, {
-                opacity: 0,
-                y: 20,
-                duration: 0
-            });
-            
-            // Animate in
-            requestAnimationFrame(() => {
-                animate(suggestion, {
-                    opacity: 1,
-                    y: 0
-                }, {
-                    duration: 0.3
-                });
-            });
-            
-            return suggestion;
-        },
-
-        filterExisting(searchValue) {
-            const searchValueLower = searchValue.toLowerCase();
-            
-            console.log('filterExistingSuggestions called:', { searchValue, activeTags: state.activeTags });
-            
-            // Remove all API results when filtering existing
-            const apiResults = elements.results.querySelectorAll('.api-result');
-            apiResults.forEach(result => {
-                animate(result, {
-                    opacity: 0,
-                    y: -20
-                }, {
-                    duration: 0.2,
-                    onComplete: () => {
-                        if (result.parentNode) {
-                            result.parentNode.removeChild(result);
-                        }
-                    }
-                });
-            });
-            
-            // Filter existing tags
-            elements.allTags.forEach(tag => {
-                const tagText = tag.textContent.trim();
-                const tagTextLower = tagText.toLowerCase();
-                
-                const isActive = state.activeTags.some(activeTag => 
-                    activeTag.toLowerCase() === tagTextLower
-                );
-                const matchesSearch = searchValue === '' || tagTextLower.includes(searchValueLower);
-                
-                const shouldShow = matchesSearch && !isActive;
-                
-                console.log(`Tag "${tagText}": shouldShow=${shouldShow}, isActive=${isActive}, matches=${matchesSearch}, searchValue="${searchValue}"`);
-                
-                if (shouldShow) {
-                    tag.style.display = '';
-                    animate(tag, {
-                        opacity: 1,
-                        y: 0
-                    }, {
-                        duration: 0.3
-                    });
-                } else {
-                    animate(tag, {
-                        opacity: 0,
-                        y: -20
-                    }, {
-                        duration: 0.3,
-                        onComplete: () => {
-                            tag.style.display = 'none';
-                        }
-                    });
-                }
-            });
-
-            // Update ScrollBooster metrics
-            if (state.sb) {
-                state.sb.updateMetrics();
-            }
-        }
-    };
-
-    // ============================================================================
-    // EVENT HANDLERS
+    // EVENT HANDLERS (from mini-search with predictive search additions)
     // ============================================================================
     
     const eventHandlers = {
-        handleResultItemClick(e) {
-            if (state.isScrolling && state.hasMoved) {
-                return
+        handleInput(e) {
+            const query = e.target.value;
+            console.log('Input changed:', query);
+            
+            // Real-time filtering (from mini-search)
+            filterManager.filterTags(query);
+            
+            // Update clear button visibility (predictive search)
+            uiManager.updateClearButtonVisibility();
+            
+            // API integration for longer queries (predictive search specific)
+            if (query.length > 2) {
+                try {
+                    fetch(`/wp-json/outten-golden/v1/search?query=${encodeURIComponent(query)}&limit=10`)
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            }
+                            throw new Error('API failed');
+                        })
+                        .then(apiResults => {
+                            // Handle API results here if needed
+                            console.log('API results:', apiResults);
+                        })
+                        .catch(error => {
+                            console.log('API failed, using existing tags');
+                        });
+                } catch (error) {
+                    console.log('API failed, using existing tags');
+                }
+            }
+        },
+
+        handleKeydown(e) {
+            // Only handle tag removal keys when search is open or when we have tags
+            const canHandleTagRemoval = state.isOpen || (state.activeTags.length > 0 && document.activeElement === elements.input);
+            
+            // Prevent rapid key processing
+            const now = Date.now();
+            if (state.isProcessingKey || (now - state.lastKeyTime) < 100) {
+                if (e.key === 'Tab' || e.key === 'Enter' || e.key === 'Backspace') {
+                    e.preventDefault();
+                    console.log(`${e.key}: Blocked by debounce`);
+                    return;
+                }
             }
             
-            e.preventDefault()
-            e.stopPropagation()
-
-            const resultItem = e.currentTarget
-            // Get text from data attribute for API results, or textContent for existing tags
-            const tagText = resultItem.getAttribute('data-text') || resultItem.textContent.trim()
-
-            console.log('Result item clicked:', { tagText, isApiResult: resultItem.classList.contains('api-result') });
-
-            if (tagText && !state.activeTags.includes(tagText)) {
-                state.activeTags.push(tagText)
+            // Handle arrow keys for navigation (only when search is open)
+            if (state.isOpen && e.key === 'ArrowDown') {
+                e.preventDefault();
+                filterManager.navigateHighlight('down');
+                return;
+            }
+            
+            if (state.isOpen && e.key === 'ArrowUp') {
+                e.preventDefault();
+                filterManager.navigateHighlight('up');
+                return;
+            }
+            
+            // Handle Enter for selection OR search (only when search is open)
+            if (state.isOpen && e.key === 'Enter') {
+                e.preventDefault();
                 
-                const tagElement = tagManager.create(tagText, resultItem)
+                // Set processing flag
+                state.isProcessingKey = true;
+                state.lastKeyTime = now;
                 
-                if (tagElement) {
-                    // Animate out and hide the clicked item
-                    animate(resultItem, {
-                        opacity: 0,
-                        y: -20,
-                    }, {
-                        duration: 0.3,
-                        onComplete: () => {
-                            resultItem.style.display = 'none'
-                            
-                            // Remove API results from DOM after animation
-                            if (resultItem.classList.contains('api-result') && resultItem.parentNode) {
-                                resultItem.parentNode.removeChild(resultItem);
+                // Try to select highlighted item first
+                const highlighted = filterManager.selectHighlighted();
+                
+                // Reset processing flag after a delay
+                setTimeout(() => {
+                    state.isProcessingKey = false;
+                }, 200);
+                
+                if (highlighted) {
+                    return;
+                }
+                
+                // If no highlighted item, trigger search directly
+                eventHandlers.handleSubmit(e);
+                return;
+            }
+            
+            // Handle Tab for auto-completion (only when search is open)
+            if (state.isOpen && e.key === 'Tab') {
+                e.preventDefault();
+                
+                // Set processing flag
+                state.isProcessingKey = true;
+                state.lastKeyTime = now;
+                
+                console.log('Tab pressed, filtered tags:', state.filteredTags.length);
+                
+                if (state.filteredTags.length > 0) {
+                    const firstTag = state.filteredTags[0];
+                    console.log('First tag to process:', firstTag.text);
+                    
+                    // Check if tag is already active or exists in DOM
+                    if (state.activeTags.includes(firstTag.text)) {
+                        console.log('Tab: Tag already active, ignoring');
+                        state.isProcessingKey = false;
+                        return;
+                    }
+                    
+                    if (elements.tagContainer) {
+                        const existingTagSpans = elements.tagContainer.querySelectorAll('.predictive-search-tag span');
+                        for (let span of existingTagSpans) {
+                            if (span.textContent.trim() === firstTag.text) {
+                                console.log('Tab: Tag already exists in DOM, ignoring');
+                                state.isProcessingKey = false;
+                                return;
                             }
                         }
-                    });
+                    }
                     
-                    // Clear input and focus
-                    elements.input.value = ''
-                    state.lastInputValue = ''
-                    state.lastCreatedTag = tagText
-                    
+                    console.log('Creating tag via Tab:', firstTag.text);
+                    tagManager.createFromTagData(firstTag);
+                }
+                
+                // Reset processing flag after a delay
+                setTimeout(() => {
+                    state.isProcessingKey = false;
+                }, 200);
+                
+                return;
+            }
+            
+            // Handle Backspace to remove last tag when input is empty (works when focused on input)
+            if (canHandleTagRemoval && e.key === 'Backspace' && elements.input.value === '' && state.activeTags.length > 0) {
+                e.preventDefault();
+                
+                // Set processing flag to prevent rapid backspace
+                if (state.isProcessingKey) {
+                    console.log('Backspace: Already processing, ignoring');
+                    return;
+                }
+                
+                state.isProcessingKey = true;
+                state.lastKeyTime = now;
+                
+                console.log('Backspace pressed, removing last tag. Current tags:', state.activeTags.length);
+                
+                const lastTag = state.activeTags[state.activeTags.length - 1];
+                const tagElements = elements.tagContainer.querySelectorAll('.predictive-search-tag');
+                const lastTagElement = tagElements[tagElements.length - 1];
+                
+                console.log('Removing tag:', lastTag);
+                tagManager.remove(lastTag, lastTagElement);
+                
+                // Reset processing flag after a delay
+                setTimeout(() => {
+                    state.isProcessingKey = false;
+                    // Update clear button visibility after processing is complete
                     uiManager.updateClearButtonVisibility();
-                    elements.input.focus()
+                }, 200);
 
-                    if (state.sb) {
-                        state.sb.updateMetrics()
-                    }
-                    
-                    console.log(`Tag "${tagText}" added successfully`)
-                } else {
-                    state.activeTags = state.activeTags.filter(tag => tag !== tagText)
-                    console.log(`Failed to create tag "${tagText}", removed from activeTags`)
-                }
-            } else {
-                console.log(`Tag "${tagText}" already exists or is invalid`)
+                return;
             }
-        },
-
-        handleClickOutside(e) {
-            if (state.isOpen && elements.header && !elements.header.contains(e.target)) {
-                searchManager.close(false)
-            }
-        },
-
-        async handleInput(e) {
-            const searchValue = elements.input.value.trim();
             
-            console.log('Input changed:', { 
-                searchValue, 
-                lastInputValue: state.lastInputValue, 
-                inputLength: searchValue.length,
-                activeTags: state.activeTags 
-            });
-            
-            state.lastInputValue = searchValue;
-            
-            setTimeout(() => {
-                uiManager.updateClearButtonVisibility();
-            }, 0);
-            
-            if (searchValue.length > 2) {
-                try {
-                    const response = await fetch(`/wp-json/outten-golden/v1/search?query=${encodeURIComponent(searchValue)}&limit=10`);
-                    if (response.ok) {
-                        const apiResults = await response.json();
-                        console.log('API search results:', apiResults);
-                        console.log('Active tags before filtering:', state.activeTags);
-                        
-                        suggestionsManager.updateWithAPI(apiResults, searchValue);
-                    }
-                } catch (error) {
-                    console.error('Search API error:', error);
-                    suggestionsManager.filterExisting(searchValue);
-                }
-            } else {
-                suggestionsManager.filterExisting(searchValue);
-            }
-        },
-
-        handleKeyboard(e) {
+            // Handle Escape to clear filter
             if (e.key === 'Escape') {
                 searchManager.close(false);
-                return
+                return;
             }
             
+            // Handle Cmd/Ctrl+K to toggle search
             if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault()
                 if (!state.isOpen) {
@@ -949,368 +1600,355 @@ export default function initPredictiveSearch(el) {
                 }
                 return;
             }
-
-            // Handle TAB for auto-completion
-            if (e.key === 'Tab' && e.target === elements.input) {
-                const inputValue = elements.input.value.trim();
-                
-                if (inputValue.length > 0) {
-                    const allSuggestions = [
-                        ...Array.from(elements.allTags),
-                        ...Array.from(elements.results.querySelectorAll('.api-result'))
-                    ];
-                    
-                    const matchingTag = allSuggestions.find(item => {
-                        const itemText = (item.textContent.trim() || item.getAttribute('data-text') || '').toLowerCase();
-                        const inputLower = inputValue.toLowerCase();
-                        return itemText.startsWith(inputLower) && 
-                               itemText !== inputLower &&
-                               item.style.display !== 'none';
-                    });
-                    
-                    if (matchingTag) {
-                        e.preventDefault();
-                        
-                        const tagText = matchingTag.textContent.trim() || matchingTag.getAttribute('data-text');
-                        console.log(`TAB completion: "${inputValue}" → "${tagText}"`);
-                        
-                        if (!state.activeTags.includes(tagText)) {
-                            state.activeTags.push(tagText);
-                            tagManager.create(tagText, matchingTag);
-                            
-                            if (matchingTag) {
-                                animate(matchingTag, {
-                                    opacity: 0,
-                                    y: -20,
-                                }, {
-                                    duration: 0.3,
-                                });
-                                matchingTag.style.display = 'none';
-                                
-                                if (matchingTag.classList.contains('api-result')) {
-                                    setTimeout(() => {
-                                        if (matchingTag.parentNode) {
-                                            matchingTag.parentNode.removeChild(matchingTag);
-                                        }
-                                    }, 300);
-                                }
-                            }
-                            
-                            elements.input.value = '';
-                            state.lastInputValue = '';
-                            state.lastCreatedTag = tagText;
-                            
-                            if (state.sb) {
-                                state.sb.updateMetrics();
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-
-            // Handle backspace to remove tags when input is empty
-            if (e.key === 'Backspace' && e.target === elements.input) {
-                const inputValue = elements.input.value.trim();
-                
-                if (inputValue === '' && state.activeTags.length > 0) {
-                    e.preventDefault();
-                    
-                    const lastTag = state.activeTags[state.activeTags.length - 1];
-                    console.log('Removing last tag via backspace:', lastTag);
-                    
-                    tagManager.removeAndPutInInput(lastTag);
-                }
-            }
         },
 
-        handleFormSubmit(e) {
-            e.preventDefault()
-            e.stopPropagation()
-        
-            console.log('Active tags before processing:', state.activeTags)
-        
-            const searchQuery = elements.input.value.trim()
-            const baseURL = window.location.origin
+        handleTagClick(tagData) {
+            // Prevent rapid clicking by checking if tag is already being processed
+            if (state.activeTags.includes(tagData.text)) {
+                console.log('Tag already active, ignoring click');
+                return;
+            }
             
-            let cleanURL = baseURL + '/search'
+            // Check if tag is already in DOM
+            if (elements.tagContainer) {
+                const existingTagSpans = elements.tagContainer.querySelectorAll('.predictive-search-tag span');
+                for (let span of existingTagSpans) {
+                    if (span.textContent.trim() === tagData.text) {
+                        console.log('Tag already exists in DOM, ignoring click');
+                        return;
+                    }
+                }
+            }
+            
+            console.log('Tag clicked:', tagData.text);
+            tagManager.createFromTagData(tagData);
+        },
+
+        handleSubmit(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log('Active tags before processing:', state.activeTags);
+
+            // Add current input as tag if it exists
+            const inputValue = elements.input.value.trim();
+            if (inputValue && !state.activeTags.includes(inputValue)) {
+                tagManager.createFreeText(inputValue);
+            }
+
+            const searchQuery = elements.input.value.trim();
+            const baseURL = window.location.origin;
+            
+            let cleanURL = baseURL + '/search';
             
             if (state.activeTags.length > 0) {
                 const tagsSlugs = state.activeTags.map(tag => 
                     tag.toLowerCase()
                        .replace(/\s+/g, '-')
                        .replace(/[^a-z0-9\-]/g, '')
-                ).join('+')
+                ).join('+');
                 
                 if (searchQuery) {
-                    cleanURL += `/${encodeURIComponent(searchQuery)}/tags/${tagsSlugs}`
+                    cleanURL += `/${encodeURIComponent(searchQuery)}/tags/${tagsSlugs}`;
                 } else {
-                    cleanURL += `/tags/${tagsSlugs}`
+                    cleanURL += `/tags/${tagsSlugs}`;
                 }
             } else if (searchQuery) {
-                cleanURL += `/${encodeURIComponent(searchQuery)}`
+                cleanURL += `/${encodeURIComponent(searchQuery)}`;
             } else {
-                cleanURL = baseURL + '/?s='
+                cleanURL = baseURL + '/?s=';
             }
             
-            console.log('Clean URL:', cleanURL)
+            console.log('Clean URL:', cleanURL);
             
-            initTaxi.navigateTo(cleanURL)
-            searchManager.close(true)
+            // SIMPLE: Always clear everything after submit
+            simpleTagManager.clearAll();
+            
+            // CLOSE search completely and remove focus
+            searchManager.close(false, false);
+            
+            // Remove focus from input explicitly
+            if (elements.input && elements.input === document.activeElement) {
+                elements.input.blur();
+            }
+            
+            // Remove focus from any other focused element in the header
+            if (elements.header && elements.header.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+            
+            console.log('Search cleared and closed after submit');
+            
+            // Navigation
+            if (typeof initTaxi !== 'undefined' && initTaxi.navigateTo) {
+                initTaxi.navigateTo(cleanURL);
+            } else {
+                window.location.href = cleanURL;
+            }
+        },
+
+        handleClickOutside(e) {
+            if (state.isOpen && elements.header && !elements.header.contains(e.target)) {
+                searchManager.close(false)
+            }
         }
     };
 
     // ============================================================================
-    // INITIALIZATION
+    // INITIALIZATION (updated to always restore state)
     // ============================================================================
     
-    const initialization = {
-        setupEventListeners() {
-            // Search link handlers
-            const searchLinks = qsa('.js-search-link');
-            searchLinks.forEach(searchLink => {
-                utils_internal.addTrackedEventListener(searchLink, 'click', (e) => {
-                    console.log('Search link clicked, clearing all search...');
-                    
-                    state.isPopulatingFromURL = true;
-                    
-                    if (state.populateTimeout) {
-                        clearTimeout(state.populateTimeout);
-                        state.populateTimeout = null;
-                    }
-                    
-                    searchManager.clearAll();
-                    
-                    state.activeTags = [];
-                    state.lastInputValue = '';
-                    state.lastCreatedTag = null;
-                    
-                    if (elements.input) {
-                        elements.input.value = '';
-                    }
-                    
-                    setTimeout(() => {
-                        state.isPopulatingFromURL = false;
-                    }, 500);
-                    
-                    console.log('Search cleared and state reset');
-                });
-            });
-
-            // Reset button
-            if (elements.resetButton) {
-                utils_internal.addTrackedPressHandler(elements.resetButton, () => {
-                    animate(elements.resetButton, { scale: 0.9 });
-                    
-                    return () => {
-                        animate(elements.resetButton, { scale: 1 });
-                    };
-                });
+    const init = () => {
+        // Create no results message ONCE
+        if (elements.scrollContent && !elements.noResultsMessage) {
+            // Check if one already exists in DOM
+            const existingMessage = elements.scrollContent.querySelector('.no-results-message');
+            if (existingMessage) {
+                elements.noResultsMessage = existingMessage;
+                console.log('Found existing no results message');
+            } else {
+                utils_internal.createNoResultsMessage();
             }
-
-            // Clear button
-            if (elements.clearButton) {
-                utils_internal.addTrackedPressHandler(elements.clearButton, () => {
-                    return () => {
-                        elements.input.value = '';
-                        state.lastInputValue = '';
-                        tagManager.clearAll();
-                        uiManager.showAllTags();
-                        elements.input.focus();
-                        console.log('Search cleared');
-                    };
-                });
-            }
-
-            // Form click to open
-            utils_internal.addTrackedPressHandler(elements.form, () => {
-                return () => {
-                    if (!state.isOpen) {
-                        searchManager.open();
+        }
+        
+        // Initialize ScrollBooster
+        state.sb = scrollManager.init();
+        
+        // *** SIMPLE INITIALIZATION - ALWAYS START CLEAN ***
+        setTimeout(() => {
+            console.log('Page loaded - simple clean start');
+            
+            // Reset all available tags to clean state
+            allTagsData.forEach(tagData => {
+                if (tagData.element) {
+                    tagData.element.style.display = '';
+                    tagData.isVisible = true;
+                    
+                    // Reset GSAP properties
+                    gsap.set(tagData.element, {
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        clearProps: "transform"
+                    });
+                    
+                    if (tagData.button) {
+                        tagData.button.innerHTML = `<span>${tagData.originalText}</span>`;
+                        gsap.set(tagData.button, {
+                            backgroundColor: '',
+                            color: '',
+                            scale: 1,
+                            clearProps: "all"
+                        });
                     }
-                };
-            });
-
-            // Close button
-            utils_internal.addTrackedPressHandler(elements.close, () => {
-                animate(elements.close, { scale: 0.9 })
-               
-                return () => {
-                    searchManager.close(false)
                 }
             });
-
-            // Related links
-            elements.relatedLinks.forEach(link => {
-                utils_internal.addTrackedEventListener(link, 'click', (e) => {
-                    console.log('Related link clicked, clearing search...');
-                    
-                    searchManager.close(false);
-                    tagManager.clearAll();
-                    
-                    state.activeTags = [];
-                    state.lastInputValue = '';
-                    state.lastCreatedTag = null;
-                    state.isPopulatingFromURL = false;
-                    
-                    if (state.populateTimeout) {
-                        clearTimeout(state.populateTimeout);
-                        state.populateTimeout = null;
-                    }
-                    
-                    if (elements.input) {
-                        elements.input.value = '';
-                    }
-                    
-                    console.log('Search cleared for navigation');
-                });
-            });
-
-            // Global event listeners
-            utils_internal.addTrackedEventListener(document.body, 'keydown', eventHandlers.handleKeyboard);
-            utils_internal.addTrackedEventListener(document, 'click', eventHandlers.handleClickOutside);
-            utils_internal.addTrackedEventListener(elements.form, 'submit', eventHandlers.handleFormSubmit);
-            utils_internal.addTrackedEventListener(elements.input, 'input', eventHandlers.handleInput);
-
-            console.log('Event listeners initialized')
-        },
-
-        setupResultItems() {
-            elements.resultsItems.forEach(item => {
-                animate(item, {
-                    opacity: 0,
-                    y: 40,
-                    duration: 0
-                });
+            
+            // Set all tags as visible
+            state.filteredTags = [...allTagsData];
+            
+            // Update UI
+            uiManager.updateClearButtonVisibility();
+            
+            // Update ScrollBooster
+            if (state.sb) {
+                state.sb.updateMetrics();
+            }
+            
+            console.log('Simple clean initialization complete');
+        }, 10); // Reduced delay from 100ms to 10ms
+        
+        // Setup available tag handlers (from mini-search)
+        allTagsData.forEach(tagData => {
+            if (tagData.button) {
+                // Remove any existing listeners to prevent duplicates
+                if (tagData.clickHandler) {
+                    tagData.button.removeEventListener('click', tagData.clickHandler);
+                }
                 
-                item.removeEventListener('click', eventHandlers.handleResultItemClick);
-                item.addEventListener('click', eventHandlers.handleResultItemClick);
-            });
-        },
-
-        init() {
-            this.setupResultItems();
-            state.sb = scrollManager.initScrollBooster();
-            this.setupEventListeners();
-
-            if (utils_internal.isOnSearchPage()) {
-                urlManager.debouncedPopulateFromURL();
+                // Create and store the click handler
+                tagData.clickHandler = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    eventHandlers.handleTagClick(tagData);
+                };
+                
+                // Add the new listener
+                tagData.button.addEventListener('click', tagData.clickHandler);
             }
+        });
+        
+        // Setup event listeners
+        if (elements.input) {
+            utils_internal.addTrackedEventListener(elements.input, 'input', eventHandlers.handleInput);
+            utils_internal.addTrackedEventListener(elements.input, 'keydown', eventHandlers.handleKeydown);
         }
+        
+        if (elements.form) {
+            utils_internal.addTrackedEventListener(elements.form, 'submit', eventHandlers.handleSubmit);
+        }
+        
+        // Clear button handler - now uses simple logic
+        if (elements.clearButton) {
+            utils_internal.addTrackedEventListener(elements.clearButton, 'click', (e) => {
+                e.preventDefault();
+                simpleTagManager.clearAll();
+                elements.input.focus();
+            });
+        }
+
+        // Search link handlers - clear everything when clicked
+        if (elements.searchLinks && elements.searchLinks.length > 0) {
+            elements.searchLinks.forEach(searchLink => {
+                utils_internal.addTrackedEventListener(searchLink, 'click', (e) => {
+                    console.log('Search link clicked - clearing all filters');
+                    
+                    // Clear everything completely
+                    state.activeTags = [];
+                    
+                    // Clear DOM tags
+                    if (elements.tagContainer) {
+                        elements.tagContainer.innerHTML = '';
+                    }
+                    
+                    // Clear input
+                    if (elements.input) {
+                        elements.input.value = '';
+                    }
+                    
+                    // DON'T show any tags - keep search completely empty
+                    allTagsData.forEach(tagData => {
+                        if (tagData.element) {
+                            tagData.element.style.display = 'none'; // Hide ALL tags
+                            tagData.isVisible = false;
+                        }
+                    });
+                    
+                    // Clear filtered tags
+                    state.filteredTags = [];
+                    
+                    // Close search if open
+                    if (state.isOpen) {
+                        searchManager.close(false, false);
+                    }
+                    
+                    // Update UI
+                    uiManager.updateClearButtonVisibility();
+                    
+                    // Update ScrollBooster
+                    if (state.sb) {
+                        state.sb.updateMetrics();
+                    }
+                    
+                    console.log('Search completely emptied - no tags visible');
+                });
+            });
+        }
+
+        // Form click to open - ensure input gets focus for tag removal
+        if (elements.form) {
+            elements.form.addEventListener('click', () => {
+                if (!state.isOpen) {
+                    searchManager.open();
+                } else {
+                    // If already open, ensure input has focus for backspace handling
+                    elements.input.focus();
+                }
+            });
+        }
+
+        // Close button
+        if (elements.close) {
+            elements.close.addEventListener('click', () => {
+                searchManager.close(false)
+            });
+        }
+
+        // Global event listeners
+        utils_internal.addTrackedEventListener(document.body, 'keydown', eventHandlers.handleKeydown);
+        utils_internal.addTrackedEventListener(document, 'click', eventHandlers.handleClickOutside);
+        
+        // Initial filter (show all non-active tags)
+        filterManager.filterTags('');
+        
+        console.log('Predictive search initialized with', allTagsData.length, 'available tags');
     };
 
     // ============================================================================
-    // CLEANUP
+    // CLEANUP (from mini-search)
     // ============================================================================
     
-    const cleanup = {
-        unmount() {
-            state.isPopulatingFromURL = false;
-            if (state.populateTimeout) {
-                clearTimeout(state.populateTimeout);
-                state.populateTimeout = null;
-            }
-            
-            state.eventListeners.forEach(({ element, event, handler }) => {
-                evt.off(event, element, handler);
-            });
-            
-            state.pressHandlers.forEach(({ element, handler }) => {
-                if (typeof handler === 'function' && handler.destroy) {
-                    handler.destroy();
-                }
-            });
-            
-            state.eventListeners.length = 0;
-            state.pressHandlers.length = 0;
-            
-            elements.resultsItems.forEach(item => {
-                item.removeEventListener('click', eventHandlers.handleResultItemClick);
-            });
-            
-            if (state.sb && typeof state.sb.destroy === 'function') {
-                state.sb.destroy();
-            }
-            
-            const scrollBoostElement = qs('.js-scrollboost');
-            if (scrollBoostElement && scrollBoostElement.scrollBooster) {
-                if (typeof scrollBoostElement.scrollBooster.destroy === 'function') {
-                    scrollBoostElement.scrollBooster.destroy();
-                }
-                delete scrollBoostElement.scrollBooster;
-            }
-            
-            if (typeof gsap !== 'undefined' && gsap.killTweensOf) {
-                gsap.killTweensOf([
-                    elements.hidden, elements.results, elements.resultsItems, 
-                    elements.submit, elements.close, elements.nextButton, 
-                    elements.resetButton, elements.allTags, elements.clearButton
-                ]);
-            }
-            
-            if (elements.header) {
-                elements.header.classList.remove('is-active');
-            }
-            
-            document.body.classList.remove('overflow-hidden');
-            
-            tagManager.clearAll();
-            
-            if (elements.form) {
-                elements.form.reset();
-                const dynamicInputs = elements.form.querySelectorAll('input[name="search_tags[]"], input[name="search_type"]');
-                dynamicInputs.forEach(input => input.remove());
-                searchManager.close()
-            }
-            
-            if (elements.input) {
-                elements.input.value = '';
-            }
-            
-            state.activeTags = [];
-            state.isScrolling = false;
-            state.hasMoved = false;
-            state.isOpen = false;
-            state.sb = null;
-            state.lastInputValue = '';
-            state.lastCreatedTag = null;
-            
-            console.log('Predictive search component unmounted successfully');
+    const cleanup = () => {
+        // Kill all GSAP animations for this component
+        gsap.killTweensOf([
+            ...allTagsData.map(tag => tag.element),
+            ...allTagsData.map(tag => tag.button).filter(Boolean),
+            elements.noResultsMessage
+        ].filter(Boolean));
+        
+        // Remove event listeners
+        state.eventListeners.forEach(({ element, event, handler }) => {
+            evt.off(event, element, handler);
+        });
+        
+        // Destroy ScrollBooster
+        if (state.sb && typeof state.sb.destroy === 'function') {
+            state.sb.destroy();
         }
-    };
+        
+        // Clear state
+        state.activeTags = [];
+        state.filteredTags = [];
+        state.eventListeners = [];
+        state.sb = null;
+        
+        console.log('Predictive search cleaned up');
+    }
+
+    // Initialize
+    init()
+
+    // *** IMMEDIATE CLEANUP - Prevent flash of old values ***
+    // Clear input immediately to prevent browser auto-fill flash
+    if (elements.input) {
+        elements.input.value = '';
+    }
+    
+    // Clear any existing tags immediately
+    if (elements.tagContainer) {
+        elements.tagContainer.innerHTML = '';
+    }
 
     // ============================================================================
-    // PUBLIC API
+    // PUBLIC API (updated with new methods)
     // ============================================================================
     
-    // Initialize the component
-    initialization.init();
-
-    // Return public API
     return {
+        addTag: (text) => tagManager.create(text),
+        removeTag: (text) => {
+            const tagElements = Array.from(elements.tagContainer.querySelectorAll('.predictive-search-tag span'));
+            const targetTag = tagElements.find(span => span.textContent.trim() === text);
+            if (targetTag) {
+                const tagElement = targetTag.closest('.predictive-search-tag');
+                tagManager.remove(text, tagElement);
+            }
+        },
+        clearTags: () => tagManager.clear(),
+        getTags: () => [...state.activeTags],
+        filter: (query) => filterManager.filterTags(query),
+        destroy: cleanup,
+        
+        // Predictive search specific API
         open: searchManager.open,
         close: searchManager.close,
-        addTag: (text) => {
-            const matchingItem = originalResultsItems.find(item => item.text === text);
-            if (matchingItem && !state.activeTags.includes(text)) {
-                tagManager.create(text, matchingItem.element);
-            }
-        },
-        removeTag: (text) => {
-            const tags = Array.from(elements.tagContainer.querySelectorAll('.predictive-search-tag span'));
-            const targetTag = tags.find(span => span.textContent.trim() === text);
-            
-            if (targetTag) {
-                const tagItem = targetTag.closest('.predictive-search-tag');
-                const matchingItem = originalResultsItems.find(item => item.text === text);
-                tagManager.remove(text, tagItem, matchingItem?.element);
-            }
-        },
-        clearTags: tagManager.clearAll,
         clearSearch: searchManager.clearAll,
         getActiveTags: () => [...state.activeTags],
         validateState: utils_internal.validateState,
-        populateFromURL: urlManager.debouncedPopulateFromURL,
-        unmount: cleanup.unmount
-    };
+        
+        // New methods for state management
+        restoreFromURL: stateManager.restoreFromURL,
+        validateAndSync: stateManager.validateAndSync,
+        parseURLTags: urlManager.parseTagsFromURL,
+        clearAllTags: stateManager.clearAllTags
+    }
 }

@@ -22,6 +22,7 @@ import carouselIssueText from './carousel-issue-text'
 import bookACall from './bookacall'
 import highlight from './highlight'
 import accordion from './accordion'
+import miniSearch from './mini-search'
 
 export {
     search,
@@ -42,5 +43,6 @@ export {
     carouselIssueText,
     bookACall,
     highlight,
-    accordion
+    accordion,
+    miniSearch
 }

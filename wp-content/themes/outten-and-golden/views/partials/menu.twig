@@ -1,5 +1,4 @@
 <div class="relative flex flex-col {{ open ? '' : 'border-b' }} s:border-none w-full border-grey-taupe s:gap-y-30" {{ open ? '' : 'data-accordion-status="not-active"' }}>
-
     <button  data-hover="" data-accordion-toggle="" class="accordion-css__item-top relative text-left flex items-center justify-between py-20 px-20 s:px-0 s:py-0 cursor-pointer s:cursor-text pointer-events-auto s:pointer-events-none">
         <span class="font-sans {{ open ? 'text-grey' :  'text-black s:text-grey' }} text-12 font-medium leading-none tracking-[0.12rem] uppercase pointer-events-auto">{{ menu.name|replace({'Footer - ': ''}) }}</span>
         {% if not open %}
@@ -18,7 +17,6 @@
                     </li>
                 {% endfor %}
             </ul>
-
         </div>
     </div>
 </div>
