@@ -74,7 +74,7 @@
                             <div class="absolute top-0 right-0 h-full bg-white w-[7rem] bg-white"></div>
                         </div>
 
-                        <div class="relative flex items-center">
+                        <div class="relative flex items-center -mx-20 s:mx-0">
 
                             <button class="absolute z-2 size-30 bg-white-smoke rounded-[0.4rem] right-0 hidden s:flex items-center justify-center transition-opacity duration-300 js-mini-scrollboost-next">
                                 <svg class="size-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
@@ -83,7 +83,7 @@
                             </button>
 
                             {% if all_tags %}
-                                <div class="relative w-full js-mini-scrollboost">
+                                <div class="relative w-full px-20 s:px-0 js-mini-scrollboost">
                                     <div class="flex js-mini-scrollboost-content">
                                         <ul class="gap-x-12 flex whitespace-nowrap text-12 js-mini-scrollboost-length">
                                             {% for item in all_tags %}
