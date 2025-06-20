@@ -2,6 +2,9 @@ import ScrollBooster from 'scrollbooster'
 import { gsap } from 'gsap'
 import { utils, evt } from '@/core'
 import { initTaxi } from '@/app.js'
+import { store } from '@/core'
+
+const { device } = store;
 
 const { qs, qsa } = utils;
 
@@ -172,11 +175,11 @@ export default function initEnhancedSearch(el) {
             
             state.isOpen = true;
             console.log('Search opened');
-
+    
             document.body.classList.add('mobile-search-open')
             
-            // Reset ScrollBooster position when search opens
-            if (state.sb) {
+            // Reset ScrollBooster position when search opens (only if not mobile)
+            if (state.sb && !device.isMobile) {
                 // Update metrics first to ensure accurate calculations
                 state.sb.updateMetrics();
                 
@@ -185,16 +188,16 @@ export default function initEnhancedSearch(el) {
                 state.sb.setPosition({ x: 0 });
                 
                 console.log('ScrollBooster position reset to start');
+            } else if (device.isMobile && elements.scrollViewport) {
+                // Reset native scroll on mobile
+                elements.scrollViewport.scrollLeft = 0;
+                console.log('Native scroll position reset to start (mobile)');
             }
             
             // Focus the input
             if (elements.input) {
                 elements.input.focus();
             }
-            
-            // You can add visual feedback here later, like:
-            // el.section.classList.add('is-open');
-            // gsap.to(someElement, { opacity: 1, duration: 0.3 });
         },
     
         close() {
@@ -202,7 +205,7 @@ export default function initEnhancedSearch(el) {
             
             state.isOpen = false;
             console.log('Search closed');
-
+    
             document.body.classList.remove('mobile-search-open')
             
             // Remove focus from input
@@ -218,8 +221,9 @@ export default function initEnhancedSearch(el) {
     
     const uiManager = {
         handleUpdate(scrollState) {
-            if (!elements.nextButton) return;
-
+            // Skip ScrollBooster UI updates on mobile since ScrollBooster won't be running
+            if (device.isMobile || !elements.nextButton) return;
+    
             // Track scrolling state
             if (scrollState.isMoving) {
                 state.isScrolling = true
@@ -265,7 +269,7 @@ export default function initEnhancedSearch(el) {
                 }
             }
         },
-
+    
         showAllTags() {
             // Show all non-active tags with enhanced animation
             allTagsData.forEach((tagData, index) => {
@@ -562,6 +566,26 @@ export default function initEnhancedSearch(el) {
         },
 
         scrollToHighlighted(element) {
+            // Skip ScrollBooster scrolling on mobile, use native scrolling instead
+            if (device.isMobile) {
+                if (elements.scrollViewport) {
+                    const containerRect = elements.scrollViewport.getBoundingClientRect();
+                    const elementRect = element.getBoundingClientRect();
+                    
+                    const relativeLeft = elementRect.left - containerRect.left;
+                    const relativeRight = elementRect.right - containerRect.left;
+                    
+                    if (relativeLeft < 0) {
+                        // Element is to the left of viewport
+                        elements.scrollViewport.scrollLeft += relativeLeft - 20;
+                    } else if (relativeRight > containerRect.width) {
+                        // Element is to the right of viewport
+                        elements.scrollViewport.scrollLeft += (relativeRight - containerRect.width) + 20;
+                    }
+                }
+                return;
+            }
+    
             if (!state.sb || !elements.scrollViewport) return;
             
             const containerRect = elements.scrollViewport.getBoundingClientRect();
@@ -885,6 +909,24 @@ export default function initEnhancedSearch(el) {
         init() {
             if (!elements.scrollViewport || !elements.scrollContent) return null;
             
+            // Prevent ScrollBooster initialization on mobile devices
+            if (device.isMobile) {
+                console.log('ScrollBooster disabled on mobile device');
+                
+                // On mobile, we might want to enable native horizontal scrolling instead
+                if (elements.scrollViewport) {
+                    elements.scrollViewport.style.overflowX = 'auto';
+                    elements.scrollViewport.style.overflowY = 'hidden';
+                    // Optional: Add momentum scrolling for iOS
+                    elements.scrollViewport.style.webkitOverflowScrolling = 'touch';
+                }
+                
+                // Hide ScrollBooster UI elements since they won't work without ScrollBooster
+                this.hideScrollBoosterUI();
+                
+                return null;
+            }
+            
             const scrollBooster = new ScrollBooster({
                 viewport: elements.scrollViewport,
                 content: elements.scrollContent,
@@ -893,12 +935,32 @@ export default function initEnhancedSearch(el) {
                 friction: 0.2,
                 bounce: false,
                 emulateScroll: true,
-                onUpdate: (state) => {  // Pass the state parameter
-                    uiManager.handleUpdate(state); // Now state is available
+                onUpdate: (state) => {
+                    uiManager.handleUpdate(state);
                 }
             });
-
+    
             return scrollBooster;
+        },
+    
+        hideScrollBoosterUI() {
+            // Hide ScrollBooster-specific UI elements on mobile
+            const elementsToHide = [
+                elements.nextButton,
+                elements.gradient,
+                elements.resetButton
+            ];
+    
+            elementsToHide.forEach(element => {
+                if (element) {
+                    element.style.display = 'none';
+                }
+            });
+    
+            // Also remove any ScrollBooster-related classes
+            if (el.section) {
+                el.section.classList.remove('is-active');
+            }
         }
     };
 
@@ -1165,7 +1227,11 @@ export default function initEnhancedSearch(el) {
         if (elements.resetButton) {
             utils_internal.addTrackedEventListener(elements.resetButton, 'click', (e) => {
                 e.preventDefault();
-                if (state.sb) {
+                if (device.isMobile && elements.scrollViewport) {
+                    // Use native scrolling on mobile
+                    elements.scrollViewport.scrollLeft = 0;
+                } else if (state.sb) {
+                    // Use ScrollBooster on desktop
                     state.sb.scrollTo({ x: 0 });
                     state.sb.setPosition({ x: 0 });
                 }
@@ -1217,6 +1283,17 @@ export default function initEnhancedSearch(el) {
         state.sb = null;
         
         console.log('Enhanced search cleaned up');
+    };
+
+    // ============================================================================
+    // Updated methods that reference ScrollBooster
+    // ============================================================================
+
+    // Update any other methods that call state.sb.updateMetrics():
+    const updateScrollBooster = () => {
+        if (state.sb && !device.isMobile) {
+            state.sb.updateMetrics();
+        }
     };
 
     // Initialize
