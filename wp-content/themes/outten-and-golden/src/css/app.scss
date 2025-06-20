@@ -235,6 +235,10 @@ input::placeholder {
 	@apply text-grey-taupe;
 }
 
+.js-mini-scrollboost::-webkit-scrollbar {
+	display: none; /* Webkit browsers */
+}
+
 .js-mini-scrollboost-next,
 .js-scrollboost-next {
 	@apply opacity-0;

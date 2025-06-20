@@ -916,7 +916,7 @@ export default function initEnhancedSearch(el) {
                 // On mobile, we might want to enable native horizontal scrolling instead
                 if (elements.scrollViewport) {
                     elements.scrollViewport.style.overflowX = 'auto';
-                    elements.scrollViewport.style.overflowY = 'hidden';
+                    //elements.scrollViewport.style.overflowY = 'hidden';
                     // Optional: Add momentum scrolling for iOS
                     elements.scrollViewport.style.webkitOverflowScrolling = 'touch';
                 }
