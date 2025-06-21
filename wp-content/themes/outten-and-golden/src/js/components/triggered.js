@@ -14,6 +14,7 @@ const bgSwitcher = (el) => {
   const text = qsa('.js-bg-switcher-text', section);
   const bgColorElements = qsa('[data-bg-color]', section);
   const textColorElements = qsa('[data-text-color]', section);
+  const allSvgPaths = qsa('.js-svg-color path', section);
 
   if(bg && text && bgColorElements.length && textColorElements.length) {
     // Color mapping
@@ -22,40 +23,142 @@ const bgSwitcher = (el) => {
       'green': '#6da479', 
       'grey': '#7a7871',
       'gray': '#7a7871',
-      'white': '#fff',
+    };
+
+    const textColorMap = {
       'black': '#1E383E',
+      'white': '#fff',
     };
 
     // Extract and convert colors
     const bgColors = Array.from(bgColorElements).map(el => {
       const color = el.dataset.bgColor;
-      return colorMap[color] || color; // fallback to original if not in map
+      return colorMap[color] || color;
     });
     
     const textColors = Array.from(textColorElements).map(el => {
       const color = el.dataset.textColor;
-      return colorMap[color] || color;
+      return textColorMap[color] || color;
     });
 
-    // Set initial colors to first in array
+    // Set initial colors
     gsap.set(bg, { backgroundColor: bgColors[0] })
     gsap.set(text, { color: textColors[0] })
+    gsap.set(allSvgPaths, { stroke: textColors[0] })
+
+    allSvgPaths.forEach(path => {
+      const pathLength = path.getTotalLength();
+      gsap.set(path, {
+        strokeDasharray: pathLength,
+        strokeDashoffset: pathLength
+      })
+
+      const currentFill = path.getAttribute('fill');
+      if (currentFill === '#7A7871') {
+        gsap.set(path, { fill: bgColors[0] });
+      }
+      if (currentFill === '#FCDC9B') {
+        gsap.set(path, { fill: textColors[0], opacity: 0 });
+      }  
+    })
 
     bgColorElements.forEach((elem, index) => {
+      const currentSvgPaths = qsa('.js-svg-color path', elem)
+      
       ScrollTrigger.create({
         trigger: elem,
         start: "top center",
         end: "bottom center",
         onEnter: () => {
-          gsap.to(bg, { backgroundColor: bgColors[index], duration: 1, ease: 'expo' })
-          gsap.to(text, { color: textColors[index], duration: 1, ease: 'expo' })
+          gsap.to(bg, { backgroundColor: bgColors[index] });
+          gsap.to(text, { color: textColors[index] });
+          
+          // Change stroke color on ALL SVGs at once
+          gsap.to(allSvgPaths, { stroke: textColors[index] });
+          
+          // Reset current paths to hidden state first, then animate
+          currentSvgPaths.forEach((path, pathIndex) => {
+            const pathLength = path.getTotalLength();
+            
+            // Reset to hidden state
+            gsap.set(path, {
+              strokeDasharray: pathLength,
+              strokeDashoffset: pathLength,
+              //opacity: 0
+            });
+            
+            // Then animate to visible
+            gsap.to(path, {
+              strokeDashoffset: 0,
+              opacity: 1,
+              duration: 2,
+              ease: 'expo',
+              delay: pathIndex * 0.1,
+            });
+          });
+
+          allSvgPaths.forEach((path, pathIndex) => {
+            const currentFill = path.getAttribute('fill');
+
+            if (currentFill === '#7A7871') {
+              gsap.to(path, { fill: bgColors[index] });
+            }
+
+            if (currentFill === '#FCDC9B') {
+              if (textColors[index] == '#292929') {
+                gsap.to(path, { fill: '#1E383E' });
+              } else if (textColors[index] == '#fff') {
+                gsap.to(path, { fill: '#fcdc9b' });
+              }
+            } 
+          });
         },
         onEnterBack: () => {
-          gsap.to(bg, { backgroundColor: bgColors[index], duration: 1, ease: 'expo' })
-          gsap.to(text, { color: textColors[index], duration: 1, ease: 'expo' })
+          gsap.to(bg, { backgroundColor: bgColors[index] });
+          gsap.to(text, { color: textColors[index] });
+          
+          // Change stroke color on ALL SVGs at once
+          gsap.to(allSvgPaths, { stroke: textColors[index] });
+          
+          // Reset current paths to hidden state first, then animate
+          currentSvgPaths.forEach((path, pathIndex) => {
+            const pathLength = path.getTotalLength();
+            
+            // Reset to hidden state
+            gsap.set(path, {
+              strokeDasharray: pathLength,
+              strokeDashoffset: pathLength,
+              //opacity: 0
+            });
+            
+            // Then animate to visible
+            gsap.to(path, {
+              strokeDashoffset: 0,
+              opacity: 1,
+              duration: 2,
+              ease: 'expo',
+              delay: pathIndex * 0.1,
+            });
+          });
+        
+          allSvgPaths.forEach((path, pathIndex) => {
+            const currentFill = path.getAttribute('fill');
+        
+            if (currentFill === '#7A7871') {
+              gsap.to(path, { fill: bgColors[index] });
+            }
+        
+            if (currentFill === '#FCDC9B') {
+              if (textColors[index] == '#1E383E') {
+                gsap.to(path, { fill: '#292929' });
+              } else if (textColors[index] == '#fcdc9b') {
+                gsap.to(path, { fill: '#fff' });
+              }
+            } 
+          });
         }
-      })
-    })
+      });
+    });
   }
 }
 

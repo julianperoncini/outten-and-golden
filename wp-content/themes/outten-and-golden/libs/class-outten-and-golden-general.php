@@ -103,6 +103,49 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
                 return $size;
             }, $sizes );
         }, 50 );
+
+        add_filter('timber/twig', function($twig) {
+            $twig->addFunction(new \Twig\TwigFunction('get_svg', function($attachment, $class = '') {
+                if (!$attachment) return '';
+                
+                // Handle different input types
+                if (is_numeric($attachment)) {
+                    $attachment_id = $attachment;
+                } elseif (is_array($attachment) && isset($attachment['ID'])) {
+                    $attachment_id = $attachment['ID'];
+                } elseif (is_object($attachment) && isset($attachment->ID)) {
+                    $attachment_id = $attachment->ID;
+                } else {
+                    return '';
+                }
+                
+                $svg_path = get_attached_file($attachment_id);
+                
+                if (!$svg_path || !file_exists($svg_path)) {
+                    return '';
+                }
+                
+                $svg_content = file_get_contents($svg_path);
+                
+                // Add class if provided
+                if ($class) {
+                    // Check if class attribute already exists
+                    if (preg_match('/class="([^"]*)"/', $svg_content, $matches)) {
+                        // Append to existing class
+                        $existing_classes = $matches[1];
+                        $new_classes = $existing_classes . ' ' . $class;
+                        $svg_content = str_replace('class="' . $existing_classes . '"', 'class="' . $new_classes . '"', $svg_content);
+                    } else {
+                        // Add class attribute to <svg> tag
+                        $svg_content = preg_replace('/<svg/', '<svg class="' . $class . '"', $svg_content, 1);
+                    }
+                }
+                
+                return $svg_content;
+            }));
+            
+            return $twig;
+        });
     }
 
     public function modify_tags_to_hierarchical() {
