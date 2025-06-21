@@ -88,7 +88,7 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "block",
+            "layout": "row",
             "pagination": 0,
             "min": 0,
             "max": 4,
@@ -96,6 +96,65 @@
             "button_label": "Add Card",
             "rows_per_page": 20,
             "sub_fields": [
+                {
+                    "key": "field_685694ff46145",
+                    "label": "Faded Background Color",
+                    "name": "background_color",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "green": "Green",
+                        "yellow": "Yellow",
+                        "black": "Black",
+                        "gray": "Gray",
+                        "light": "Light"
+                    },
+                    "default_value": "grey",
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "allow_in_bindings": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "parent_repeater": "field_680d4efc5c95b"
+                },
+                {
+                    "key": "field_6856953646146",
+                    "label": "Faded Text Color",
+                    "name": "text_color",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "white": "White",
+                        "black": "Black"
+                    },
+                    "default_value": "white",
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "allow_in_bindings": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "parent_repeater": "field_680d4efc5c95b"
+                },
                 {
                     "key": "field_680d4f1e5c95c",
                     "label": "Image",
@@ -188,5 +247,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1749732133
+    "modified": 1750506060
 }
