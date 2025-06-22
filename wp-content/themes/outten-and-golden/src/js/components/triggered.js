@@ -160,6 +160,12 @@ const bgSwitcher = (el) => {
       });
     });
   }
+
+  return {
+    unmount: () => {
+      ScrollTrigger.killAll();
+    }
+  }
 }
 
 const homeTriggered = (el) => {
@@ -232,7 +238,9 @@ export default function initializeAnimations(el = document.body) {
   
   try {
     homeTriggered(el);
-    bgSwitcher(el);
+    if (qs('.js-bg-switcher-section', el)) {
+      bgSwitcher(el);
+    }
     
     // Get all created ScrollTriggers
     scrollTriggers.push(...ScrollTrigger.getAll());
@@ -244,6 +252,11 @@ export default function initializeAnimations(el = document.body) {
     console.log('unmount');
     // Kill all ScrollTrigger instances
     scrollTriggers.forEach(st => st.kill());
+
+    if (qs('.js-bg-switcher-section', el)) {
+      bgSwitcher(el).unmount();
+    }
+
     // Alternative: Kill all ScrollTriggers
     // ScrollTrigger.killAll();
   }

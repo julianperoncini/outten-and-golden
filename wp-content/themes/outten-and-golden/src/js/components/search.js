@@ -36,13 +36,15 @@ export default function initPredictiveSearch(el) {
         gradient: qs('.js-scrollboost-gradient', el.section),
         length: qs('.js-scrollboost-length', el.section),
         resetButton: qs('.js-scrollboost-reset', el.section),
-        searchLinks: qsa('.js-search-link', el.section), // Search links that should clear everything
+        searchLinks: qsa('.js-search-link', el.section),
         
         // Mini-search equivalents for scroll
         scrollContent: qs('.js-scrollboost-content', el.section),
         scrollViewport: qs('.js-scrollboost', el.section),
         noResultsMessage: null // Will be created dynamically
     };
+
+    const overlay = qs('.js-overlay-mask');
 
     // ============================================================================
     // STATE (from mini-search)
@@ -228,8 +230,6 @@ export default function initPredictiveSearch(el) {
     const simpleTagManager = {
         // Simple function to show/hide tags based on active state
         updateAllTagsVisibility() {
-            console.log('Updating all tags visibility. Active tags:', state.activeTags);
-            
             allTagsData.forEach(tagData => {
                 if (tagData.element) {
                     const isActive = state.activeTags.includes(tagData.text);
@@ -466,7 +466,7 @@ export default function initPredictiveSearch(el) {
                                 y: 0,
                                 duration: 0.4,
                                 delay: index * 0.03, // Staggered animation
-                                ease: "back.out(1.7)"
+                                ease: "back.out(1.25)"
                             });
                         }
                     });
@@ -522,12 +522,13 @@ export default function initPredictiveSearch(el) {
                 });
                 
                 // Animate back into view with a nice bounce
+                gsap.killTweensOf([tagData.element])
                 gsap.to(tagData.element, {
                     opacity: 1,
                     scale: 1,
                     y: 0,
                     duration: 0.4,
-                    ease: "back.out(1.7)",
+                    ease: "back.out(1.25)",
                     delay: 0.1 // Small delay for better visual effect
                 });
                 
@@ -877,7 +878,7 @@ export default function initPredictiveSearch(el) {
                                 y: 0,
                                 duration: 0.3,
                                 delay: index * 0.03,
-                                ease: "back.out(1.7)"
+                                ease: "back.out(1.25)"
                             });
                         } else {
                             // For tags that were already visible, just animate the text change
@@ -1151,8 +1152,8 @@ export default function initPredictiveSearch(el) {
                 scale: 1,
                 y: 0,
                 rotationX: 0,
-                duration: 0.5,
-                ease: "back.out(1.7)"
+                duration: 0.4,
+                ease: "back.out(1.25)"
             });
             
             uiManager.updateClearButtonVisibility(); // Added for predictive search
@@ -1211,21 +1212,7 @@ export default function initPredictiveSearch(el) {
                 y: 0,
                 rotationX: 0,
                 duration: 0.5,
-                ease: "back.out(1.7)"
-            });
-            
-            // Add a subtle glow effect
-            gsap.delayedCall(0.2, () => {
-                gsap.to(tag, {
-                    boxShadow: '0 0 0 3px rgba(156, 163, 175, 0.3)',
-                    duration: 0.3,
-                    onComplete: () => {
-                        gsap.to(tag, {
-                            boxShadow: '0 0 0 0 rgba(156, 163, 175, 0)',
-                            duration: 0.5
-                        });
-                    }
-                });
+                ease: "back.out(1.25)"
             });
             
             uiManager.updateClearButtonVisibility(); // Added for predictive search
@@ -1236,48 +1223,50 @@ export default function initPredictiveSearch(el) {
         },
 
         // SIMPLE REMOVE METHOD
-        remove(text, tagElement) {
-            state.activeTags = state.activeTags.filter(tag => tag !== text);
-            
-            if (tagElement) {
-                gsap.to(tagElement, {
-                    opacity: 0,
-                    scale: 0.8,
-                    duration: 0.2,
-                    onComplete: () => {
-                        try {
-                            if (tagElement && tagElement.isConnected) {
-                                if (tagElement.remove) {
-                                    tagElement.remove();
-                                } else if (tagElement.parentNode) {
-                                    tagElement.parentNode.removeChild(tagElement);
-                                }
-                            }
-                        } catch (error) {
-                            console.warn('Error removing tag element:', error);
-                        }
-                        
-                        // SIMPLE: Update all tag visibility after removal
-                        simpleTagManager.updateAllTagsVisibility();
-                        uiManager.updateClearButtonVisibility();
-                        
-                        if (state.sb) {
-                            state.sb.updateMetrics();
+// UPDATED REMOVE METHOD with mini-search style animation (FAST)
+remove(text, tagElement) {
+    state.activeTags = state.activeTags.filter(tag => tag !== text);
+    
+    // MOVED: Call filterManager immediately (like mini-search) for faster animation
+    filterManager.filterTags(state.searchValue);
+    uiManager.updateClearButtonVisibility();
+    
+    if (tagElement) {
+        gsap.to(tagElement, {
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.2,
+            onComplete: () => {
+                try {
+                    if (tagElement && tagElement.isConnected) {
+                        if (tagElement.remove) {
+                            tagElement.remove();
+                        } else if (tagElement.parentNode) {
+                            tagElement.parentNode.removeChild(tagElement);
                         }
                     }
-                });
-            } else {
-                // If no element animation, update immediately
-                simpleTagManager.updateAllTagsVisibility();
-                uiManager.updateClearButtonVisibility();
+                } catch (error) {
+                    console.warn('Error removing tag element:', error);
+                }
+                
+                if (state.sb) {
+                    state.sb.updateMetrics();
+                }
             }
-            
-            if (elements.input) {
-                elements.input.focus();
-            }
-            
-            console.log(`Tag "${text}" removed successfully`);
-        },
+        });
+    } else {
+        // ScrollBooster update for cases without tag element
+        if (state.sb) {
+            state.sb.updateMetrics();
+        }
+    }
+    
+    if (elements.input) {
+        elements.input.focus();
+    }
+    
+    console.log(`Tag "${text}" removed successfully`);
+},
 
         clear() {
             state.activeTags = [];
@@ -1329,12 +1318,18 @@ export default function initPredictiveSearch(el) {
     
     const searchManager = {
         open() {
+            //gsap.to(overlay, { opacity: 0.3, duration: 1 });
             state.isOpen = true
             el.section.classList.add('is-active')
             el.section.setAttribute('data-lenis-prevent', '');
             
             if (!utils_internal.isOnSearchPage()) {
                 elements.input.focus()
+            }
+
+            const resultsWrapper = qs('.predictive-search-results-wrapper', el.section)
+            if (resultsWrapper) {
+                resultsWrapper.scrollTop = 0
             }
     
             document.body.classList.add('overflow-hidden')
@@ -1347,6 +1342,7 @@ export default function initPredictiveSearch(el) {
             );
             
             if (visibleResultItems.length > 0) {
+                gsap.killTweensOf([visibleResultItems])
                 gsap.fromTo(visibleResultItems, {
                     opacity: 0,
                     y: 40
@@ -1355,7 +1351,7 @@ export default function initPredictiveSearch(el) {
                     y: 0,
                     duration: 0.6,
                     stagger: 0.03,
-                    ease: "back.out(1.7)"
+                    ease: "back.out(1.25)"
                 })
             }
     
@@ -1396,26 +1392,25 @@ export default function initPredictiveSearch(el) {
         },
 
         close(preserveInput = false, preserveTags = false) {
+            //gsap.to(overlay, { opacity: 0, duration: 1 });
             state.isOpen = false
-            el.section.classList.remove('is-active')
+            
             gsap.to(elements.close, { scale: 1, duration: 0.2 })
             gsap.to(elements.hidden, { opacity: 1, duration: 0.3 })
             gsap.to(elements.results, { height: 0, duration: 0.3 })
             gsap.to(elements.submit, { x: '101%', duration: 0.4, ease: "power2.out" })
 
-            el.section.removeAttribute('data-lenis-prevent');
+            el.section && el.section.classList.remove('is-active')
+            el.section && el.section.removeAttribute('data-lenis-prevent');
             document.body.classList.remove('overflow-hidden')
-
-            gsap.set(elements.resultsItems, {
-                opacity: 0,
-                y: 40
-            })
 
             elements.submit.style.pointerEvents = 'none'
 
             if (!preserveInput) {
                 elements.input.value = ''
             }
+
+            elements.input.blur()
 
             // Don't clear tags if preserveTags is true
             if (!preserveTags) {

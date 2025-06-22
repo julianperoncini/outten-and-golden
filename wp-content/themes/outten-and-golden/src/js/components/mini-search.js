@@ -456,7 +456,7 @@ export default function initEnhancedSearch(el) {
                                 y: 0,
                                 duration: 0.3,
                                 delay: index * 0.03,
-                                ease: "back.out(1.7)"
+                                ease: "back.out(1.25)"
                             });
                         } else {
                             // For tags that were already visible, just animate the text change
@@ -746,8 +746,8 @@ export default function initEnhancedSearch(el) {
                     scale: 1,
                     y: 0,
                     rotationX: 0,
-                    duration: 0.5,
-                    ease: "back.out(1.7)"
+                    duration: 0.3,
+                    ease: "back.out(1.25)"
                 });
                 
                 elements.input.focus();
@@ -807,8 +807,8 @@ export default function initEnhancedSearch(el) {
                 scale: 1,
                 y: 0,
                 rotationX: 0,
-                duration: 0.5,
-                ease: "back.out(1.7)"
+                duration: 0.3,
+                ease: "back.out(1.25)"
             });
             
             // Add a subtle glow effect

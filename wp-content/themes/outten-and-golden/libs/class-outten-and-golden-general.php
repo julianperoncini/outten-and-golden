@@ -93,6 +93,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('admin_head-user-edit.php', [$this, 'hide_gravatar_section']);
 
         add_action('init', [$this, 'modify_tags_to_hierarchical'], 0);
+        
 
         add_filter( 'timmy/sizes', function( $sizes ) {
             return array_map( function( $size ) {
@@ -324,6 +325,9 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_4'] = Timber::get_menu('footer-menu-4');
         $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
         $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
+        
+        $context['gravity_form'] = do_shortcode('[gravityform id="1"]');
+
 
         
         $context['all_tags'] = Timber::get_terms([

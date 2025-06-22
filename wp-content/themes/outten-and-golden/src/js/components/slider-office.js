@@ -74,10 +74,14 @@ export default function sliderOffice(config) {
     }
 
     const animateSlideTransition = (prevIndex, newIndex) => {
+        if (state.isTransitioning) return
+    
         state.isTransitioning = true;
         
         const prevSlide = elements.items[prevIndex];
         const newSlide = elements.items[newIndex];
+        
+        gsap.killTweensOf([prevSlide, newSlide]);
         
         gsap.set(newSlide, {
             autoAlpha: 0,
@@ -110,9 +114,13 @@ export default function sliderOffice(config) {
     }
 
     const setSlide = (index) => {
-        if (state.isTransitioning) return;
+        if (state.isTransitioning) return
+    
+        state.progressTimelines.forEach(timeline => {
+            if (timeline) timeline.kill()
+        })
         
-        const prevIdx = state.currentIdx;
+        const prevIdx = state.currentIdx
         
         state.lastIdx = state.currentIdx;
         state.currentIdx = index;
@@ -280,6 +288,8 @@ export default function sliderOffice(config) {
 
     const unmount = () => {
         pauseAutoplay();
+    
+        gsap.killTweensOf(elements.items);
         
         state.progressTimelines.forEach(timeline => {
             if (timeline && timeline.kill) {
@@ -292,11 +302,12 @@ export default function sliderOffice(config) {
         evt.off('touchstart', elements.container);
         evt.off('touchend', elements.container);
         
-        elements.progressBars.forEach((bar) => {
-            if (bar.classList.contains('cursor-pointer')) {
-                evt.off('click', bar);
+        elements.progressBars.forEach(bar => {
+            const progressFill = qs('span', bar);
+            if (progressFill) {
+                gsap.killTweensOf(progressFill);
             }
-        });
+        })
     }
 
     mount();

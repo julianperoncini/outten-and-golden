@@ -30,6 +30,7 @@ export default class extends Renderer {
 
 		components['search']({ section: qs('.js-header-search') });
 		components['bookACall'](this.el);
+		components['sliderOffice']({ section: qs('.js-slider-office') });
 
 		this.onEnterCompleted()
     }
