@@ -19,21 +19,20 @@
     }
 ] %}
 
-
 <header class="fixed top-0 left-0 w-full z-[9999] js-header-search">
         <div class="border-b sticky top-0 overflow-clip pb-15 bg-white border-grey-taupe relative z-[9999]">
         
             <div class="site-max flex flex-col px-20 pt-15 bg-white relative overflow-hidden z-2">
                 <div class="relative w-full flex justify-between items-center z-2">
 
-                    <div class="w-full gap-x-10 hidden s:flex items-center justify-center predictive-search z-2 pointer-events-none js-search">
-                        <button class="flex items-center justify-center transition-opacity duration-300 size-48 rounded-[0.4rem] border border-grey-taupe text-12 font-medium leading-[1.32] bg-white text-green predictive-search-close">
+                    <div class="w-full gap-x-10 hidden s:flex items-center justify-center js-search z-2 pointer-events-none js-search-container">
+                        <button class="flex items-center justify-center transition-opacity duration-300 size-48 rounded-[0.4rem] border border-grey-taupe text-12 font-medium leading-[1.32] bg-white text-green js-search-close">
                             <svg class="size-11" width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5.5 6.6711L1.40114 10.77C1.24778 10.9233 1.0526 11 0.815589 11C0.57858 11 0.383396 10.9233 0.230038 10.77C0.076679 10.6166 0 10.4214 0 10.1844C0 9.9474 0.076679 9.75222 0.230038 9.59886L4.3289 5.5L0.230038 1.40114C0.076679 1.24778 0 1.0526 0 0.815589C0 0.57858 0.076679 0.383396 0.230038 0.230038C0.383396 0.076679 0.57858 0 0.815589 0C1.0526 0 1.24778 0.076679 1.40114 0.230038L5.5 4.3289L9.59886 0.230038C9.75222 0.076679 9.9474 0 10.1844 0C10.4214 0 10.6166 0.076679 10.77 0.230038C10.9233 0.383396 11 0.57858 11 0.815589C11 1.0526 10.9233 1.24778 10.77 1.40114L6.6711 5.5L10.77 9.59886C10.9233 9.75222 11 9.9474 11 10.1844C11 10.4214 10.9233 10.6166 10.77 10.77C10.6166 10.9233 10.4214 11 10.1844 11C9.9474 11 9.75222 10.9233 9.59886 10.77L5.5 6.6711Z" fill="#1E383E"/>
                             </svg>
                         </button>
 
-                        <div class="w-full max-w-[30rem] relative transition-all duration-300 mx-auto left-0 right-0 predictive-search-bar">
+                        <div class="w-full max-w-[30rem] relative transition-all duration-300 mx-auto left-0 right-0 js-search-bar">
                             <form role="search" method="get" action="{{ site.url }}" class="search-form transition-all duration-300 hover:bg-grey-taupe/10 relative z-1 h-full w-full overflow-hidden search-form m-0">
                                 <div class="w-full flex relative pointer-events-auto border border-grey-taupe rounded-[0.4rem] overflow-hidden search-input-wrapper">
                                     
@@ -43,18 +42,18 @@
                                         </svg>
                                     </div>
 
-                                    <div class="predictive-search-tags flex items-center">
+                                    <div class="js-search-tags flex items-center">
                                         {% if search_tags %}
                                             {% for tag in search_tags %}
-                                                <div class="predictive-search-tag">
+                                                <div class="js-search-tag">
                                                     <span>{{ tag }}</span>
-                                                    <button type="button" class="predictive-search-tag-remove" data-tag="{{ tag }}">×</button>
+                                                    <button type="button" class="js-search-tag-remove" data-tag="{{ tag }}">×</button>
                                                 </div>
                                             {% endfor %}
                                         {% endif %}
                                     </div>
 
-                                    <input id="predictive-search" 
+                                    <input id="js-search-input" 
                                         class="py-12 pr-15 text-16 h-48 pr-110 leading-none outline-none w-full" 
                                         name="s" 
                                         type="text" 
@@ -75,7 +74,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" class="js-predictive-search-clear opacity-0 z-[99] pointer-events-none -translate-y-1/2 flex items-center absolute right-110 top-1/2 leading-none gap-x-5 bg-white-smoke font-normal text-12 flex items-center justify-center h-20 font-medium leading-[1.32] rounded-[0.4rem] px-6 py-5 absolute">
+                                    <button type="button" class="js-search-clear opacity-0 z-[99] pointer-events-none -translate-y-1/2 flex items-center absolute right-110 top-1/2 leading-none gap-x-5 bg-white-smoke font-normal text-12 flex items-center justify-center h-20 font-medium leading-[1.32] rounded-[0.4rem] px-6 py-5 absolute">
                                         <span class="block">Clear</span>
                                         <svg class="size-10" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3.5 7.5C2.52291 7.5 1.69531 7.16094 1.01719 6.48281C0.339062 5.80469 0 4.97708 0 4C0 3.02292 0.339062 2.19531 1.01719 1.51719C1.69531 0.839064 2.52291 0.500002 3.5 0.500002C4.00312 0.500002 4.48437 0.603835 4.94375 0.811501C5.40312 1.01917 5.79687 1.31638 6.125 1.70313V0.937501C6.125 0.813543 6.167 0.70971 6.251 0.626002C6.33499 0.542293 6.43883 0.500293 6.56249 0.500002C6.68616 0.49971 6.79014 0.54171 6.87443 0.626002C6.95872 0.710293 7.00058 0.814126 6.99999 0.937501V3.125C6.99999 3.24896 6.95799 3.35294 6.87399 3.43694C6.78999 3.52094 6.68616 3.56279 6.56249 3.5625H4.375C4.25104 3.5625 4.1472 3.5205 4.0635 3.4365C3.97979 3.3525 3.93779 3.24867 3.9375 3.125C3.93721 3.00133 3.97921 2.8975 4.0635 2.8135C4.14779 2.7295 4.25162 2.6875 4.375 2.6875H5.775C5.54166 2.27917 5.22272 1.95833 4.81818 1.725C4.41364 1.49167 3.97425 1.375 3.5 1.375C2.77083 1.375 2.15104 1.63021 1.64062 2.14063C1.13021 2.65104 0.874999 3.27083 0.874999 4C0.874999 4.72917 1.13021 5.34896 1.64062 5.85938C2.15104 6.36979 2.77083 6.625 3.5 6.625C3.99583 6.625 4.44981 6.49929 4.86193 6.24788C5.27406 5.99646 5.593 5.65915 5.81875 5.23594C5.87708 5.13385 5.95918 5.06283 6.06506 5.02288C6.17093 4.98292 6.27841 4.98102 6.3875 5.01719C6.50416 5.05365 6.58802 5.13021 6.63906 5.24688C6.6901 5.36354 6.68645 5.47292 6.62812 5.575C6.32916 6.15833 5.9026 6.625 5.34843 6.975C4.79427 7.325 4.17812 7.5 3.5 7.5Z" fill="#1E383E"/>
@@ -83,13 +82,13 @@
                                     </button>
 
                                 </div>
-                                <button type="submit" class="absolute search-submit h-full pointer-events-none z-2 absolute top-0 rounded-r-[0.4rem] right-0 text-12 px-20 leading-[1.32] bg-yellow uppercase font-medium tracking-[0.1em] text-10 translate-x-full js-predictive-search-submit">Submit</button>
+                                <button type="submit" class="absolute search-submit h-full pointer-events-none z-2 absolute top-0 rounded-r-[0.4rem] right-0 text-12 px-20 leading-[1.32] bg-yellow uppercase font-medium tracking-[0.1em] text-10 translate-x-full js-search-submit">Submit</button>
                             </form>
 
                         </div>
                     </div>
                     
-                    <div class="relative s:absolute left-0 flex items-center predictive-search-hidden">
+                    <div class="relative s:absolute left-0 flex items-center js-search-hidden">
                         <button class="flex flex-col outline-none gap-y-4 p-16 -ml-16 js-menu-trigger">
                             <span class="w-18 h-[1px] origin-top-left will-change-transform bg-green"></span>
                             <span class="w-18 h-[1px] origin-top-left will-change-transform bg-green"></span>
@@ -115,7 +114,7 @@
                         </a>
                     </div>
 
-                    <div class="absolute right-0 flex overflow-hidden uppercase predictive-search-hidden">
+                    <div class="absolute right-0 flex overflow-hidden uppercase js-search-hidden">
                         <div class="relative rounded-[0.4rem] flex gap-x-10 px-5">
                             <button class="js-bookacall-trigger hover:bg-grey-taupe/20 transition-colors duration-300 border border-grey-taupe rounded-[0.4rem] font-medium h-full text-green py-12 px-16 s:-ml-2 flex items-center text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe relative bg-white h-48">
                                 <div class="hidden s:flex items-center">
@@ -137,26 +136,26 @@
 
             </div>
 
-            <div class="predictive-search-results site-max h-0">
-                <div class="hidden absolute top-0 s:flex h-full pointer-events-none z-1 w-[15rem] s:w-[30rem] right-0 transition-opacity duration-300 js-scrollboost-gradient">
+            <div class="js-search-results site-max h-0">
+                <div class="hidden absolute top-0 s:flex h-full pointer-events-none z-1 w-[15rem] s:w-[30rem] right-0 transition-opacity duration-300 js-search-scroll-gradient">
                     <div class="from-transparent to-white bg-gradient-to-r w-[calc(100%-6.9rem)]"></div>
                     <div class="absolute top-0 right-0 h-full bg-white w-[7rem] bg-white"></div>
                 </div>
 
                 <div class="relative flex items-center -mx-20 s:-mx-30 pt-15  px-20 s:px-30">
 
-                    <button class="absolute right-20 s:right-30 z-2 size-30 bg-white-smoke rounded-[0.4rem] hidden s:flex items-center justify-center transition-opacity duration-300 js-scrollboost-next">
+                    <button class="absolute right-20 s:right-30 z-2 size-30 bg-white-smoke rounded-[0.4rem] hidden s:flex items-center justify-center transition-opacity duration-300 js-search-scroll-next">
                         <svg class="size-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
                             <path d="M.65,10.3c-.17,0-.33-.06-.46-.19-.25-.25-.25-.67,0-.92l4.04-4.04L.19,1.11C-.06.86-.06.44.19.19S.86-.06,1.11.19l4.5,4.5c.25.25.25.67,0,.92L1.11,10.11c-.13.13-.29.19-.46.19Z"/>
                         </svg>
                     </button>
 
                     {% if all_tags %}
-                        <div class="relative w-full js-scrollboost">
-                            <div class="flex js-scrollboost-content">
-                                <ul class="gap-x-12 flex whitespace-nowrap text-12 js-scrollboost-length">
+                        <div class="relative w-full js-search-scroll-viewport">
+                            <div class="flex js-search-scroll-content">
+                                <ul class="gap-x-12 flex whitespace-nowrap text-12 js-search-scroll-length">
                                     {% for item in all_tags %}
-                                        <li class="inline-block will-change-transform predictive-search-results-item js-tag" data-tag="{{ item.name }}">
+                                        <li class="inline-block will-change-transform js-search-results-item js-search-tag-button" data-tag="{{ item.name }}">
                                             <button class="px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe">
                                                 <span>{{ item.name }}</span>
                                             </button>
@@ -171,8 +170,7 @@
             </div>
         </div>
 
-        
-        <div class="predictive-search-results-wrapper">
+        <div class="js-search-results-wrapper">
             <div class="relative w-full bg-white overflow-hidden">
                 <div class="site-max py-40">
                     {% include './partials/search-related.twig' %}

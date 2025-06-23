@@ -1,8 +1,8 @@
 import preloader from './preloader'
-import search from './search'
 import lazyload from './lazyload'
 import menu from './menu'
 import split from './split'
+import s from './s'
 import triggered from './triggered'
 import slider from './slider'
 import sliderOffice from './slider-office'
@@ -22,10 +22,9 @@ import carouselIssueText from './carousel-issue-text'
 import bookACall from './bookacall'
 import highlight from './highlight'
 import accordion from './accordion'
-import miniSearch from './mini-search'
 
 export {
-    search,
+    s,
     slider,
     triggered,
     sliderOffice,
@@ -43,6 +42,5 @@ export {
     carouselIssueText,
     bookACall,
     highlight,
-    accordion,
-    miniSearch
+    accordion
 }

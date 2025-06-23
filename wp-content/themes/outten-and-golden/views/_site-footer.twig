@@ -48,10 +48,8 @@
                 </div>
 
                 <div class="col-span-full s:col-start-14 s:col-span-3 flex items-center s:justify-end">
-                    <a 
-                        class="relative mx-auto s:mx-0 w-fit h-48 font-medium text-green py-12 px-16 l:-ml-2 flex items-center border rounded-[0.4rem] text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe bg-white" 
-                        href="{{ options.book_a_call.link.url }}"
-                        target="{{ options.book_a_call.link.target }}"
+                    <button 
+                        class="hover:bg-grey-taupe/20 transition-colors duration-300 relative mx-auto s:mx-0 w-fit h-48 font-medium text-green py-12 px-16 l:-ml-2 flex items-center border rounded-[0.4rem] text-12 gap-x-8 uppercase tracking-[0.1em] border-grey-taupe bg-white js-bookacall-trigger" 
                     >
                         <div class="flex items-center">
                             {% for item in items %}
@@ -59,7 +57,7 @@
                             {% endfor %}
                         </div>
                         <span class="leading-none">{{ options.book_a_call.link.title }}</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

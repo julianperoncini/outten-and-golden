@@ -92,17 +92,22 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('admin_head-profile.php', [$this, 'hide_gravatar_section']);
         add_action('admin_head-user-edit.php', [$this, 'hide_gravatar_section']);
 
+        add_filter( 'gform_form_args', [$this, 'filter_gravity_forms_force_ajax'] );
+
         add_action('init', [$this, 'modify_tags_to_hierarchical'], 0);
 
         add_filter('gform_disable_css', '__return_true');
- 
-        // Dequeue all GF styles at a later priority
+
+        // Only dequeue visual styles, keep functional ones
         add_action('wp_enqueue_scripts', function() {
+            // These are safe to remove (visual only)
             wp_dequeue_style('gforms_reset_css');
-            wp_dequeue_style('gforms_datepicker_css');
-            wp_dequeue_style('gforms_formsmain_css');
-            wp_dequeue_style('gforms_ready_class_css');
             wp_dequeue_style('gforms_browsers_css');
+            
+            // Keep these for functionality:
+            // wp_dequeue_style('gforms_datepicker_css'); // Needed for date fields
+            // wp_dequeue_style('gforms_formsmain_css');  // Contains form structure
+            // wp_dequeue_style('gforms_ready_class_css'); // Needed for form state management
         }, 999);
 
         add_filter( 'timmy/sizes', function( $sizes ) {
@@ -204,6 +209,11 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             return $content;
         }, 10, 5);
 
+    }
+
+    public function filter_gravity_forms_force_ajax( $args ) {
+        $args['ajax'] = true;
+        return $args;
     }
 
 
@@ -386,8 +396,10 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
 
         if (class_exists('GFAPI')) {
             ob_start();
-            gravity_form(1, false, false, false, '', true); // Last parameter enables AJAX
-            $context['gravity_form'] = ob_get_clean();
+            gravity_form(1, false, false, false, '', true); // AJAX enabled
+            $form_html = ob_get_clean();
+            
+            $context['gravity_form'] = $form_html;
         }
 
         

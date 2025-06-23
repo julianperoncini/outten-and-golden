@@ -28,7 +28,26 @@ export default class extends Renderer {
             this.preloader?.loaded()
         }
 
-		components['search']({ section: qs('.js-header-search') });
+		components['s']({
+			section: qs('.js-header-search'),
+			// mode: 'modal' (default)
+			searchCallbacks: {
+				onTagAdded: (text) => console.log('Tag added:', text),
+				onTagsChanged: (tags) => console.log('Tags changed:', tags),
+			},
+			uiOptions: {
+				onOpen: () => console.log('Search opened'),
+				onClose: () => console.log('Search closed'),
+				onSubmit: (tags, query) => console.log('Search submitted')
+			}
+		})
+
+		components['s']({
+			section: qs('.js-search-mobile-section'),
+			mode: 'mobile',
+		})
+		
+
 		components['bookACall'](this.el);
 		components['sliderOffice']({ section: qs('.js-slider-office') });
 
@@ -46,12 +65,20 @@ export default class extends Renderer {
 
         evt.emit('scroll:header');
 
+		if (qs('.js-search-mini-section')) {
+			components['s']({
+				section: qs('.js-search-mini-section'),
+				mode: 'static',
+			})
+		}
+/*
         const searchLinks = qsa('.js-search-link');
         searchLinks.forEach(searchLink => {
             evt.on('click', searchLink, (e) => {
                 components['search'](this.el).clearSearch()
             });
         });
+		*/
     }
 
     onEnterCompleted() {

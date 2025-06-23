@@ -10,7 +10,7 @@ export default function bookACall(el) {
         container: el.container
     }
 
-    const trigger = qs('.js-bookacall-trigger');
+    const trigger = qsa('.js-bookacall-trigger');
     const close = qsa('.js-bookacall-close');
     const elem = qs('.book-a-call');
     const modalContent = qs('.book-a-call .modal-content');

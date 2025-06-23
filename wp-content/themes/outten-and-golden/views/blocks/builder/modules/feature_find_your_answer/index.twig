@@ -1,4 +1,4 @@
-<section class="relative bg-white mini-search-section" data-component="miniSearch(js-find-your-answer-search)">
+<section class="relative bg-white js-search-mini-section">
     <div class="site-max py-80 s:py-160">
         <div class="site-grid">
             <div class="col-span-full text-center relative mb-40">
@@ -15,19 +15,19 @@
                             </svg>
                         </div>
 
-                        <div class="search-tags flex items-center">
+                        <div class="js-search-tags flex items-center">
                             {% if search_tags %}
                                 {% for tag in search_tags %}
-                                    <div class="search-tag">
+                                    <div class="js-search-tag">
                                         <span>{{ tag }}</span>
-                                        <button type="button" class="search-tag-remove" data-tag="{{ tag }}">×</button>
+                                        <button type="button" class="js-search-tag-remove" data-tag="{{ tag }}">×</button>
                                     </div>
                                 {% endfor %}
                             {% endif %}
                         </div>
 
                         <input
-                            class="py-12 pr-15 text-16 h-48 pr-110 leading-none outline-none w-full mini-search-input js-mini-search-input" 
+                            class="py-12 pr-15 text-16 h-48 pr-110 leading-none outline-none w-full js-search-mini-input" 
                             name="s" 
                             type="text" 
                             placeholder="Try Labor Court ..." 
@@ -41,14 +41,14 @@
                             {% endfor %}
                         {% endif %}
 
-                        <button type="button" class="js-mini-search-clear opacity-0 top-1/2 -translate-y-1/2 z-[99] pointer-events-none flex items-center absolute right-60 s:right-110 leading-none gap-x-5 bg-white-smoke font-normal text-12 flex items-center justify-center h-20 font-medium leading-[1.32] rounded-[0.4rem] px-6 py-5 absolute">
+                        <button type="button" class="js-search-clear opacity-0 top-1/2 -translate-y-1/2 z-[99] pointer-events-none flex items-center absolute right-60 s:right-110 leading-none gap-x-5 bg-white-smoke font-normal text-12 flex items-center justify-center h-20 font-medium leading-[1.32] rounded-[0.4rem] px-6 py-5 absolute">
                             <span class="block">Clear</span>
                             <svg class="size-10" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3.5 7.5C2.52291 7.5 1.69531 7.16094 1.01719 6.48281C0.339062 5.80469 0 4.97708 0 4C0 3.02292 0.339062 2.19531 1.01719 1.51719C1.69531 0.839064 2.52291 0.500002 3.5 0.500002C4.00312 0.500002 4.48437 0.603835 4.94375 0.811501C5.40312 1.01917 5.79687 1.31638 6.125 1.70313V0.937501C6.125 0.813543 6.167 0.70971 6.251 0.626002C6.33499 0.542293 6.43883 0.500293 6.56249 0.500002C6.68616 0.49971 6.79014 0.54171 6.87443 0.626002C6.95872 0.710293 7.00058 0.814126 6.99999 0.937501V3.125C6.99999 3.24896 6.95799 3.35294 6.87399 3.43694C6.78999 3.52094 6.68616 3.56279 6.56249 3.5625H4.375C4.25104 3.5625 4.1472 3.5205 4.0635 3.4365C3.97979 3.3525 3.93779 3.24867 3.9375 3.125C3.93721 3.00133 3.97921 2.8975 4.0635 2.8135C4.14779 2.7295 4.25162 2.6875 4.375 2.6875H5.775C5.54166 2.27917 5.22272 1.95833 4.81818 1.725C4.41364 1.49167 3.97425 1.375 3.5 1.375C2.77083 1.375 2.15104 1.63021 1.64062 2.14063C1.13021 2.65104 0.874999 3.27083 0.874999 4C0.874999 4.72917 1.13021 5.34896 1.64062 5.85938C2.15104 6.36979 2.77083 6.625 3.5 6.625C3.99583 6.625 4.44981 6.49929 4.86193 6.24788C5.27406 5.99646 5.593 5.65915 5.81875 5.23594C5.87708 5.13385 5.95918 5.06283 6.06506 5.02288C6.17093 4.98292 6.27841 4.98102 6.3875 5.01719C6.50416 5.05365 6.58802 5.13021 6.63906 5.24688C6.6901 5.36354 6.68645 5.47292 6.62812 5.575C6.32916 6.15833 5.9026 6.625 5.34843 6.975C4.79427 7.325 4.17812 7.5 3.5 7.5Z" fill="#1E383E"/>
                             </svg>
                         </button>
                     </div>
-                    <button type="submit" class="absolute search-submit h-full z-2 absolute top-0 rounded-r-[0.4rem] right-0 text-12 px-20 leading-[1.32] bg-yellow uppercase font-medium tracking-[0.1em] text-10 js-mini-search-submit">
+                    <button type="submit" class="absolute search-submit h-full z-2 absolute top-0 rounded-r-[0.4rem] right-0 text-12 px-20 leading-[1.32] bg-yellow uppercase font-medium tracking-[0.1em] text-10 js-search-submit">
                         <span class="hidden s:block">Submit</span>
                         <svg class="size-10 s:hidden" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
                             <defs>
@@ -67,27 +67,27 @@
                     </button>
                 </form>
 
-                <div class="mini-search-section__wrapper relative site-max s:overflow-hidden mt-15 h-30">
-                    <div class="mini-search-results absolute w-full">
-                        <div class="hidden absolute top-0 s:flex h-full pointer-events-none z-1 w-[15rem] right-0 transition-opacity duration-300 js-mini-scrollboost-gradient">
+                <div class="js-search-mini-section__wrapper relative site-max s:overflow-hidden mt-15 h-30">
+                    <div class="js-search-mini-results absolute w-full">
+                        <div class="hidden absolute top-0 s:flex h-full pointer-events-none z-1 w-[15rem] right-0 transition-opacity duration-300 js-search-scroll-gradient">
                             <div class="from-transparent to-white bg-gradient-to-r w-[calc(100%-6.9rem)]"></div>
                             <div class="absolute top-0 right-0 h-full bg-white w-[7rem] bg-white"></div>
                         </div>
 
                         <div class="relative flex items-center -mx-20 s:mx-0">
 
-                            <button class="absolute z-2 size-30 bg-white-smoke rounded-[0.4rem] right-0 hidden s:flex items-center justify-center transition-opacity duration-300 js-mini-scrollboost-next">
+                            <button class="absolute z-2 size-30 bg-white-smoke rounded-[0.4rem] right-0 hidden s:flex items-center justify-center transition-opacity duration-300 js-search-scroll-next">
                                 <svg class="size-9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
                                     <path d="M.65,10.3c-.17,0-.33-.06-.46-.19-.25-.25-.25-.67,0-.92l4.04-4.04L.19,1.11C-.06.86-.06.44.19.19S.86-.06,1.11.19l4.5,4.5c.25.25.25.67,0,.92L1.11,10.11c-.13.13-.29.19-.46.19Z"/>
                                 </svg>
                             </button>
 
                             {% if all_tags %}
-                                <div class="relative w-full px-20 s:px-0 js-mini-scrollboost">
-                                    <div class="flex js-mini-scrollboost-content">
-                                        <ul class="gap-x-12 flex whitespace-nowrap text-12 js-mini-scrollboost-length">
+                                <div class="relative w-full js-search-scroll-viewport overflow-x-auto">
+                                    <div class="flex js-search-scroll-content">
+                                        <ul class="gap-x-12 flex whitespace-nowrap text-12 js-search-scroll-length px-20 s:px-0">
                                             {% for item in all_tags %}
-                                                <li class="inline-block will-change-transform mini-search-results-item js-mini-tag" data-tag="{{ item.name }}">
+                                                <li class="inline-block will-change-transform js-search-results-item js-search-tag-button" data-tag="{{ item.name }}">
                                                     <button class="px-12 py-[0.70rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe">
                                                         <span>{{ item.name }}</span>
                                                     </button>
