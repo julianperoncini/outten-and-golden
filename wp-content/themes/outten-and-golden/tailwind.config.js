@@ -45,6 +45,9 @@ export default {
       },
       sky: {
         DEFAULT: '#CFD8ED'
+      },
+      red: {
+        DEFAULT: '#D32F2F'
       }
     },
     // Generate fontSize scale (0-150)

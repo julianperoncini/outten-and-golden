@@ -1,0 +1,180 @@
+// Base input reset
+input,
+textarea,
+select {
+  // Remove default appearance
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  // Reset box model
+  margin: 0;
+  padding: 0;
+  
+  // Reset typography
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  
+  // Reset background
+  background: none;
+  background-color: transparent;
+  
+  // Reset sizing
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  
+  // Remove default border radius
+  border-radius: 0;
+  
+  // Reset text properties
+  text-align: inherit;
+  text-decoration: none;
+  text-transform: none;
+  
+  // Remove default shadows
+  box-shadow: none;
+  
+  // Reset cursor
+  cursor: inherit;
+}
+
+// Specific input type resets
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"] {
+  // Remove iOS rounded corners and inner shadow
+  -webkit-border-radius: 0;
+  -webkit-appearance: none;
+  
+  // Remove default padding that some browsers add
+  padding: 0;
+}
+
+// Textarea specific reset
+textarea {
+  // Remove default resize handle styling
+  resize: none;
+  
+  // Remove default scrollbar styling
+  overflow: auto;
+  
+  // Reset vertical alignment
+  vertical-align: top;
+}
+
+// Select specific reset
+select {
+  // Remove default dropdown arrow
+  background-image: none;
+  
+  // Remove default padding
+  padding: 0;
+  
+  // Reset text overflow
+  text-overflow: ellipsis;
+}
+
+// Checkbox and radio reset
+input[type="checkbox"],
+input[type="radio"] {
+  // Reset dimensions
+  width: auto;
+  height: auto;
+  
+  // Remove default margins some browsers add
+  margin: 0;
+}
+
+// File input reset
+input[type="file"] {
+  // Reset file input styling
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+// Range input reset
+input[type="range"] {
+  // Remove default track and thumb styling
+  background: transparent;
+  
+  // Webkit specific
+  &::-webkit-slider-track {
+    appearance: none;
+    background: transparent;
+  }
+  
+  &::-webkit-slider-thumb {
+    appearance: none;
+  }
+  
+  // Firefox specific
+  &::-moz-range-track {
+    background: transparent;
+    border: none;
+  }
+  
+  &::-moz-range-thumb {
+    background: transparent;
+    border: none;
+  }
+}
+
+// Remove focus styles (you'll want to add your own)
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+// Remove autofill styling
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  -webkit-text-fill-color: inherit;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+// Placeholder reset
+input::placeholder,
+textarea::placeholder {
+  color: inherit;
+  opacity: 1; // Firefox sets this to less than 1 by default
+}
+
+// Remove number input spinners
+input[type="number"] {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  // Firefox
+  -moz-appearance: textfield;
+}
+
+// Remove search input decorations
+input[type="search"] {
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+  }
+}

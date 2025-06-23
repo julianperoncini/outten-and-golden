@@ -1,0 +1,327 @@
+/**
+ * ===============================
+ * Gravity Forms Custom Styles
+ * ===============================
+ * 
+ * Organized structure:
+ * 1. Form Container & Layout
+ * 2. Form Header & Progress
+ * 3. Form Fields & Inputs
+ * 4. Field States & Validation
+ * 5. Special Field Types
+ * 6. Form Footer & Buttons
+ */
+
+/* ===============================
+   1. FORM CONTAINER & LAYOUT
+   =============================== */
+
+   .gform_wrapper {
+    @apply h-full flex flex-col relative;
+
+    form {
+        @apply h-full flex flex-col font-sans text-16 m-0 p-0;
+
+        legend {
+            @apply mb-25;
+        }
+    }
+}
+
+.gform_body {
+    @apply h-full;
+}
+
+.gform_fields {
+    @apply flex flex-col gap-y-20;
+}
+
+.gform_page {
+    @apply h-full flex flex-col;
+
+    &_footer {
+        @apply mt-auto relative z-[10] pt-40;
+    }
+}
+
+/* ===============================
+   2. FORM HEADER & PROGRESS
+   =============================== */
+
+.gtitle {
+    @apply text-32 s:mb-42;
+}
+
+.gform_heading {
+    @apply absolute right-0 bottom-[-6rem] w-full s:bottom-0 py-10 text-red;
+}
+
+.gf_progressbar {
+    @apply hidden;
+
+    &_title {
+        font-size: 0px;
+        @apply flex items-center mb-30 s:mb-40;
+    }
+}
+
+.gf_step_current_page {
+    @apply text-12 leading-[1.4] text-grey font-normal;
+
+    &:after {
+        content: '/';
+        @apply px-2;
+    }
+}
+
+.gf_step_page_count {
+    @apply text-12 leading-[1.4] text-grey font-normal;
+}
+
+/* ===============================
+   3. FORM FIELDS & INPUTS
+   =============================== */
+
+.gfield {
+    @apply relative;
+
+    // Base label styles for floating labels
+    label:not(.gchoice label):not(.gfield_consent_label) {
+        @apply transition-all duration-300 will-change-transform text-16;
+        @apply pointer-events-none absolute top-1/2 left-0 -translate-y-1/2;
+    }
+
+    // Hidden field types
+    &--type-honeypot {
+        @apply hidden;
+    }
+
+    // Textarea specific overrides
+    &--type-textarea {
+        .gform-field-label {
+            @apply relative !important;
+        }
+    }
+
+    // Radio button fields
+    &--type-radio {
+        @apply mb-20 pb-20 border-b border-solid border-grey-taupe;
+    }
+}
+
+// Custom Radio Button Styling
+.gchoice {
+    @apply relative;
+
+    input[type="radio"] {
+        @apply sr-only; // Hide the default radio button
+    }
+
+    label {
+        @apply relative cursor-pointer pl-30; // Add space for custom radio
+        
+        // Custom radio button circle
+        &::before {
+            content: '';
+            @apply absolute left-0 top-1/2 -translate-y-1/2;
+            @apply w-20 h-20 border-2 border-grey-taupe rounded-full;
+            @apply bg-white transition-all duration-200;
+        }
+        
+        // Inner dot when selected
+        &::after {
+            content: '';
+            @apply absolute left-[4px] top-1/2 -translate-y-1/2;
+            @apply w-12 h-12 bg-green rounded-full;
+            @apply opacity-0 scale-0 transition-all duration-200;
+        }
+    }
+
+    // Checked state
+    input[type="radio"]:checked + label {
+        &::before {
+            @apply border-green;
+        }
+        
+        &::after {
+            @apply opacity-100 scale-100;
+        }
+    }
+
+    // Hover state
+    label:hover::before {
+        @apply border-green;
+    }
+
+    // HTML content fields
+    &--type-html {
+        @apply text-12 leading-[1.4];
+    }
+}
+
+.ginput_container {
+    @apply relative;
+}
+
+// Base input styling
+%base-input {
+    @apply border-b border-solid border-grey-taupe w-full py-10 text-16 text-green font-normal;
+}
+
+.gform_wrapper form {
+    textarea,
+    select,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="url"] {
+        @extend %base-input;
+    }
+
+    textarea {
+        @apply h-[6rem];
+    }
+
+    // Floating label animation states
+    $input-selectors: 
+        'textarea',
+        'select',
+        'input',
+        'input[type="text"]',
+        'input[type="email"]',
+        'input[type="tel"]',
+        'input[type="number"]',
+        'input[type="date"]',
+        'input[type="time"]',
+        'input[type="url"]';
+
+    @each $selector in $input-selectors {
+        #{$selector}:focus + label:not(.gchoice label):not(.gfield_consent_label),
+        #{$selector}:not(:placeholder-shown) + label:not(.gchoice label):not(.gfield_consent_label) {
+            @apply -translate-y-[calc(100%+1.6rem)] text-grey text-12 font-normal;
+        }
+    }
+}
+
+// Special field containers
+.gfield_radio {
+    @apply flex items-center gap-x-30;
+}
+
+.gfield_label_before_complex {
+    @apply hidden;
+}
+
+// Custom Checkbox Styling (for consent fields) - Same as Radio
+.ginput_container_consent {
+    @apply relative;
+
+    input[type="checkbox"] {
+        @apply sr-only; // Hide the default checkbox
+    }
+
+    .gfield_consent_label {
+        @apply relative cursor-pointer pl-30; // Add space for custom checkbox
+        
+        // Custom checkbox circle (same as radio)
+        &::before {
+            content: '';
+            @apply absolute left-0 top-1/2 -translate-y-1/2;
+            @apply w-20 h-20 border-2 border-grey-taupe rounded-full;
+            @apply bg-white transition-all duration-200;
+        }
+        
+        // Inner dot when selected (same as radio)
+        &::after {
+            content: '';
+            @apply absolute left-[4px] top-1/2 -translate-y-1/2;
+            @apply w-12 h-12 bg-green rounded-full;
+            @apply opacity-0 scale-0 transition-all duration-200;
+        }
+    }
+
+    // Checked state (same as radio)
+    input[type="checkbox"]:checked + .gfield_consent_label {
+        &::before {
+            @apply border-green;
+        }
+        
+        &::after {
+            @apply opacity-100 scale-100;
+        }
+    }
+
+    // Hover state (same as radio)
+    .gfield_consent_label:hover::before {
+        @apply border-green;
+    }
+}
+
+.gfield_description {
+    @apply text-12 leading-[1.4] text-grey mt-15;
+}
+
+/* ===============================
+   4. FIELD STATES & VALIDATION
+   =============================== */
+
+.gform_validation_errors {
+    @apply hidden;
+}
+
+// Invalid field states
+%invalid-field {
+    @apply border-b border-solid border-red;
+
+    & + label {
+        @apply text-red;
+    }
+}
+
+.gform_wrapper form {
+    input[aria-invalid="true"],
+    textarea[aria-invalid="true"],
+    select[aria-invalid="true"] {
+        @extend %invalid-field;
+    }
+}
+
+/* ===============================
+   5. GRID LAYOUT
+   =============================== */
+
+.gform-grid-row {
+    @apply flex justify-between gap-x-20;
+
+    .gform-grid-col {
+        @apply flex-1 relative;
+    }
+}
+
+/* ===============================
+   6. FORM FOOTER & BUTTONS
+   =============================== */
+
+.gform_wrapper {
+    .button {
+        @apply relative max-w-max inline-flex items-center justify-center;
+        @apply text-12 font-medium leading-none tracking-[0.12rem];
+        @apply text-green py-15 px-25 border-green border-solid border-2 uppercase transition-all duration-300 will-change-transform hover:bg-green hover:text-white;
+    }
+}
+
+.gform_confirmation_message {
+    @apply text-green;
+    line-height: 1.2;
+    max-width: 44rem;
+    @apply flex flex-col h-full;
+}
+
+.gform_fields {
+    .gfield--type-html {
+        @apply text-12 leading-[1.4];
+    }
+}

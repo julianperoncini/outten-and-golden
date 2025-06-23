@@ -14,7 +14,7 @@ export default function bookACall(el) {
     const close = qsa('.js-bookacall-close');
     const elem = qs('.book-a-call');
     const modalContent = qs('.book-a-call .modal-content');
-    
+
     // State variables
     let currentStep = 1;
     const totalSteps = 3;

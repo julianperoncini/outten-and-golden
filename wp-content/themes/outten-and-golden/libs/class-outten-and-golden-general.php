@@ -93,7 +93,17 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         add_action('admin_head-user-edit.php', [$this, 'hide_gravatar_section']);
 
         add_action('init', [$this, 'modify_tags_to_hierarchical'], 0);
-        
+
+        add_filter('gform_disable_css', '__return_true');
+ 
+        // Dequeue all GF styles at a later priority
+        add_action('wp_enqueue_scripts', function() {
+            wp_dequeue_style('gforms_reset_css');
+            wp_dequeue_style('gforms_datepicker_css');
+            wp_dequeue_style('gforms_formsmain_css');
+            wp_dequeue_style('gforms_ready_class_css');
+            wp_dequeue_style('gforms_browsers_css');
+        }, 999);
 
         add_filter( 'timmy/sizes', function( $sizes ) {
             return array_map( function( $size ) {
@@ -147,7 +157,55 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             
             return $twig;
         });
+
+
+        /**
+         * Gravity Forms
+         * ============
+         *
+         * Customize the Gravity Forms field content.
+         *
+         * @param string $content The field content.
+         * @param object $field The field object.
+         */
+        add_filter('gform_field_content', function($content, $field, $value, $lead_id, $form_id) {
+            if (is_admin()) return $content;
+
+            $input_types = ['text', 'email', 'textarea', 'number', 'phone', 'website', 'password'];
+
+            if (in_array($field->type, $input_types)) {
+                // Add placeholder to input and textarea elements if they don't have one
+                if (!preg_match('/placeholder=/', $content)) {
+                    // Handle input tags
+                    $content = preg_replace('/(<input[^>]*)(>)/', '$1 placeholder=" "$2', $content);
+                    // Handle textarea tags
+                    $content = preg_replace('/(<textarea[^>]*)(>)/', '$1 placeholder=" "$2', $content);
+                }
+
+                // Extract the label
+                preg_match('/<label.*?<\/label>/s', $content, $label_match);
+                $label_html = $label_match[0] ?? '';
+
+                if ($label_html) {
+                    // For textarea fields, keep the label above (don't move it)
+                    if ($field->type === 'textarea') {
+                        // Do nothing - leave label in original position above the field
+                    } else {
+                        // For other input types, move label below the input
+                        // Remove the original label
+                        $content = preg_replace('/<label.*?<\/label>/s', '', $content);
+                        
+                        // Place label immediately after the input
+                        $content = preg_replace('/(<input[^>]*>)(\s*)/', '$1$2' . $label_html, $content);
+                    }
+                }
+            }
+
+            return $content;
+        }, 10, 5);
+
     }
+
 
     public function modify_tags_to_hierarchical() {
         register_taxonomy('post_tag', 'post', array(
@@ -325,9 +383,12 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $context['footer_menu_4'] = Timber::get_menu('footer-menu-4');
         $context['footer_menu_5'] = Timber::get_menu('footer-menu-5');
         $context['footer_menu_6'] = Timber::get_menu('footer-menu-6');
-        
-        $context['gravity_form'] = do_shortcode('[gravityform id="1"]');
 
+        if (class_exists('GFAPI')) {
+            ob_start();
+            gravity_form(1, false, false, false, '', true); // Last parameter enables AJAX
+            $context['gravity_form'] = ob_get_clean();
+        }
 
         
         $context['all_tags'] = Timber::get_terms([

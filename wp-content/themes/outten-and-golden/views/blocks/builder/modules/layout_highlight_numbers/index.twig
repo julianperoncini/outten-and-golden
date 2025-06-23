@@ -17,7 +17,7 @@
                 {% for item in item.card %}
 
                     <article data-bg-color="{{ item.background_color }}" data-text-color="{{ item.text_color }}" class="relative flex flex-col items-start {% if loop.first %}pt-0{% else %}pt-60 s:pt-85{% endif %} pb-60 s:pb-[9.6rem] s:pl-[9.6rem] s:pr-[9.6rem] space-y-60 s:space-y-65">
-                        <div class="relative max-w-[16.8rem] s:max-w-[22.6rem] w-full mx-auto">
+                        <div class="relative h-full w-auto mx-auto">
                             {{ get_svg(item.image, 'w-full h-full js-svg-color')|raw }}    
                         </div>
                         <div class="relative {{ isLight ? 'text-green' : 'text-white-smoke' }} space-y-32 s:space-y-22 js-bg-switcher-text">
