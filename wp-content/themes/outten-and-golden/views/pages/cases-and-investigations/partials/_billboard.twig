@@ -4,11 +4,11 @@
 {% set feature_post_link = props.feature_post_link %}
 
 <section class="relative">
-    <div class="site-max pb-32 s:pb-120">
-        <div class="site-grid">
+    <div class="site-max site-grid pb-32 s:pb-120">
+        
             <div class="col-span-full">
-                <div class="relative w-full">
-                    <figure class="relative w-full h-full">
+                <div class="relative w-full h-full overflow-hidden">
+                    <figure class="relative w-full h-[120%]" data-parallax="trigger"  data-parallax-start="-30" data-parallax-end="0">
                         {% include "blocks/common/image.twig" with {
                             props : {
                                 data: {
@@ -76,6 +76,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+       
     </div>
 </section>

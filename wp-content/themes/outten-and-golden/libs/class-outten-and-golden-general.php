@@ -302,8 +302,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             'large' => array(
                 'resize' => array( 1440 ),
                 'srcset' => array(
-                    array( 370 ),
-                    array( 570 ),
+                    array( 720 ),
+                    array( 1024 ),
                     array( 1440 ),
                 )
             ),

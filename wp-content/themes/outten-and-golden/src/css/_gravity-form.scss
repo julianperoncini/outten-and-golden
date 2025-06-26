@@ -222,7 +222,7 @@
 
 // Custom Checkbox Styling (for consent fields) - Same as Radio
 .ginput_container_consent {
-    @apply relative;
+    @apply relative mb-30;
 
     input[type="checkbox"] {
         @apply sr-only; // Hide the default checkbox

@@ -113,6 +113,9 @@
                     <p class="text-20 font-normal leading-[1.24] tracking-[-2%] font-disp">Have a <em class="font-normal italic">question</em> or need <em class="font-normal italic">legal advice</em>?</p>
                 </div>
 
+                {{ function('do_shortcode', '[gravityform id="2" title="false" description="false" ajax="true"]') }}
+
+                {#
                 <form class="relative w-full space-y-32">
                     <div class="relative w-full flex flex-col s:flex-row items-start justify-between gap-32">
                         <div class="relative w-full s:w-1/2">
@@ -166,11 +169,6 @@
 
                     <div class="relative w-full">
                         <div class="relative flex items-center space-x-8">
-                            {# <input 
-                                type="checkbox" 
-                                id="privacy-agreement" 
-                                class="w-16 h-16 bg-transparent border-grey-taupe border-solid border-[0.1rem] rounded-full"
-                            > #}
                             <div class="cursor-pointer w-16 h-16 bg-transparent border-grey-taupe border-solid border-[0.1rem] rounded-full"></div>
                             <label for="privacy-agreement" class="text-12 font-normal leading-[1.4] text-green">
                                 I agree to the 
@@ -193,6 +191,7 @@
                         </button>
                     </div>
                 </form>
+                #}
             </div>
         </div>
     </div>

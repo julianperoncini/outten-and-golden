@@ -92,25 +92,29 @@
                                     </div>
                                 </div>
 
-                                <figure class="relative overflow-hidden w-full max-w-full s:max-w-[65rem] h-auto pointer-events-none select-none">
-                                    {% if feature_content.feature_image %}
-                                        {% include "blocks/common/image.twig" with {
-                                            props : {
-                                                data: {
-                                                    image : feature_content.feature_image
-                                                },
-                                                options: {
-                                                    container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
-                                                    class : 'w-full h-full object-cover pointer-events-none select-none',
-                                                    aspect_ratio: '95%',
-                                                    aspect_ratio_mobile: '100%',
+                                <div class="relative w-full h-full overflow-hidden">
+                                    <figure class="relative overflow-hidden w-full max-w-full s:max-w-[65rem] h-[120%] pointer-events-none select-none" data-parallax-scroll-start="top bottom"  data-parallax="trigger"  data-parallax-start="-30" data-parallax-end="0">
+                                        {% if feature_content.feature_image %}
+                                            {% include "blocks/common/image.twig" with {
+                                                props : {
+                                                    data: {
+                                                        image : feature_content.feature_image
+                                                    },
+                                                    options: {
+                                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                                        class : 'w-full h-full object-cover pointer-events-none select-none',
+                                                        aspect_ratio: '95%',
+                                                        aspect_ratio_mobile: '100%',
+                                                    }
                                                 }
-                                            }
-                                        } %}
-                                    {% else %}
-                                        <div class="pt-[150%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
-                                    {% endif %}
-                                </figure>
+                                            } %}
+                                        {% else %}
+                                            <div class="pt-[150%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
+                                        {% endif %}
+                                    </figure>
+                                </div>
+
+
                             </a>
                         {% else %}
                             <a class="relative block w-full min-w-full s:min-w-[44.3rem] max-w-full s:max-w-[44.3rem] {{ text_color ? text_color : 'text-white' }}" href="{{ post_link }}">

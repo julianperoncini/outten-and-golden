@@ -1,13 +1,13 @@
-<section class="relative" style="background-color: {{ item.background_color }};">
+<section class="relative w-full overflow-hidden" style="background-color: {{ item.background_color }};">
     <div class="site-grid">
-        <div class="col-span-8">
+        <div class="col-span-8 h-[120%]" data-parallax="trigger" data-parallax-start="-30" data-parallax-end="0">
             {% include "blocks/common/image.twig" with {
                 props : {
                     data: {
                         image : item.image
                     },
                     options: {
-                        container_class: 'w-full relative',
+                        container_class: 'w-full h-full relative',
                         class : 'w-full relative h-full object-cover',
                         aspect_ratio: '102%',
                         aspect_ratio_mobile: '150%',

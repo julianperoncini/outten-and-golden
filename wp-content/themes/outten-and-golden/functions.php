@@ -39,3 +39,11 @@ require_once __DIR__ . '/libs/class-outten-and-golden-ajax.php';
 	 * Hooks and filters for search.
 */
 require_once __DIR__ . '/libs/class-outten-and-golden-search.php';
+
+/**
+	 * Attorney
+	 * =======
+	 *
+	 * Hooks and filters for attorney.
+*/
+require_once __DIR__ . '/libs/class-outten-and-golden-attorney.php';

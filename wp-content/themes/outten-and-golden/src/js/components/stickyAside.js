@@ -12,20 +12,18 @@ export default function stickyAside(elm) {
     const aside = qs('.js-aside-sticky-content', el)
     const main = qs('.js-main-sticky', el)
 
-    if (device.isMobile) return
-
     if (!aside || !main) {
         console.warn('stickyAside: Required elements not found')
         return
     }
+
+    const mm = gsap.matchMedia()
 
     let startScroll = 120
     let endScroll = main.offsetHeight - aside.offsetHeight - (startScroll / 2)
     let currPos = 0
     let screenHeight = window.innerHeight
     let asideHeight = aside.offsetHeight + startScroll
-    
-    aside.style.top = startScroll + 'px'
 
     const onResize = () => {
         screenHeight = window.innerHeight
@@ -60,18 +58,45 @@ export default function stickyAside(elm) {
         currPos = y
     }
 
+    const resetAside = () => {
+        aside.style.top = ''
+        aside.style.position = ''
+        currPos = 0
+    }
+
+    const initDesktop = () => {
+        aside.style.position = 'sticky'
+        aside.style.top = startScroll + 'px'
+        evt.on('resize', onResize)
+        evt.on('scroll', onScroll)
+    }
+
     const destroy = () => {
-        if (device.isMobile) return
-        
+        mm.kill()
         evt.off('resize', onResize)  
         evt.off('scroll', onScroll)
+        resetAside()
     }
 
     const init = () => {
-        if (device.isMobile) return
+        mm.add("(min-width: 650px)", () => {
+            // Desktop behavior
+            initDesktop()
 
-        evt.on('resize', onResize)
-        evt.on('scroll', onScroll)
+            return () => {
+                evt.off('resize', onResize)
+                evt.off('scroll', onScroll)
+            }
+        })
+
+        mm.add("(max-width: 649px)", () => {
+            // Mobile behavior - reset aside to normal flow
+            resetAside()
+            
+            return () => {
+                // No cleanup needed for mobile
+            }
+        })
     }
 
     init()

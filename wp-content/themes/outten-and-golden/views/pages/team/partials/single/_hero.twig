@@ -1,9 +1,9 @@
 <section class="relative">
-    <div class="relative h-auto s:h-screen s:h-[78.6rem] bg-grey">
+    <div class="relative s:h-[calc(100svh-12rem)] bg-grey">
         <div class="relative p-32 s:p-0 w-full h-auto s:h-full flex flex-col s:flex-row items-center s:items-start justify-center s:justify-start gap-y-32 s:gap-y-0">
-            <div class="relative s:w-1/2 h-[35rem] s:h-full">
+            <div class="relative s:w-1/2 s:h-full overflow-hidden">
                 {% if post.feature_media.image %}
-                    <figure class="relative w-[32rem] s:w-full h-full">
+                    <figure class="relative w-[32rem] -mt-[5%] s:w-full h-[105%]" data-parallax-scroll-start="top bottom" data-parallax="trigger"  data-parallax-start="0" data-parallax-end="40">
                         {% include "blocks/common/image.twig" with {
                             props : {
                                 data: {
@@ -21,8 +21,8 @@
 
             <div class="relative w-full s:w-1/2 h-full">
                 <div class="relative w-full h-full bg-grey text-grey-taupe">
-                    <div class="relative w-full h-full flex flex-col items-center justify-center s:justify-end">
-                        <div class="relative flex flex-col items-center justify-center space-y-32 mb-32 s:mb-[25rem]">
+                    <div class="relative w-full h-full flex flex-col items-center">
+                        <div class="relative mt-auto flex flex-col items-center justify-center space-y-32 mb-32">
                             {% if post.feature_content.pronouns %}
                                 <p class="text-center font-medium text-12 leading-none tracking-[10%] uppercase">{{ post.feature_content.pronouns }}</p>
                             {% endif %}
@@ -45,7 +45,7 @@
                             {% endif %}
                         </div>
 
-                        <div class="relative s:bottom-40 w-full flex flex-wrap s:flex-auto gap-2 s:gap-0 items-center justify-center s:justify-between s:px-24">
+                        <div class="relative mt-auto max-h-max s:bottom-40 w-full flex flex-wrap s:flex-auto gap-2 s:gap-0 items-center justify-center s:justify-between s:px-24">
                             <div class="relative flex gap-2 text-grey">
                                 {% if post.contact_info.phone %}
                                     <a 
