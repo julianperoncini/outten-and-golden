@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const trigger = wrapper.querySelector('.gf-calendly-trigger');
         const output  = wrapper.querySelector('.gf-calendly-selected-date');
         const hidden  = wrapper.querySelector('input[type="hidden"]');
-        const contactSelect = document.querySelector(`select[name="${contactFieldName}"]`);
+        const contactSelect = wrapper.querySelector(`.gf-calendly-contact`);
 
         if (!trigger || !hidden || !contactSelect) return;
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            Calendly.initPopupWidget({ url: `https://calendly.com/${selected}` });
+            Calendly.initPopupWidget({ url: selected });
 
             window.addEventListener('message', function handleEvent(e) {
                 if (e.data.event === 'calendly.event_scheduled') {

@@ -23,22 +23,48 @@ class GF_Field_Calendly extends GF_Field {
 			return '<em>' . esc_html__('Calendly field – preview only.', 'gravityforms') . '</em>';
 		}
 
-		return sprintf('
-			<div class="gf-calendly-wrapper" data-field-id="%s">
-				<input type="hidden" name="%s" id="%s" value="%s" />
-				<button type="button" class="gf-calendly-trigger">Schedule a time</button>
-				<span class="gf-calendly-selected-date"></span>
-			</div>
-			<div class="calendly-inline"></div>
-			',
-			esc_attr($field_id),
-			esc_attr($field_id),
-			esc_attr($field_id),
-			esc_attr($value)
-		);
+		// Get attorneys (CPT) with Calendly URL
+		$people = get_posts([
+			'post_type'      => 'attorney',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+		]);
+
+		$options_html = '';
+
+		foreach ($people as $person) {
+			$name = esc_html(get_the_title($person));
+			$contact_info = get_field('contact_info', $person->ID);
+			$calendly = $contact_info['calendly_url'];
+
+			if (!$calendly) continue;
+
+			$options_html .= sprintf(
+				'<option value="%s">%s</option>',
+				esc_attr($calendly),
+				$name
+			);
+		}
+
+		// Output: select + button + hidden field + JS data
+		ob_start();
+		?>
+		<div class="gf-calendly-wrapper" data-field-id="<?php echo esc_attr($field_id); ?>">
+			<label>Select attorney:</label>
+			<select class="gf-calendly-contact" name="<?php echo esc_attr($field_id); ?>_contact">
+				<option value="">-- Choose --</option>
+				<?php echo $options_html; ?>
+			</select>
+
+			<button type="button" class="gf-calendly-trigger">Schedule a time</button>
+			<span class="gf-calendly-selected-date"></span>
+			<input type="hidden" name="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($value); ?>" />
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 
-    public function is_conditional_logic_supported() {
-        return false;
-    }
+	public function is_conditional_logic_supported() {
+		return false;
+	}
 }
