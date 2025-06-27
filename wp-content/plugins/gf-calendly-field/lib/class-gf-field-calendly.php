@@ -79,7 +79,7 @@ class GF_Field_Calendly extends GF_Field {
 					</svg>
 				</button>
 
-				<div>dsa</div>
+				<div class="overlay-top-title">Choose your Date & Hour</div>
 			</div>
 		</div>
 		<?php
