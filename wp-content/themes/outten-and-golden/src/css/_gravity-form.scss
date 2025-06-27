@@ -82,11 +82,16 @@
    3. FORM FIELDS & INPUTS
    =============================== */
 
+   .gform_page {
+    @apply bg-white relative overflow-hidden;
+   }
+
 .gfield {
     @apply relative;
 
     // Base label styles for floating labels
     label:not(.gchoice label):not(.gfield_consent_label) {
+        transform: translateZ(0);
         @apply transition-all duration-300 will-change-transform text-16;
         @apply pointer-events-none absolute  left-0;
     }
@@ -229,6 +234,7 @@
         #{$selector}:focus + label:not(.gchoice label):not(.gfield_consent_label),
         #{$selector}:not(:placeholder-shown) + label:not(.gchoice label):not(.gfield_consent_label) {
             @apply -translate-y-[1.6rem] text-grey text-12 font-normal;
+            
         }
     }
 }

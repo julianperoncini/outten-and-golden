@@ -327,6 +327,7 @@ export default function bookACall(el) {
     function bindEvents() {
         evt.on('click', trigger, openBookACall);
         evt.on('click', close, closeBookACall);
+        //evt.on('click', '.gf-calendly-trigger', closeBookACall);
 
         // Next button (Step 1 -> Step 2)
         nextButtons.forEach(button => {
