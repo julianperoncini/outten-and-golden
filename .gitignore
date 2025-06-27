@@ -11,18 +11,13 @@ wp-config.php
 /wp-content/uploads/
 
 # Plugins and themes managed by Composer
-<<<<<<< Updated upstream
 /wp-content/index.php
 /wp-content/languages
 /wp-content/plugins/index.php
 /wp-content/themes/index.php
 /wp-includes/
 /index.php
-
 /wp-*.php
-=======
-
->>>>>>> Stashed changes
 
 # But keep custom plugins/themes
 !/wp-content/plugins/my-custom-plugin/
@@ -51,3 +46,6 @@ dist/*
 
 # htaccess
 /.htaccess
+
+# docker stack
+docker-compose.yml
