@@ -109,6 +109,6 @@
 }
 
 .calendly-top-bar-template {
-	display: none;
+	display: none !important;
 }
 
