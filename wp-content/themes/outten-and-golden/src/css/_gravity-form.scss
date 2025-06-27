@@ -88,12 +88,34 @@
     // Base label styles for floating labels
     label:not(.gchoice label):not(.gfield_consent_label) {
         @apply transition-all duration-300 will-change-transform text-16;
-        @apply pointer-events-none absolute top-1/2 left-0 -translate-y-1/2;
+        @apply pointer-events-none absolute  left-0;
     }
 
     // Hidden field types
     &--type-honeypot {
         @apply hidden;
+    }
+
+    &--type-calendly {
+        @apply mb-20;
+
+        label {
+            @apply hidden;
+        }
+
+        select {
+            @apply border-b border-solid border-grey-taupe;
+            @apply outline-none;
+        }
+
+        .gf-calendly-trigger {
+            @apply transition-all duration-300 will-change-transform;
+        }
+
+        .gf-calendly-trigger[disabled] {
+            @apply opacity-50 cursor-not-allowed;
+        }
+        
     }
 
     // Textarea specific overrides
@@ -206,7 +228,7 @@
     @each $selector in $input-selectors {
         #{$selector}:focus + label:not(.gchoice label):not(.gfield_consent_label),
         #{$selector}:not(:placeholder-shown) + label:not(.gchoice label):not(.gfield_consent_label) {
-            @apply -translate-y-[calc(100%+1.6rem)] text-grey text-12 font-normal;
+            @apply -translate-y-[1.6rem] text-grey text-12 font-normal;
         }
     }
 }

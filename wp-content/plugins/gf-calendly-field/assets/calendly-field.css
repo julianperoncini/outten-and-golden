@@ -23,21 +23,50 @@
 	height: 100%;
 	left: 0;
 	top: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .calendly-overlay .calendly-popup {
 	position: relative;
 	z-index: 2;
 	width: 100%;
-	max-width: 64rem;
-	height: 80%;
+	height: 100%;
 	background-color: white;
-	border-radius: 1.2rem;
 }
 
-.calendly-overlay .calendly-popup .calendly-popup-content,
-.calendly-overlay .calendly-popup iframe {
+.calendly-spinner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
 	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.calendly-overlay .calendly-popup .calendly-popup-content {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%
+}
+
+.calendly-overlay .calendly-popup iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.gf-calendly-wrapper label {
+	display: none;
+}
+
+.gf-calendly-trigger {
+	margin-top: 2rem;
 }
 
 .gf-calendly-wrapper .gf-calendly-trigger {
