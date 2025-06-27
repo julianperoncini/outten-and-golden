@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				return;
 			}
 
-			Calendly.initPopupWidget({ url: selected });
+			Calendly.initPopupWidget({ url: selected + "?hide_gdpr_banner=1" });
 
 			const topBar = wrapper.querySelector('#overlay-top-bar')?.cloneNode(true);
 
