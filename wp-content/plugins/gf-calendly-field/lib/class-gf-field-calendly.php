@@ -20,7 +20,7 @@ class GF_Field_Calendly extends GF_Field {
 		$field_id = 'input_' . $this->id;
 
 		if (is_admin() && !wp_doing_ajax()) {
-			return '<em>' . esc_html__('Calendly field – preview only.', 'gravityforms') . '</em>';
+			return '<em>' . esc_html__('Calendly field – no preview. Options are displayed from attorneys post type. Requires Calendly link to be set', 'gravityforms') . '</em>';
 		}
 
 		// Get attorneys (CPT) with Calendly URL

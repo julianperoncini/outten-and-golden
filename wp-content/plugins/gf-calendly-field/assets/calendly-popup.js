@@ -11,6 +11,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!trigger || !hidden || !contactSelect) return;
 
+		const defaultSelected = contactSelect.value;
+
+		if (defaultSelected === '') {
+			trigger.setAttribute('disabled', 'true');
+		}
+
+		contactSelect.addEventListener('change', function (event) {
+			if (event.target.value != '') {
+				trigger.removeAttribute('disabled');
+			} else {
+				trigger.setAttribute('disabled', 'true');
+			}
+		});
+
         trigger.addEventListener('click', function () {
             const selected = contactSelect.value;
 
