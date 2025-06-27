@@ -16,24 +16,25 @@
     <div class="site-max" data-component="sliderTeamMembers(js-slider-members)">
         <div class="team-members-list flex cursor-grab js-slider-team">
             {% for member in team_members_slider %}
-                <article data-member="true" class="team-members-item h-[50rem] relative max-w-[29rem] s:max-w-[43.3rem] min-w-[29rem] s:min-w-[43.3rem] mr-24 js-member-item">
+                <article data-member="true" class="team-members-item relative max-w-[29rem] s:max-w-[43.3rem] min-w-[29rem] s:min-w-[43.3rem] mr-24 js-member-item">
                     <div class="team-member w-full flex flex-col gap-y-32">
                         {% if member.featured_image %}
-                            <a href="{{ member.link }}" aria-label="{{ member.title }}" class="relative w-full h-full cursor-pointer">
                                 <figure class="relative w-full h-full">
-                                    {% include "blocks/common/image.twig" with {
-                                        props : {
-                                            data: {
-                                                image : member.featured_image.image
-                                            },
-                                            options: {
-                                                container_class: 'w-full overflow-hidden',
-                                                class : 'w-full h-full object-cover',
-                                                aspect_ratio: '112%',
-                                                aspect_ratio_mobile: '113%',
+                                    <a href="{{ member.link }}" aria-label="{{ member.title }}" class="relative w-full h-full cursor-pointer">
+                                        {% include "blocks/common/image.twig" with {
+                                            props : {
+                                                data: {
+                                                    image : member.featured_image.image
+                                                },
+                                                options: {
+                                                    container_class: 'w-full overflow-hidden',
+                                                    class : 'w-full h-full object-cover',
+                                                    aspect_ratio: '112%',
+                                                    aspect_ratio_mobile: '113%',
+                                                }
                                             }
-                                        }
-                                    } %}
+                                        } %}
+                                    </a>
 
                                     <div class="team-member-contact absolute bottom-0 left-0 flex items-center space-x-[0.1rem] z-2">
                                         {% if member.contact_info.phone %}
@@ -68,20 +69,25 @@
                                         {% endif %}
                                     </div>
                                 </figure>
-                            </a>
+                            
                         {% endif %}
 
                         <div class="relative w-full space-y-24">
                             <div class="relative w-full flex items-center justify-between">
-                                <div class="relative font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">
-                                    <p>{{ member.category }}</p>
-                                </div>
+                                {% if member.category %}
+                                    <div class="relative font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+                                        <p>{{ member.category }}</p>
+                                    </div>
+                                {% endif %}
 
-                                <div class="relative font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">
-                                    <p>{{ member.location }}</p>
-                                </div>
+                                {% if member.location %}
+                                    <div class="relative font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+                                        <p>{{ member.location }}</p>
+                                    </div>
+                                {% endif %}
                             </div>
 
+                            {% if member.title %}
                             <div class="relative w-full">
                                 <a 
                                     class="relative w-full flex items-center justify-between font-disp text-green text-23 font-normal leading-[1.04] -tracking-[0.024rem]" 
@@ -94,8 +100,9 @@
                                             <path d="M0.867188 1L5.36719 5.5L0.867188 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>
                                     </span>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </article>

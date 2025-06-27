@@ -49,4 +49,22 @@ foreach ($team_members as $member) {
 
 $context['team_members_slider'] = $formatted_members;
 
+// Newsroom Posts
+$context['all_post_articles'] = Timber::get_posts([
+    'post_type' => 'post',
+    'posts_per_page' => 6,
+    'post__not_in' => [$post->ID],
+    'order' => 'ASC',
+    //'paged' => get_query_var('paged') ?: 1
+]);
+
+// Newsroom Posts Categories
+$categories = get_terms([
+    'taxonomy' => 'category',
+    'hide_empty' => true,
+    'orderby' => 'name',
+]);
+
+$context['categories'] = Timber::get_terms($categories);
+
 Timber::render('views/pages/team/_single.twig', $context);

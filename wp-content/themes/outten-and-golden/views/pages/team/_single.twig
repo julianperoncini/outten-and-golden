@@ -14,7 +14,16 @@
 			{% include 'pages/team/partials/single/_content.twig' %}
 
 			{# All Members Slider #}
-			{% include 'pages/team/partials/single/_members-slider.twig' %}
+			{#% include 'pages/team/partials/single/_members-slider.twig' %#}
+
+
+			{% include 'pages/team/partials/single/_all-posts.twig' with {
+				props: {
+					all_post_articles: all_post_articles,
+					all_posts: all_post_articles,
+					categories: categories
+				}
+			} %}
 
 			{# Content Builder #}
 			{% include 'blocks/builder/index.twig' with {

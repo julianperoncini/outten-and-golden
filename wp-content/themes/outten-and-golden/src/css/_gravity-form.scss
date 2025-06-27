@@ -53,7 +53,7 @@
 }
 
 .gform_heading {
-    @apply absolute right-0 bottom-[-6rem] w-full s:bottom-0 py-10 text-red pointer-events-none s:text-right;
+    @apply absolute right-0 bottom-0 w-full s:bottom-0 py-10 text-red pointer-events-none text-right;
 }
 
 .gf_progressbar {
