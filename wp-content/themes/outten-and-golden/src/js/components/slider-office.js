@@ -9,6 +9,27 @@ const { device } = store
 const isMobile = device.isMobile
 
 export default function sliderOffice(config) {
+    const elements = {
+        section: config.section || config,
+        container: qs('.js-slider-office-container', config.section || config),
+        items: qsa('.js-slide-office', config.section || config),
+        progress: qs('.js-slider-office-progress', config.section || config),
+        progressWrapBars: qsa('.js-sop-bar-wrap', config.section || config),
+        progressBars: qsa('.js-slider-office-progress span', config.section || config)
+    }
+
+    // Check if already initialized
+    if (elements.section.dataset.sliderInitialized === 'true') {
+        console.warn('SliderOffice already initialized for this section');
+        return null;
+    }
+
+    // Mark as initialized
+    elements.section.dataset.sliderInitialized = 'true';
+
+    // Check if this is a header slider (disable ScrollTrigger for header)
+    const isHeaderSlider = elements.section.classList.contains('js-slider-office-header') || config.disableScrollTrigger;
+
     const state = {
         currentIdx: 0,
         lastIdx: 0,
@@ -18,16 +39,8 @@ export default function sliderOffice(config) {
         autoplayDuration: 5000,
         progressTimelines: [],
         progressDuration: 5,
-        isTransitioning: false
-    }
-
-    const elements = {
-        section: config.section || config,
-        container: qs('.js-slider-office-container', config.section || config),
-        items: qsa('.js-slide-office', config.section || config),
-        progress: qs('.js-slider-office-progress', config.section || config),
-        progressWrapBars: qsa('.js-sop-bar-wrap', config.section || config),
-        progressBars: qsa('.js-slider-office-progress span', config.section || config)
+        isTransitioning: false,
+        scrollTrigger: null // Store reference to ScrollTrigger
     }
 
     const initProgressTimelines = () => {
@@ -237,7 +250,13 @@ export default function sliderOffice(config) {
     }
 
     const setupVisibility = () => {
-        ScrollTrigger.create({
+        // Skip ScrollTrigger for header slider
+        if (isHeaderSlider) {
+            state.isVisible = true;
+            return;
+        }
+
+        state.scrollTrigger = ScrollTrigger.create({
             trigger: elements.section,
             start: 'top 90%',
             end: 'bottom 10%',
@@ -260,8 +279,6 @@ export default function sliderOffice(config) {
         });
     }
 
-
-
     const mount = () => {
         if (!elements.items.length) {
             return;
@@ -280,7 +297,11 @@ export default function sliderOffice(config) {
         
         updateProgress();
         
-        if (elements.section.getBoundingClientRect().top < window.innerHeight) {
+        // For header slider, start autoplay immediately since it's always visible
+        if (isHeaderSlider) {
+            state.isVisible = true;
+            startAutoplay();
+        } else if (elements.section.getBoundingClientRect().top < window.innerHeight) {
             state.isVisible = true;
             startAutoplay();
         }
@@ -296,6 +317,14 @@ export default function sliderOffice(config) {
                 timeline.kill();
             }
         });
+        
+        // Kill ScrollTrigger
+        if (state.scrollTrigger) {
+            state.scrollTrigger.kill();
+        }
+        
+        // Remove initialization marker
+        elements.section.dataset.sliderInitialized = 'false';
         
         evt.off('resize', cache);
         evt.off('tick', tick);

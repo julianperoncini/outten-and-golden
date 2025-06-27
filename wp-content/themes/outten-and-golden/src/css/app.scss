@@ -371,10 +371,15 @@ body.search:not(.search-no-results) {
 	}
 }
 
+.js-sop-bar-wrap {
+	opacity: 1;
+}
+
 .js-sop-bar-wrap.is-active {
 	width: 75%;
 	opacity: 1;
 	transition: all 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	@apply bg-green/20;
 
 	@screen s {
 		height: 8rem;

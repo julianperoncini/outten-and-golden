@@ -49,7 +49,10 @@ export default class extends Renderer {
 		
 
 		components['bookACall'](this.el);
-		components['sliderOffice']({ section: qs('.js-slider-office') });
+		components['sliderOffice']({ 
+			section: qs('.js-slider-office-header'), 
+			disableScrollTrigger: true 
+		});
 
 		this.onEnterCompleted()
     }
