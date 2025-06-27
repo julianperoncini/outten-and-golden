@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			if (topBar != null) {
 				document.querySelector('.calendly-popup')?.prepend(topBar);
-				topBar.classList.remove('hidden');
+				topBar.classList.remove('calendly-top-bar-template');
 				topBar.querySelector('.js-close-calendly')?.addEventListener('click', (event) => {
 					event.preventDefault();
 					document.querySelector('.calendly-popup-close')?.click();

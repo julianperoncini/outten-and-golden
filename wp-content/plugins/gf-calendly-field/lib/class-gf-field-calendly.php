@@ -72,12 +72,14 @@ class GF_Field_Calendly extends GF_Field {
 			<span class="gf-calendly-selected-date"></span>
 			<input type="hidden" name="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($value); ?>" />
 
-			<div class="hidden" id="overlay-top-bar">
-				<button class="close-calendly js-close-calendly">
-					Back
-				</button>
+			<div class="calendly-top-bar-template" id="overlay-top-bar">
+				<div class="calendly-top-bar-content">
+					<button class="close-calendly js-close-calendly">
+						Back
+					</button>
 
-				<div class="overlay-top-title">Choose your Date & Hour</div>
+					<div class="overlay-top-title">Choose your Date & Hour</div>
+				</div>
 			</div>
 		</div>
 		<?php
