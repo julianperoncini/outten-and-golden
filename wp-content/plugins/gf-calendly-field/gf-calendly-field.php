@@ -38,8 +38,43 @@ add_action('wp_enqueue_scripts', function () {
         '1.0',
         true
     );
-
-    wp_localize_script('gf-calendly-dynamic', 'gfCalendlyField', [
-        'contactFieldName' => 'input_22', // Change to your real field ID
-    ]);
 });
+
+add_action('admin_enqueue_scripts', function ($hook) {
+    if ($hook !== 'forms_page_gf_edit_forms') {
+        return;
+    }
+
+    // Ensure Gravity Forms script is loaded first
+    wp_enqueue_script('gform_form_admin'); // This is the main GF editor JS
+
+    // Add your inline script after it
+    wp_add_inline_script('gform_form_admin', <<<JS
+        fieldSettings['calendly'] += ', .conditional_input_setting, .conditional_value_setting';
+
+        jQuery(document).on('gform_load_field_settings', function (event, field, form) {
+            jQuery('#field_conditional_input').val(field.conditionalInput || '');
+            jQuery('#field_conditional_value').val(field.conditionalValue || '');
+        });
+    JS);
+});
+
+add_action('gform_field_standard_settings', function ($position, $form_id) {
+    if ($position == 1100): ?>
+        <li class="conditional_input_setting field_setting">
+            <label for="field_conditional_input">
+                <?php esc_html_e('Conditional Input', 'gravityforms'); ?>
+                <input type="text" id="field_conditional_input" onchange="SetFieldProperty('conditionalInput', this.value);" />
+            </label>
+            <p class="description">Field ID to check (e.g. input_1)</p>
+        </li>
+
+        <li class="conditional_value_setting field_setting">
+            <label for="field_conditional_value">
+                <?php esc_html_e('Conditional Value', 'gravityforms'); ?>
+                <input type="text" id="field_conditional_value" onchange="SetFieldProperty('conditionalValue', this.value);" />
+            </label>
+            <p class="description">Required value (e.g. Yes)</p>
+        </li>
+    <?php endif;
+}, 10, 2);

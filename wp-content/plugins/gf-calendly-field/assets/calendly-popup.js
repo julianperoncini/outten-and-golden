@@ -1,13 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
-    if (!window.gfCalendlyField) return;
-
-    const { contactFieldName } = gfCalendlyField;
-
     document.querySelectorAll('.gf-calendly-wrapper').forEach(wrapper => {
         const trigger = wrapper.querySelector('.gf-calendly-trigger');
         const output  = wrapper.querySelector('.gf-calendly-selected-date');
         const hidden  = wrapper.querySelector('input[type="hidden"]');
-        const contactSelect = wrapper.querySelector(`.gf-calendly-contact`);
+        const contactSelect = wrapper.querySelector('.gf-calendly-contact');
+		const conditionalInputName = wrapper.getAttribute('data-conditional-input');
+		const conditionalInputValue = wrapper.getAttribute('data-conditional-value');
+		const conditionalInputs = document.querySelectorAll(`input[name='${conditionalInputName}']`);
+
+		console.log('### input', conditionalInputName, conditionalInputs);
 
         if (!trigger || !hidden || !contactSelect) return;
 
@@ -15,6 +16,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (defaultSelected === '') {
 			trigger.setAttribute('disabled', 'true');
+		}
+
+		if (conditionalInputs != null && conditionalInputs.length > 0) {
+			conditionalInputs.forEach((input) => {
+				input.addEventListener('change', function (event) {
+					if (event.target.value.toLowerCase() === conditionalInputValue.toLowerCase()) {
+						wrapper.classList.remove('hidden');
+					} else {
+						if (!wrapper.classList.contains('hidden')) {
+							wrapper.classList.add('hidden');
+						}
+					}
+				});
+			});
 		}
 
 		contactSelect.addEventListener('change', function (event) {
