@@ -26,6 +26,15 @@ export default function teamFilter(config) {
     let currentLocationFilter = 'all'
     let isLocationDropdownOpen = false
 
+    // Store handler references for proper cleanup
+    const handlers = {
+        categoryHandlers: new Map(),
+        locationHandlers: new Map(),
+        locationButtonHandler: null,
+        documentClick: null,
+        documentKeydown: null
+    }
+
     function animateTransition(callback) {
         if (ct) ct.kill()
         
@@ -48,8 +57,18 @@ export default function teamFilter(config) {
         })
     }
 
-    function filterItems() {
-        animateTransition(() => {
+    let isFilteringAllowed = true
+
+    function filterItems(skipAnimation = false) {
+        // Block filtering if it's not allowed (e.g., when clicking on cards)
+        if (!isFilteringAllowed) {
+            console.log('Filtering blocked - card click detected')
+            return
+        }
+        
+        console.log('filterItems called', { categoryFilter: currentCategoryFilter, locationFilter: currentLocationFilter, skipAnimation })
+        
+        const doFilter = () => {
             const visibleItems = []
             
             allItems.forEach(item => {
@@ -76,7 +95,13 @@ export default function teamFilter(config) {
                 items: visibleItems,
                 count: visibleItems.length 
             })
-        })
+        }
+
+        if (skipAnimation) {
+            doFilter()
+        } else {
+            animateTransition(doFilter)
+        }
     }
 
     function updateActiveCategoryButton(activeButton) {
@@ -91,17 +116,7 @@ export default function teamFilter(config) {
         // locationButtonText && (locationButtonText.textContent = locationName)
     }
 
-    function updateActiveLocationItem(activeItem) {
-        locationItems.forEach(item => {
-            item.style.backgroundColor = ''
-            item.style.color = ''
-        })
-        
-        if (activeItem) {
-            activeItem.style.backgroundColor = '#1E383E'
-            activeItem.style.color = 'white'
-        }
-    }
+
 
     function findAllLocationItem() {
         return Array.from(locationItems).find(item => 
@@ -188,55 +203,106 @@ export default function teamFilter(config) {
         
         updateLocationButtonText()
         const allLocationItem = findAllLocationItem()
-        updateActiveLocationItem(allLocationItem)
         closeLocationDropdown()
-        filterItems()
+        filterItems(true) // Skip animation on initial load
     }
 
     function addEvents() {
+        // Add click protection for team member cards
+        allItems.forEach(card => {
+            const cardProtectionHandler = (e) => {
+                console.log('Card clicked - blocking filtering')
+                // Temporarily disable filtering when clicking on cards
+                isFilteringAllowed = false
+                
+                // Re-enable filtering after a short delay
+                setTimeout(() => {
+                    isFilteringAllowed = true
+                }, 100)
+            }
+            
+            card.addEventListener('click', cardProtectionHandler, true) // Use capture phase
+            handlers.cardProtectionHandlers = handlers.cardProtectionHandlers || []
+            handlers.cardProtectionHandlers.push({ card, handler: cardProtectionHandler })
+        })
+
+        // Category button handlers
         categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
+            const handler = (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                
+                console.log('Filter button clicked')
                 const filterValue = button.getAttribute('data-filter')
                 currentCategoryFilter = filterValue
                 
                 updateActiveCategoryButton(button)
                 filterItems()
-            })
+            }
+            
+            button.addEventListener('click', handler)
+            handlers.categoryHandlers.set(button, handler)
         })
 
+        // Location button handler
         if (locationButton) {
-            locationButton.addEventListener('click', (e) => {
+            handlers.locationButtonHandler = (e) => {
+                e.preventDefault()
                 e.stopPropagation()
+                console.log('Location button clicked')
                 toggleLocationDropdown()
-            })
+            }
+            
+            locationButton.addEventListener('click', handlers.locationButtonHandler)
         }
 
+        // Location item handlers
         locationItems.forEach(item => {
-            item.addEventListener('click', (e) => {
+            const handler = (e) => {
+                // Don't handle location clicks if the click is on a team member card
+                if (e.target.closest('.js-all-team-members-item')) {
+                    console.log('Click on card inside location item - ignoring location filter')
+                    return
+                }
+                
+                e.preventDefault()
                 e.stopPropagation()
                 
+                console.log('Location item clicked')
                 const filterValue = item.getAttribute('data-filter-location')
                 const locationName = item.textContent.trim()
                 
                 currentLocationFilter = filterValue
                 updateLocationButtonText(filterValue === 'all' ? 'Select a location' : locationName)
-                updateActiveLocationItem(item)
                 closeLocationDropdown()
                 filterItems()
-            })
+            }
+            
+            item.addEventListener('click', handler)
+            handlers.locationHandlers.set(item, handler)
         })
 
-        document.addEventListener('click', (e) => {
+        // Document click handler (for closing dropdown) - but exclude team member cards
+        handlers.documentClick = (e) => {
+            // Don't close dropdown if clicking on team member cards
+            if (e.target.closest('.js-all-team-members-item')) {
+                return
+            }
+            
             if (locationDropdown && !locationDropdown.contains(e.target)) {
                 closeLocationDropdown()
             }
-        })
+        }
 
-        document.addEventListener('keydown', (e) => {
+        // Document keydown handler (for ESC key)
+        handlers.documentKeydown = (e) => {
             if (e.key === 'Escape' && isLocationDropdownOpen) {
                 closeLocationDropdown()
             }
-        })
+        }
+
+        document.addEventListener('click', handlers.documentClick)
+        document.addEventListener('keydown', handlers.documentKeydown)
     }
 
     function mount() {
@@ -246,9 +312,6 @@ export default function teamFilter(config) {
         }
         
         const allLocationItem = findAllLocationItem()
-        if (allLocationItem) {
-            updateActiveLocationItem(allLocationItem)
-        }
         
         if (locationContainer) {
             gsap.set(locationContainer, { 
@@ -260,27 +323,73 @@ export default function teamFilter(config) {
     }
 
     function unmount() {
-        if (ct) ct.kill()
-        if (dropdownTween) dropdownTween.kill()
+        // Kill all GSAP animations immediately
+        if (ct) {
+            ct.kill()
+            ct = null
+        }
+        if (dropdownTween) {
+            dropdownTween.kill()
+            dropdownTween = null
+        }
         
+        // Kill any other GSAP tweens on these elements
+        gsap.killTweensOf([gridContainer, locationContainer, locationArrow])
+        
+        // Reset all items to visible state
         allItems.forEach(item => {
             item.style.display = 'block'
         })
         
-        categoryButtons.forEach(button => {
-            button.removeEventListener('click', () => {})
-        })
-        
-        locationItems.forEach(item => {
-            item.removeEventListener('click', () => {})
-        })
-        
-        if (locationButton) {
-            locationButton.removeEventListener('click', () => {})
+        // Reset dropdown state
+        isLocationDropdownOpen = false
+        if (locationContainer) {
+            gsap.set(locationContainer, { autoAlpha: 0 })
+        }
+        if (locationArrow) {
+            gsap.set(locationArrow, { rotate: 0 })
         }
         
-        document.removeEventListener('click', () => {})
-        document.removeEventListener('keydown', () => {})
+        // Remove card protection handlers
+        if (handlers.cardProtectionHandlers) {
+            handlers.cardProtectionHandlers.forEach(({ card, handler }) => {
+                card.removeEventListener('click', handler, true)
+            })
+            handlers.cardProtectionHandlers = []
+        }
+        categoryButtons.forEach(button => {
+            const handler = handlers.categoryHandlers.get(button)
+            if (handler) {
+                button.removeEventListener('click', handler)
+            }
+        })
+        handlers.categoryHandlers.clear()
+        
+        // Remove location item event listeners
+        locationItems.forEach(item => {
+            const handler = handlers.locationHandlers.get(item)
+            if (handler) {
+                item.removeEventListener('click', handler)
+            }
+        })
+        handlers.locationHandlers.clear()
+        
+        // Remove location button event listener
+        if (locationButton && handlers.locationButtonHandler) {
+            locationButton.removeEventListener('click', handlers.locationButtonHandler)
+            handlers.locationButtonHandler = null
+        }
+        
+        // Remove document event listeners
+        if (handlers.documentClick) {
+            document.removeEventListener('click', handlers.documentClick)
+            handlers.documentClick = null
+        }
+        
+        if (handlers.documentKeydown) {
+            document.removeEventListener('keydown', handlers.documentKeydown)
+            handlers.documentKeydown = null
+        }
     }
 
     mount()
@@ -290,11 +399,11 @@ export default function teamFilter(config) {
         resetFilters,
         filterByCategory: (category) => {
             currentCategoryFilter = category
-            filterItems()
+            filterItems(true) // Skip animation for external calls
         },
         filterByLocation: (location) => {
             currentLocationFilter = location
-            filterItems()
+            filterItems(true) // Skip animation for external calls
         },
         getCurrentFilters: () => ({
             category: currentCategoryFilter,
