@@ -8,9 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		const conditionalInputValue = wrapper.getAttribute('data-conditional-value');
 		const conditionalInputs = document.querySelectorAll(`input[name='${conditionalInputName}']`);
 
-		console.log('### input', conditionalInputName, conditionalInputs);
-
-        if (!trigger || !hidden || !contactSelect) return;
+		if (!trigger || !hidden || !contactSelect) return;
 
 		const defaultSelected = contactSelect.value;
 
@@ -40,32 +38,51 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		});
 
-        trigger.addEventListener('click', function () {
-            const selected = contactSelect.value;
+		function handleEscapeKey(event) {
+			if (event.key === 'Escape') {
+				document.querySelector('.calendly-popup-close')?.click();
+			}
+		}
 
-            if (!selected) {
-                alert('Please select a contact first.');
-                return;
-            }
+		trigger.addEventListener('click', function () {
+			const selected = contactSelect.value;
 
-            Calendly.initPopupWidget({ url: selected });
+			if (!selected) {
+				alert('Please select a contact first.');
+				return;
+			}
 
-            window.addEventListener('message', function handleEvent(e) {
-                if (e.data.event === 'calendly.event_scheduled') {
+			Calendly.initPopupWidget({ url: selected });
+
+			const topBar = wrapper.querySelector('#overlay-top-bar')?.cloneNode(true);
+
+			if (topBar != null) {
+				document.querySelector('.calendly-popup')?.prepend(topBar);
+				topBar.classList.remove('hidden');
+				topBar.querySelector('.js-close-calendly')?.addEventListener('click', (event) => {
+					event.preventDefault();
+					document.querySelector('.calendly-popup-close')?.click();
+				});
+			}
+
+			document.addEventListener('keydown', handleEscapeKey);
+			window.addEventListener('message', function handleEvent(e) {
+				if (e.data.event === 'calendly.event_scheduled') {
 					console.log('### data', e.data);
-                    const date = e.data.payload?.event_start_time;
-                    if (date) {
+					const date = e.data.payload?.event_start_time;
+					if (date) {
 						trigger.classList.add('hidden');
-                        hidden.value = date;
-                        output.textContent = `${new Date(date).toLocaleString()}`;
-                    } else {
-                        output.textContent = 'Scheduled.';
-                    }
+						hidden.value = date;
+						output.textContent = `${new Date(date).toLocaleString()}`;
+					} else {
+						output.textContent = 'Scheduled.';
+					}
 
-                    // Clean up
-                    window.removeEventListener('message', handleEvent);
-                }
-            });
-        });
-    });
+					// Clean up
+					window.removeEventListener('message', handleEvent);
+					document.removeEventListener('keydown', handleEscapeKey);
+				}
+			});
+		});
+	});
 });
