@@ -13,17 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
-document.addEventListener('gform_page_loaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.gf-calendly-wrapper').forEach(wrapper => {
         const trigger = wrapper.querySelector('.gf-calendly-trigger');
         const output  = wrapper.querySelector('.gf-calendly-selected-date');
-        const hidden  = wrapper.querySelector('input[type="hidden"]');
         const contactSelect = wrapper.querySelector('.gf-calendly-contact');
 		const conditionalInputName = wrapper.getAttribute('data-conditional-input');
 		const conditionalInputValue = wrapper.getAttribute('data-conditional-value');
 		const conditionalInputs = document.querySelectorAll(`input[name='${conditionalInputName}']`);
 
-		if (!trigger || !hidden || !contactSelect) return;
+		if (!trigger || !contactSelect) return;
 
 		const defaultSelected = contactSelect.value;
 
@@ -87,7 +86,6 @@ document.addEventListener('gform_page_loaded', function () {
 					const date = e.data.payload?.event_start_time;
 					if (date) {
 						trigger.classList.add('hidden');
-						hidden.value = date;
 						output.textContent = `${new Date(date).toLocaleString()}`;
 					} else {
 						output.textContent = 'Scheduled.';
