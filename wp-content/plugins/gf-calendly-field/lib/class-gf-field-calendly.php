@@ -13,7 +13,12 @@ class GF_Field_Calendly extends GF_Field {
 	}
 
 	public function get_form_editor_field_settings() {
-		return ['label_setting', 'description_setting'];
+		return [
+			'label_setting',
+			'description_setting',
+			'conditional_input_setting',
+			'conditional_value_setting'
+		];
 	}
 
 	public function get_field_input($form, $value = '', $entry = null) {
@@ -30,7 +35,9 @@ class GF_Field_Calendly extends GF_Field {
 			'post_status'    => 'publish',
 		]);
 
-		$options_html = '';
+		$conditionalInput = rgar($this, 'conditionalInput');
+		$conditionalValue = rgar($this, 'conditionalValue');
+		$options_html     = '';
 
 		foreach ($people as $person) {
 			$name = esc_html(get_the_title($person));
@@ -49,7 +56,12 @@ class GF_Field_Calendly extends GF_Field {
 		// Output: select + button + hidden field + JS data
 		ob_start();
 		?>
-		<div class="gf-calendly-wrapper" data-field-id="<?php echo esc_attr($field_id); ?>">
+		<div
+			class="gf-calendly-wrapper<?php echo !empty($conditionalInput) ? ' hidden' : ''; ?>"
+			data-field-id="<?php echo esc_attr($field_id); ?>"
+			data-conditional-input="<?php echo esc_attr($conditionalInput); ?>"
+			data-conditional-value="<?php echo esc_attr($conditionalValue); ?>"
+		>
 			<label>Select attorney:</label>
 			<select class="gf-calendly-contact" name="<?php echo esc_attr($field_id); ?>_contact">
 				<option value="">-- Choose --</option>
