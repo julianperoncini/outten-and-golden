@@ -39,15 +39,7 @@ add_action('wp_enqueue_scripts', function () {
         true
     );
 
-    // Define your contact-to-Calendly mapping here
-    $calendly_map = [
-        'Andreas' => 'https://calendly.com/didair/30min',
-        'Jesper'  => 'https://calendly.com/jesper-westlund1/30-minute-meeting-clone',
-        'Robbin'  => 'https://calendly.com/charlie-schedule',
-    ];
-
     wp_localize_script('gf-calendly-dynamic', 'gfCalendlyField', [
         'contactFieldName' => 'input_22', // Change to your real field ID
-        'mapping' => $calendly_map,
     ]);
 });

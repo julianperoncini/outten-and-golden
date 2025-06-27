@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     if (!window.gfCalendlyField) return;
 
-    const { contactFieldName, mapping } = gfCalendlyField;
+    const { contactFieldName } = gfCalendlyField;
 
     document.querySelectorAll('.gf-calendly-wrapper').forEach(wrapper => {
         const trigger = wrapper.querySelector('.gf-calendly-trigger');
@@ -13,14 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         trigger.addEventListener('click', function () {
             const selected = contactSelect.value;
-            const calendlyUrl = mapping[selected];
 
-            if (!calendlyUrl) {
+            if (!selected) {
                 alert('Please select a contact first.');
                 return;
             }
 
-            Calendly.initPopupWidget({ url: calendlyUrl });
+            Calendly.initPopupWidget({ url: `https://calendly.com/${selected}` });
 
             window.addEventListener('message', function handleEvent(e) {
                 if (e.data.event === 'calendly.event_scheduled') {
