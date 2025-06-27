@@ -24,6 +24,7 @@ foreach ($team_members as $member) {
     $member_data['title'] = $member->post_title;
     $member_data['featured_image'] = get_field('featured_image', $member->ID);
     $member_data['contact_info'] = get_field('contact_info', $member->ID);
+    $member_data['link'] = get_the_permalink($member->ID);
     
     $locations = wp_get_post_terms($member->ID, 'team-locations');
     $member_data['location'] = !empty($locations) ? $locations[0]->name : '';
