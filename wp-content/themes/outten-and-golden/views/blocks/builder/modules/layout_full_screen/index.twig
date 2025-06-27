@@ -77,8 +77,8 @@
                 <div class="relative w-full s:w-[inherit] flex flex-col-reverse s:flex-row items-start gap-25 js-slider-office" data-component="sliderOffice(js-slider-office)">
                     <div class="relative w-full s:w-[inherit] s:mt-[0.8rem] flex flex-row s:flex-col gap-x-8 s:gap-x-0 s:gap-y-8 js-slider-office-progress">
                         {% for item in item.card_slider %}
-                            <span class="cursor-pointer inline-flex w-1/2 s:w-[0.1rem] h-[0.1rem] s:h-[3rem] {{ progress_color }} opacity-20 js-sop-bar-wrap">
-                                <span class="w-1/2 s:w-[0.1rem] h-full {{ progress_color }} origin-top scale-y-0 js-slider-office-progress-bar"></span>
+                            <span class="cursor-pointer inline-flex w-1/2 s:w-[1px] h-[0.1rem] s:h-[3rem] bg-green/20 opacity-100 js-sop-bar-wrap">
+                                <span class="w-1/2 s:w-[1px] h-full origin-top bg-green scale-y-0 js-slider-office-progress-bar"></span>
                             </span>
                         {% endfor %}
                     </div>
