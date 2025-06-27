@@ -63,14 +63,17 @@ class GF_Field_Calendly extends GF_Field {
 			data-conditional-value="<?php echo esc_attr($conditionalValue); ?>"
 		>
 			<label>Select attorney:</label>
-			<select class="gf-calendly-contact" name="<?php echo esc_attr($field_id); ?>_contact">
+			<select
+				name="<?php echo esc_attr($field_id); ?>"
+				value="<?php echo esc_attr($value); ?>"
+				class="gf-calendly-contact"
+			>
 				<option value="">-- Choose --</option>
 				<?php echo $options_html; ?>
 			</select>
 
 			<button type="button" class="gf-calendly-trigger">Schedule a time</button>
 			<span class="gf-calendly-selected-date"></span>
-			<input type="hidden" name="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($value); ?>" />
 
 			<div class="calendly-top-bar-template" id="overlay-top-bar">
 				<div class="calendly-top-bar-content">

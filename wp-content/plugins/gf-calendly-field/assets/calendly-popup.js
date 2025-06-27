@@ -1,4 +1,19 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+	document.dispatchEvent(new Event('gform_page_loaded'));
+
+	const navigationButtons = [
+		...document.querySelectorAll('.gform_previous_button') ?? [],
+		...document.querySelectorAll('.gform_next_button') ?? [],
+	];
+
+	navigationButtons.forEach((navigationBtn) => {
+		navigationBtn.addEventListener('click', () => {
+			document.dispatchEvent(new Event('gform_page_loaded'));
+		});
+	});
+});
+
+document.addEventListener('gform_page_loaded', function () {
     document.querySelectorAll('.gf-calendly-wrapper').forEach(wrapper => {
         const trigger = wrapper.querySelector('.gf-calendly-trigger');
         const output  = wrapper.querySelector('.gf-calendly-selected-date');
