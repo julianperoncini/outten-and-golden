@@ -314,6 +314,7 @@ export default function createScrollManager(app) {
 		mount,
 		unmount,
 		top,
+		scrollTo,
 		resize,
 		get current() {
 			return currentScroll;

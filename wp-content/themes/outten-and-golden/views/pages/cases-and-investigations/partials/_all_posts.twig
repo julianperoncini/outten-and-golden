@@ -2,6 +2,17 @@
 {% set cases_posts = props.cases_posts %}
 {% set categories = props.categories %}
 {% set tags = props.tags %}
+{% set active_investigations = props.active_investigations %}
+
+{# Filter tags to only show parent tags in filter buttons #}
+{% set parent_tags = [] %}
+{% if tags %}
+    {% for tag in tags %}
+        {% if tag.parent == 0 %}
+            {% set parent_tags = parent_tags|merge([tag]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
 <section class="relative">
     <div class="site-max pt-80 s:pt-120 pb-80 s:pb-160" data-component="casesFilter(js-all-posts-container)">
@@ -13,8 +24,8 @@
             <div class="relative s:col-start-9 col-span-full s:col-span-8 flex justify-end">
                 <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex items-start s:items-center justify-start s:justify-center flex-nowrap s:flex-wrap">
                     <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
-                    {% for tag in tags %}
-                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.last ? 'border-r-[0.1rem]' : '!border-r-0' }} border-solid border-grey-taupe" type="button" aria-label="Button to filter by all" data-filter="{{ tag.slug }}">{{ tag.name }}</button>
+                    {% for button in case_status_buttons %}
+                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.last ? 'border-r-[0.1rem]' : '!border-r-0' }} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ button.name }}" data-filter="{{ button.slug }}">{{ button.name }}</button>
                     {% endfor %}
                 </div>
 
@@ -34,6 +45,16 @@
                         {% set feature_content = function('get_field', 'feature_content', post.ID) %}
                         {% set post_link = function('get_permalink', post.ID) %}
                         
+                        {# Check if this post is featured in active investigations #}
+                        {% set is_featured = false %}
+                        {% if active_investigations.active_investigations_posts %}
+                            {% for active_post in active_investigations.active_investigations_posts %}
+                                {% if active_post.post == post.ID %}
+                                    {% set is_featured = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        
                         {% set all_taxonomies = function('get_object_taxonomies', 'cases') %}
                         {% set post_terms = {} %}
 
@@ -44,15 +65,57 @@
                             {% endif %}
                         {% endfor %}
 
-                        <a class="relative block col-span-full s:col-span-1 w-full js-all-posts-item" href="{{ post_link }}"
-                            {% if post_terms['post_tag'] %}
-                                {% set category_slugs = [] %}
-                                {% for tag in post_terms['post_tag'] %}
-                                    {% set category_slugs = tag.slug %}
-                                {% endfor %}
-                                data-filter-category="all,{{ category_slugs }}"
+                        {# Get case-status terms for filtering #}
+                        {% set case_status_terms = post_terms['case-status'] is defined ? post_terms['case-status'] : [] %}
+    
+                        {# Filter post tags to only parent tags #}
+                        {% set parent_post_tags = [] %}
+                        {% if post_terms['post_tag'] %}
+                            {% for tag in post_terms['post_tag'] %}
+                                {% if tag.parent == 0 %}
+                                    {% set parent_post_tags = parent_post_tags|merge([tag]) %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        {# Build filter classes based on case-status #}
+                        {% set filter_classes = ['all'] %}
+                        {% if case_status_terms %}
+                            {% for status in case_status_terms %}
+                                {% if status.slug == 'active-case' or status.slug == 'resolved-case' %}
+                                    {% set filter_classes = filter_classes|merge(['cases']) %}
+                                {% endif %}
+                                {% if status.slug == 'active-investigation' or status.slug == 'resolved-investigation' %}
+                                    {% set filter_classes = filter_classes|merge(['investigations']) %}
+                                {% endif %}
+                                {% if status.slug == 'active-case' or status.slug == 'active-investigation' %}
+                                    {% set filter_classes = filter_classes|merge(['active']) %}
+                                {% endif %}
+                                {% if status.slug == 'resolved-case' or status.slug == 'resolved-investigation' %}
+                                    {% set filter_classes = filter_classes|merge(['resolved']) %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {# If no case-status terms, add 'cases' to filter #}
+                            {% if post.post_type == 'cases' %}
+                                {% set filter_classes = filter_classes|merge(['cases']) %}
                             {% endif %}
+                        {% endif %}
+                        
+                        {# Remove duplicates from filter classes #}
+                        {% set filter_classes = filter_classes|reduce((carry, item) => item in carry ? carry : carry|merge([item]), []) %}
+
+                        
+                        <div class="relative block col-span-full s:col-span-1 w-full group js-all-posts-item" href="{{ post_link }}"
+                            data-filter-category="{{ filter_classes|join(',') }}"
                         >
+                            {# Featured indicator for active investigations #}
+                            {#% if is_featured %}
+                                <div class="absolute top-16 right-16 bg-yellow text-black px-8 py-4 text-xs font-bold uppercase z-10">
+                                    Featured
+                                </div>
+                            {% endif %#}
+
                             <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
                                 {% if post_terms['case-categories'] %}
                                     {% for category in post_terms['case-categories'] %}
@@ -65,7 +128,11 @@
                                 {% endif %}
                             </div>
 
-                            <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
+
+                            <a href="{{ post_link }}">
+
+
+                            <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none bg-green">
                                 {% if feature_content.feature_image %}
                                     {% include "blocks/common/image.twig" with {
                                         props : {
@@ -73,7 +140,7 @@
                                                 image : feature_content.feature_image
                                             },
                                             options: {
-                                                container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                                container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.02] group-hover:opacity-90 transition-all duration-[1s]',
                                                 class : 'w-full h-full object-cover pointer-events-none select-none',
                                                 aspect_ratio: '67%',
                                                 aspect_ratio_mobile: '67%',
@@ -87,19 +154,30 @@
 
                             <div class="relative w-full pt-24 s:pt-32 space-y-24 s:space-y-32">
                                 <div class="flex flex-wrap items-start justify-start gap-4">
-                                    {# Category #}
-                                    {% if post_terms['post_tag'] %}
-                                       
-                                            {% for tag in post_terms['post_tag'] %}
-                                                {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
-                                                {% include "/views/partials/category.twig" with {
-                                                    data: {
-                                                        text: tag.name,
-                                                        bgColor: tag_background_color|default('green'),
-                                                    }
-                                                } %}
-                                            {% endfor %}
-                                        
+                                    {# Display case-status as category tags #}
+                                    {% if case_status_terms %}
+                                        {% for status in case_status_terms %}
+                                            {% set status_background_color = function('get_field', 'background_color', 'term_' ~ status.term_id) %}
+                                            {% include "/views/partials/category.twig" with {
+                                                data: {
+                                                    text: status.name,
+                                                    bgColor: status_background_color|default('purple'),
+                                                }
+                                            } %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    
+                                    {# Display parent tags if you still want them #}
+                                    {% if parent_post_tags %}
+                                        {% for tag in parent_post_tags %}
+                                            {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
+                                            {% include "/views/partials/category.twig" with {
+                                                data: {
+                                                    text: tag.name,
+                                                    bgColor: tag_background_color|default('green'),
+                                                }
+                                            } %}
+                                        {% endfor %}
                                     {% endif %}
                                 </div>
 
@@ -119,20 +197,23 @@
                                     </div>
                                 </div>
                             </div>
-                        </a>
+
+                            </a>
+                        </div>
                     {% endfor %}
                 </div>
-
-                {% if client_stories_posts.pagination.pages is not empty %}
-                    {% include 'partials/pagination.twig' with {
-                        props: {
-                            pagination: client_stories_posts.pagination,
-                            items_per_page: 18,
-                            items_per_page_options: [6, 12, 18]
-                        }
-                    } %}
-                {% endif %}
             </div>
+
+            {% if cases_posts.pagination.pages is not empty %}
+                {% include 'partials/pagination.twig' with {
+                    props: {
+                        pagination: cases_posts.pagination,
+                        items_per_page: 18,
+                        items_per_page_options: [6, 12, 18]
+                    }
+                } %}
+            {% endif %}
+            
         </div>
     </div>
 </section>

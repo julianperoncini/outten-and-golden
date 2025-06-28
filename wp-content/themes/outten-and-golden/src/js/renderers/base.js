@@ -1,10 +1,12 @@
 import { Renderer } from '@unseenco/taxi';
-import { evt, utils, store } from '@/core';
+import { evt, ev, utils, store } from '@/core';
 
 import * as components from '@/components'
 
 const { qs, qsa, rect } = utils;
 const { device } = store;
+
+const scroll = ev.scroll()
 
 const path = window.location.pathname;
 const isHomePage = path === '/';
@@ -82,6 +84,8 @@ export default class extends Renderer {
             });
         });
 		*/
+
+
     }
 
     onEnterCompleted() {

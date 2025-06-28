@@ -114,15 +114,15 @@
 
                     <div class="relative s:absolute w-full pt-24 s:pt-32 space-y-24 s:space-y-40">
                         <div class="flex flex-wrap items-center justify-center s:justify-start gap-4">
-                            {# Category #}
-                            {% if post_terms['tags-cases'] %}
-                                <div class="case-tags">
-                                    {% for tag in post_terms['tags-cases'] %}
-                                        {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
+                            {# Case Status instead of tags-cases #}
+                            {% if post_terms['case-status'] %}
+                                <div class="case-status-tags flex flex-wrap gap-x-5 gap-y-5">
+                                    {% for status in post_terms['case-status'] %}
+                                        {% set status_background_color = function('get_field', 'background_color', 'term_' ~ status.term_id) %}
                                         {% include "/views/partials/category.twig" with {
                                             data: {
-                                                text: tag.name,
-                                                bgColor: tag_background_color,
+                                                text: status.name,
+                                                bgColor: status_background_color|default('purple'),
                                             }
                                         } %}
                                     {% endfor %}

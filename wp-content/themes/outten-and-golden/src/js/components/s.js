@@ -23,6 +23,10 @@ class PredictiveSearchEngine {
             lastKeypressTime: 0      // Previously: lastKeyTime
         };
 
+        // Initialize parent/child mapping from PHP
+        this.tagParentChildMap = window.tagParentChildMap || {};
+        this.tagParentMapping = window.tagParentMapping || {};
+
         // Map available tag buttons to data objects
         this.availableTagsData = Array.from(this.elements.tagButtons || []).map(tagElement => ({
             element: tagElement,
@@ -69,38 +73,49 @@ class PredictiveSearchEngine {
         return text.replace(regex, '<mark class="bg-yellow px-1 rounded">$1</mark>');
     }
 
+    async getParentTagName(tagText) {
+        try {
+            const response = await fetch(`/wp-json/outten-golden/v1/get-parent-tag?tag=${encodeURIComponent(tagText)}`);
+            if (response.ok) {
+                const data = await response.json();
+                return data.parentTag || tagText;
+            }
+        } catch (error) {
+            console.warn('Failed to get parent tag:', error);
+        }
+        return tagText;
+    }
+
     // Tag Management
-    selectTag(tagText) {  // Previously: addTag
-        if (this.state.selectedTags.includes(tagText)) return false;
+    selectTag(tagText) {
+        // Convert child tag to parent tag if mapping exists
+        const displayText = window.tagParentMapping?.[tagText] || tagText;
+        
+        if (this.state.selectedTags.includes(displayText)) return false;
         
         // Check if tag chip already exists in header
         if (this.elements.selectedTagsContainer) {
             const existingTagChips = this.elements.selectedTagsContainer.querySelectorAll('.js-search-tag span');
             for (let span of existingTagChips) {
-                if (span.textContent.trim() === tagText) return false;
+                if (span.textContent.trim() === displayText) return false;
             }
         }
-
-        this.state.selectedTags.push(tagText);
+    
+        this.state.selectedTags.push(displayText);
         
-        // Create visual tag chip in header
-        const tagChip = this.createTagChip(tagText);
+        // Create visual tag chip with parent tag name
+        const tagChip = this.createTagChip(displayText);
         
         // Find and hide the corresponding available tag button
-        const tagData = this.availableTagsData.find(data => data.tagText === tagText);
+        // Look for both the original tag and the parent tag
+        const tagData = this.availableTagsData.find(data => 
+            data.tagText === tagText || data.tagText === displayText
+        );
+        
         if (tagData && tagData.element) {
             gsap.to(tagData.element, {
                 opacity: 0, scale: 0.8, y: -10, duration: 0.2,
                 onComplete: () => tagData.element.style.display = 'none'
-            });
-        }
-        
-        // Animate tag chip creation
-        if (tagChip) {
-            gsap.fromTo(tagChip, {
-                opacity: 0, scale: 0.3, y: 20, rotationX: -90
-            }, {
-                opacity: 1, scale: 1, y: 0, rotationX: 0, duration: 0.4, ease: "back.out(1.25)"
             });
         }
         
@@ -110,9 +125,9 @@ class PredictiveSearchEngine {
         }
         this.filterAvailableTags('');
         
-        // Trigger callbacks
-        this.callbacks.onTagSelected?.(tagText, tagChip);  // Previously: onTagAdded
-        this.callbacks.onSelectionChanged?.(this.state.selectedTags);  // Previously: onTagsChanged
+        // Trigger callbacks with the display text
+        this.callbacks.onTagSelected?.(displayText, tagChip);
+        this.callbacks.onSelectionChanged?.(this.state.selectedTags);
         this.callbacks.onScrollUpdate?.();
         
         // Focus search input
@@ -294,13 +309,29 @@ class PredictiveSearchEngine {
                 tagData.relevanceScore = 1;
             });
         } else {
-            const trimmedQuery = query.trim();
+            const trimmedQuery = query.trim().toLowerCase();
             
             // Filter and score tags, excluding selected ones
             this.state.filteredResults = this.availableTagsData
                 .filter(tagData => !this.state.selectedTags.includes(tagData.tagText))
                 .map(tagData => {
-                    const score = this.calculateRelevanceScore(tagData.tagText, trimmedQuery);
+                    // Direct match score
+                    let score = this.calculateRelevanceScore(tagData.tagText, trimmedQuery);
+                    
+                    // Check if this parent tag has children that match
+                    if (score === 0 && this.tagParentChildMap[tagData.tagText]) {
+                        const children = this.tagParentChildMap[tagData.tagText];
+                        // Check each child for a match
+                        for (let child of children) {
+                            const childScore = this.calculateRelevanceScore(child, trimmedQuery);
+                            if (childScore > 0) {
+                                // If child matches, give parent a score (slightly lower than direct match)
+                                score = childScore * 0.8;
+                                break;
+                            }
+                        }
+                    }
+                    
                     return { ...tagData, relevanceScore: score };
                 })
                 .filter(tagData => tagData.relevanceScore > 0)
@@ -433,12 +464,37 @@ class PredictiveSearchEngine {
             try {
                 fetch(`/wp-json/outten-golden/v1/search?query=${encodeURIComponent(query)}&limit=10`)
                     .then(response => response.ok ? response.json() : Promise.reject())
-                    .then(apiResults => this.callbacks.onAPIResults?.(apiResults))
+                    .then(apiResults => {
+                        // Process API results to include parent tags
+                        const processedResults = this.processAPIResults(apiResults);
+                        this.callbacks.onAPIResults?.(processedResults);
+                    })
                     .catch(() => console.log('API failed, using existing tags'));
             } catch (error) {
                 console.log('API failed, using existing tags');
             }
         }
+    }
+
+    // New method to process API results
+    processAPIResults(apiResults) {
+        if (!Array.isArray(apiResults)) return apiResults;
+        
+        // Create a map to track which parent tags we've already added
+        const addedParents = new Set();
+        const processedResults = [];
+        
+        apiResults.forEach(result => {
+            // Always add the original result
+            processedResults.push(result);
+            
+            // If this is a child tag (has matchedChild property), ensure parent is shown
+            if (result.matchedChild && result.isParent) {
+                addedParents.add(result.text);
+            }
+        });
+        
+        return processedResults;
     }
 
     handleTagButtonClick(tagData) {  // Previously: handleTagClick
@@ -1012,14 +1068,6 @@ class PredictiveSearchMobile extends PredictiveSearchUI {
         // Don't call this directly - use initMobile() instead
     }
 
-    initMobile() {
-        // Call parent init first
-        super.init();
-        
-        // Then add mobile-specific initialization
-        this.initMobileBehavior();
-    }
-
     // Override getUIState for mobile
     getUIState() {
         return {
@@ -1379,7 +1427,8 @@ function extractSearchElements(config) {  // Previously: extractElements
         clearButton: qs('.js-search-clear', section),                   // NEW: Updated class name
         headerElement: qs('header', section),                           // Previously: header
         relatedLinks: qsa('.column-inner', section),
-        searchLinks: qsa('.js-search-link', section)
+        searchLinks: qsa('.js-search-link', section),
+        noResultsMessage: qs('.js-search-no-results', section)          // Add this for no results message
     };
 }
 

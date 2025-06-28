@@ -401,13 +401,12 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             
             $context['gravity_form'] = $form_html;
         }
-
         
         $context['all_tags'] = Timber::get_terms([
             'taxonomy' => 'post_tag',
             'hide_empty' => false,
+            'parent' => 0,  // Only get parent tags (tags with no parent)
             'number' => 20,
-            //'orderby' => 'count',
             'order' => 'ASC'
         ]);
 

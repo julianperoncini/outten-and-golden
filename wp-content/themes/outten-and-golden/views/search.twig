@@ -1,6 +1,7 @@
 {% extends '_layout.twig' %}
 
 {% block content %}
+
     <article data-taxi-view data-taxi-namespace="{{ taxi_namespace }}" data-page-type="{{ page_data.type }}">
         <div class="app">
             {% include 'blocks/builder/index.twig' with {
@@ -45,7 +46,7 @@
    
                     <div class="s:-mt-30 filter-listgrouped-search-results site-max pt-30 s:pt-100 pb-100 flex flex-col overflow-hidden gap-y-60" aria-live="polite" role="list">
                         {% for post_type, group in grouped_posts %}
-                            <div class="post-type-group filter-list__item" data-post-type="{{ post_type }}" role="listitem" aria-label="Group of posts by {{ group.label }}" data-filter-name="{{ post_type }}" data-filter-status="active">
+                            <div class="post-type-group filter-list__item pb-40" data-post-type="{{ post_type }}" role="listitem" aria-label="Group of posts by {{ group.label }}" data-filter-name="{{ post_type }}" data-filter-status="active">
                                 <div class="post-type-header mb-20 pb-10">
                                     <h2 class="text-40 font-sans font-normal leading-[1.04] tracking-[-0.032rem] text-green flex items-center">
                                         {{ group.label }}

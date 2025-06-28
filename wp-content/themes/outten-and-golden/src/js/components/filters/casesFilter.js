@@ -1,7 +1,8 @@
 import { gsap } from 'gsap'
-import { evt, utils, store } from '@/core'
+import { evt, ev, utils, store } from '@/core'
 
 const { qs, qsa } = utils
+const scroll = ev.scroll()
 
 export default function casesFilter(config) {
     const elements = {
@@ -14,6 +15,7 @@ export default function casesFilter(config) {
     const allItems = qsa('.js-all-posts-item', elements.section)
     
     let ct = null
+    let isInitialLoad = true
 
     function animateTransition(callback) {
         if (ct) ct.kill()
@@ -37,18 +39,62 @@ export default function casesFilter(config) {
         })
     }
 
-    function showAllItems() {
-        animateTransition(() => {
+    function updateURL(filterValue, pushState = true) {
+        const url = new URL(window.location)
+        
+        if (filterValue === 'all') {
+            url.searchParams.delete('filter')
+        } else {
+            url.searchParams.set('filter', filterValue)
+        }
+        
+        if (pushState) {
+            window.history.pushState({ filter: filterValue }, '', url.toString())
+        } else {
+            window.history.replaceState({ filter: filterValue }, '', url.toString())
+        }
+    }
+
+    function getURLFilter() {
+        const urlParams = new URLSearchParams(window.location.search)
+        return urlParams.get('filter') || 'all'
+    }
+
+    function scrollToSection() {
+        // Scroll to the section with smooth behavior
+        scroll.scrollTo(elements.section, {
+            offset: 0,
+            duration: 0.5,
+            ease: "power2.out"
+        })
+    }
+
+    function showAllItems(updateUrl = true, scroll = false) {
+        const callback = () => {
             allItems.forEach(item => {
                 item.style.display = 'block'
             })
 
             evt.emit('blogs:filtered', { filter: 'all', items: allItems })
-        })
+            
+            if (updateUrl) {
+                updateURL('all', !isInitialLoad)
+            }
+            
+            if (scroll && !isInitialLoad) {
+                scrollToSection()
+            }
+        }
+
+        if (isInitialLoad) {
+            callback()
+        } else {
+            animateTransition(callback)
+        }
     }
 
-    function filterByCategory(filterValue) {
-        animateTransition(() => {
+    function filterByCategory(filterValue, updateUrl = true, scroll = false) {
+        const callback = () => {
             const visibleItems = []
             
             allItems.forEach(item => {
@@ -68,7 +114,21 @@ export default function casesFilter(config) {
                 items: visibleItems,
                 count: visibleItems.length 
             })
-        })
+            
+            if (updateUrl) {
+                updateURL(filterValue, !isInitialLoad)
+            }
+            
+            if (scroll && !isInitialLoad) {
+                scrollToSection()
+            }
+        }
+
+        if (isInitialLoad) {
+            callback()
+        } else {
+            animateTransition(callback)
+        }
     }
 
     function updateActiveButton(activeButton) {
@@ -80,29 +140,62 @@ export default function casesFilter(config) {
         activeButton.classList.add('bg-white-smoke', 'pointer-events-none', 'select-none')
     }
 
+    function applyFilter(filterValue, updateUrl = true, scroll = false) {
+        // Find and update the active button
+        const targetButton = qs(`[data-filter="${filterValue}"]`, elements.section)
+        if (targetButton) {
+            updateActiveButton(targetButton)
+        }
+        
+        // Apply the filter
+        if (filterValue === 'all') {
+            showAllItems(updateUrl, scroll)
+        } else {
+            filterByCategory(filterValue, updateUrl, scroll)
+        }
+    }
+
+    function handlePopState(event) {
+        const filterValue = event.state?.filter || getURLFilter()
+        applyFilter(filterValue, false, false) // Don't update URL or scroll on back/forward
+    }
+
     function addEvents() {
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const filterValue = button.getAttribute('data-filter')
-                
-                updateActiveButton(button)
-                
-                if (filterValue === 'all') {
-                    showAllItems()
-                } else {
-                    filterByCategory(filterValue)
-                }
+                applyFilter(filterValue, true, true) // Update URL and scroll on click
             })
         })
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', handlePopState)
+    }
+
+    function initializeFromURL() {
+        const filterValue = getURLFilter()
+        
+        // Validate that the filter exists as a button
+        const validButton = qs(`[data-filter="${filterValue}"]`, elements.section)
+        const finalFilter = validButton ? filterValue : 'all'
+        
+        applyFilter(finalFilter, true, false) // Update URL if invalid, don't scroll on init
+        
+        // Scroll to section if there's a filter parameter in URL
+        if (filterValue !== 'all' && window.location.search.includes('filter=')) {
+            scroll.scrollTo(elements.section, {
+                offset: 0,
+                duration: 1,
+                ease: "power3.out"
+            })
+        }
+        
+        isInitialLoad = false
     }
 
     function mount() {
-        const allButton = qs('[data-filter="all"]', elements.section)
-        if (allButton) {
-            updateActiveButton(allButton)
-        }
-        
         addEvents()
+        initializeFromURL()
     }
 
     function destroy() {
@@ -115,6 +208,8 @@ export default function casesFilter(config) {
         filterButtons.forEach(button => {
             button.removeEventListener('click', () => {})
         })
+        
+        window.removeEventListener('popstate', handlePopState)
     }
 
     mount()
@@ -122,6 +217,7 @@ export default function casesFilter(config) {
     return {
         destroy,
         showAll: showAllItems,
-        filterBy: filterByCategory
+        filterBy: filterByCategory,
+        applyFilter // Expose for external use
     }
 }

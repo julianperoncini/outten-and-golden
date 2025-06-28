@@ -4,6 +4,7 @@
  * =====================
  *
  * Enhanced search functionality with predictive search API, title search, tags, and categories
+ * Now with proper parent/child tag support
  *
  * @author  Jesper Westlund <jesper.westlund1@hotmail.com>
  * @package OUTTEN_AND_GOLDEN
@@ -59,6 +60,51 @@ class OUTTEN_AND_GOLDEN_Search {
         return $template;
     }
 
+    /**
+     * Expand search terms to include parent/child relationships
+     */
+    private function expand_search_terms($search_terms) {
+        $expanded_terms = array();
+        
+        foreach ($search_terms as $term_name) {
+            // Add the original term
+            $expanded_terms[] = $term_name;
+            
+            // Search for this term in all taxonomies
+            $taxonomies = array('post_tag', 'tags-cases', 'case-categories', 'categories-issues');
+            
+            foreach ($taxonomies as $taxonomy) {
+                // First check if it's a child tag
+                $term = get_term_by('name', $term_name, $taxonomy);
+                
+                if ($term && !is_wp_error($term)) {
+                    // If it has a parent, add the parent term
+                    if ($term->parent) {
+                        $parent_term = get_term($term->parent, $taxonomy);
+                        if ($parent_term && !is_wp_error($parent_term)) {
+                            $expanded_terms[] = $parent_term->name;
+                        }
+                    }
+                    
+                    // Also check if this term has children
+                    $children = get_terms(array(
+                        'taxonomy' => $taxonomy,
+                        'parent' => $term->term_id,
+                        'hide_empty' => false
+                    ));
+                    
+                    if (!is_wp_error($children) && !empty($children)) {
+                        foreach ($children as $child) {
+                            $expanded_terms[] = $child->name;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return array_unique($expanded_terms);
+    }
+
     public function custom_search_query($query) {
         if (!is_admin() && $query->is_main_query()) {
             if (get_query_var('search_tags') || get_query_var('search_type')) {
@@ -85,19 +131,40 @@ class OUTTEN_AND_GOLDEN_Search {
                         $tags_array = $search_tags;
                     }
                     
+                    // Expand search terms to include parent/child relationships
+                    $expanded_tags = $this->expand_search_terms($tags_array);
+                    
                     // Set up tax query for tags
                     $tax_query = array(
                         'relation' => 'OR',
                         array(
                             'taxonomy' => 'post_tag',
                             'field'    => 'name',
-                            'terms'    => $tags_array,
+                            'terms'    => $expanded_tags,
+                            'operator' => 'IN'
+                        ),
+                        array(
+                            'taxonomy' => 'tags-cases',
+                            'field'    => 'name',
+                            'terms'    => $expanded_tags,
+                            'operator' => 'IN'
+                        ),
+                        array(
+                            'taxonomy' => 'case-categories',
+                            'field'    => 'name',
+                            'terms'    => $expanded_tags,
+                            'operator' => 'IN'
+                        ),
+                        array(
+                            'taxonomy' => 'categories-issues',
+                            'field'    => 'name',
+                            'terms'    => $expanded_tags,
                             'operator' => 'IN'
                         ),
                         array(
                             'taxonomy' => 'category',
                             'field'    => 'name',
-                            'terms'    => $tags_array,
+                            'terms'    => $expanded_tags,
                             'operator' => 'IN'
                         )
                     );
@@ -109,18 +176,6 @@ class OUTTEN_AND_GOLDEN_Search {
                 $search_term = get_search_query();
                 if (!empty($search_term)) {
                     // WordPress will handle the text search automatically
-                    // But you can customize it here if needed
-                    
-                    // Optional: Add meta query for custom fields
-                    $meta_query = array(
-                        'relation' => 'OR',
-                        array(
-                            'key'     => 'custom_field_name', // Replace with your actual custom field names
-                            'value'   => $search_term,
-                            'compare' => 'LIKE'
-                        )
-                    );
-                    // $query->set('meta_query', $meta_query);
                 }
                 
                 // If no search term and no tags, return no results
@@ -170,10 +225,65 @@ class OUTTEN_AND_GOLDEN_Search {
                 ),
             ),
         ));
+        
+        // Add endpoint for getting parent tag
+        register_rest_route('outten-golden/v1', '/get-parent-tag', array(
+            'methods' => 'GET',
+            'callback' => [$this, 'get_parent_tag'],
+            'permission_callback' => '__return_true',
+            'args' => array(
+                'tag' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ),
+            ),
+        ));
     }
 
     /**
-     * Handle the search API request - tags, categories, and case tags
+     * Get parent tag for a given tag name
+     */
+    public function get_parent_tag($request) {
+        $tag_name = $request->get_param('tag');
+        
+        // Search across all taxonomies
+        $taxonomies = array('post_tag', 'tags-cases', 'case-categories', 'categories-issues');
+        
+        foreach ($taxonomies as $taxonomy) {
+            $term = get_term_by('name', $tag_name, $taxonomy);
+            
+            if ($term && !is_wp_error($term)) {
+                // If it has a parent, return the parent name
+                if ($term->parent) {
+                    $parent_term = get_term($term->parent, $taxonomy);
+                    if ($parent_term && !is_wp_error($parent_term)) {
+                        return rest_ensure_response(array(
+                            'parentTag' => $parent_term->name,
+                            'originalTag' => $tag_name,
+                            'taxonomy' => $taxonomy
+                        ));
+                    }
+                }
+                // It's already a parent tag
+                return rest_ensure_response(array(
+                    'parentTag' => $term->name,
+                    'originalTag' => $tag_name,
+                    'taxonomy' => $taxonomy
+                ));
+            }
+        }
+        
+        // Tag not found, return original
+        return rest_ensure_response(array(
+            'parentTag' => $tag_name,
+            'originalTag' => $tag_name,
+            'taxonomy' => null
+        ));
+    }
+
+    /**
+     * Handle the search API request - enhanced to show parent tags when searching for children
      */
     public function handle_search_api($request) {
         $query = $request->get_param('query');
@@ -184,17 +294,18 @@ class OUTTEN_AND_GOLDEN_Search {
         }
 
         $results = array();
+        $found_parent_ids = array(); // Track parent tags we've already added
 
-        // 1. Search in regular tags
-        $tag_results = $this->search_tags($query, $limit);
+        // 1. Search in regular tags - enhanced to include parent tags
+        $tag_results = $this->search_tags_with_parents($query, $limit, 'post_tag', 'tag', $found_parent_ids);
         $results = array_merge($results, $tag_results);
 
-        // 2. Search in case tags (tags-cases taxonomy)
-        $case_tag_results = $this->search_tags_cases($query, $limit);
+        // 2. Search in case tags - enhanced to include parent tags
+        $case_tag_results = $this->search_tags_with_parents($query, $limit, 'tags-cases', 'case-tag', $found_parent_ids);
         $results = array_merge($results, $case_tag_results);
 
-        // 3. Search in categories
-        $category_results = $this->search_categories($query, $limit);
+        // 3. Search in categories - enhanced to include parent categories
+        $category_results = $this->search_categories_with_parents($query, $limit, $found_parent_ids);
         $results = array_merge($results, $category_results);
 
         // Remove duplicates and limit results
@@ -205,25 +316,92 @@ class OUTTEN_AND_GOLDEN_Search {
     }
 
     /**
-     * Search in tags
+     * Search tags including parent tags when child tags match
      */
-    private function search_tags($query, $limit) {
-        $tags = get_terms(array(
-            'taxonomy' => 'post_tag',
+    private function search_tags_with_parents($query, $limit, $taxonomy, $type, &$found_parent_ids) {
+        // Initialize taxonomy tracking if not exists
+        if (!isset($found_parent_ids[$taxonomy])) {
+            $found_parent_ids[$taxonomy] = array();
+        }
+        
+        // First get all matching terms (including children)
+        $all_terms = get_terms(array(
+            'taxonomy' => $taxonomy,
             'hide_empty' => true,
             'search' => $query,
-            'number' => $limit
+            'number' => $limit * 3 // Get more to account for filtering
         ));
 
         $results = array();
-        if (!is_wp_error($tags)) {
-            foreach ($tags as $tag) {
-                $results[] = array(
-                    'text' => $tag->name,
-                    'type' => 'tag',
-                    'id' => $tag->term_id,
-                    'count' => $tag->count
-                );
+        
+        if (!is_wp_error($all_terms)) {
+            foreach ($all_terms as $term) {
+                // If this is a child term, add its parent instead
+                if ($term->parent && !isset($found_parent_ids[$taxonomy][$term->parent])) {
+                    $parent_term = get_term($term->parent, $taxonomy);
+                    if ($parent_term && !is_wp_error($parent_term)) {
+                        $results[] = array(
+                            'text' => $parent_term->name,
+                            'type' => $type,
+                            'id' => $parent_term->term_id,
+                            'count' => $parent_term->count,
+                            'isParent' => true,
+                            'matchedChild' => $term->name
+                        );
+                        $found_parent_ids[$taxonomy][$parent_term->term_id] = true;
+                    }
+                } elseif (!$term->parent && !isset($found_parent_ids[$taxonomy][$term->term_id])) {
+                    // It's already a parent term
+                    $results[] = array(
+                        'text' => $term->name,
+                        'type' => $type,
+                        'id' => $term->term_id,
+                        'count' => $term->count,
+                        'isParent' => true
+                    );
+                    $found_parent_ids[$taxonomy][$term->term_id] = true;
+                }
+            }
+        }
+
+        // Also search for parent tags whose children might match
+        $parent_terms = get_terms(array(
+            'taxonomy' => $taxonomy,
+            'hide_empty' => true,
+            'parent' => 0, // Only parent terms
+            'number' => 100
+        ));
+
+        if (!is_wp_error($parent_terms)) {
+            foreach ($parent_terms as $parent) {
+                if (isset($found_parent_ids[$taxonomy][$parent->term_id])) {
+                    continue; // Already added
+                }
+
+                // Get children of this parent
+                $children = get_terms(array(
+                    'taxonomy' => $taxonomy,
+                    'parent' => $parent->term_id,
+                    'hide_empty' => false
+                ));
+
+                if (!is_wp_error($children)) {
+                    foreach ($children as $child) {
+                        // Check if child name matches the search query
+                        if (stripos($child->name, $query) !== false) {
+                            $results[] = array(
+                                'text' => $parent->name,
+                                'type' => $type,
+                                'id' => $parent->term_id,
+                                'count' => $parent->count,
+                                'isParent' => true,
+                                'matchedChild' => $child->name
+                            );
+                            $found_parent_ids[$taxonomy][$parent->term_id] = true;
+                            break; // Found a match, no need to check other children
+                        }
+                    }
+                }
             }
         }
 
@@ -231,83 +409,10 @@ class OUTTEN_AND_GOLDEN_Search {
     }
 
     /**
-     * Search in case tags (updated)
+     * Search in categories with parent support
      */
-    private function search_tags_cases($query, $limit) {
-        $tags = get_terms(array(
-            'taxonomy' => 'tags-cases',
-            'hide_empty' => true,
-            'search' => $query,
-            'number' => $limit
-        ));
-
-        $results = array();
-        if (!is_wp_error($tags)) {
-            foreach ($tags as $tag) {
-                $results[] = array(
-                    'text' => $tag->name,
-                    'type' => 'case-tag', // Changed from 'tag' to distinguish from regular tags
-                    'id' => $tag->term_id,
-                    'count' => $tag->count
-                );
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Search in categories
-     */
-    private function search_categories($query, $limit) {
-        $categories = get_terms(array(
-            'taxonomy' => 'category',
-            'hide_empty' => true,
-            'search' => $query,
-            'number' => $limit
-        ));
-
-        $results = array();
-        if (!is_wp_error($categories)) {
-            foreach ($categories as $category) {
-                $results[] = array(
-                    'text' => $category->name,
-                    'type' => 'case-categories',
-                    'id' => $category->term_id,
-                    'count' => $category->count
-                );
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Updated tax_query to include tags-cases taxonomy
-     * Add this to your custom_search_query method where you set up the tax_query
-     */
-    private function get_updated_tax_query($tags_array) {
-        return array(
-            'relation' => 'OR',
-            array(
-                'taxonomy' => 'post_tag',
-                'field'    => 'name',
-                'terms'    => $tags_array,
-                'operator' => 'IN'
-            ),
-            array(
-                'taxonomy' => 'tags-cases', // Added case tags taxonomy
-                'field'    => 'name',
-                'terms'    => $tags_array,
-                'operator' => 'IN'
-            ),
-            array(
-                'taxonomy' => 'category',
-                'field'    => 'name',
-                'terms'    => $tags_array,
-                'operator' => 'IN'
-            )
-        );
+    private function search_categories_with_parents($query, $limit, &$found_parent_ids) {
+        return $this->search_tags_with_parents($query, $limit, 'category', 'case-categories', $found_parent_ids);
     }
 }
 

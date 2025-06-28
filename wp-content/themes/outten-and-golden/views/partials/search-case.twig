@@ -6,6 +6,16 @@
 {% set post_tags = fn('get_the_terms', post_id, 'post_tag') %}
 {% set case_categories = fn('get_the_terms', post_id, 'case-categories') %}
 
+{# Filter to only parent tags #}
+{% set parent_tags = [] %}
+{% if post_tags %}
+    {% for tag in post_tags %}
+        {% if tag.parent == 0 %}
+            {% set parent_tags = parent_tags|merge([tag]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 {# Build category slugs array #}
 {% set category_slugs = [] %}
 {% if case_categories %}
@@ -22,8 +32,6 @@
     <a class="relative block w-full group js-search-link" 
        href="{{ post_link }}"
        aria-label="View {{ post_title }} case study"
-
-
     >
         {# Category Tags Overlay #}
         {% if case_categories %}
@@ -66,10 +74,10 @@
         {# Content Section #}
         <div class="relative w-full pt-24 s:pt-32 space-y-24 s:space-y-32">
 
-            {# Display post tags in content section #}
-            {% if post_tags %}
+            {# Display only parent tags in content section #}
+            {% if parent_tags %}
                 <div class="flex flex-wrap items-start justify-start gap-4">
-                    {% for tag in post_tags %}
+                    {% for tag in parent_tags %}
                         {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
                         {% include "/views/partials/category.twig" with {
                             data: {
