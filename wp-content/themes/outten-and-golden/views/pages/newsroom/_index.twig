@@ -1,6 +1,6 @@
 {% extends '_layout.twig' %}
 
-{% set post = Post(feature_billboard.post) %}
+{% set post = get_post(feature_billboard.post) %}
 {% set feature_billboard_content = function('get_field', 'feature_content', post.ID) %}
 {% set feature_billboard_post_link = function('get_permalink', post.ID) %}
 

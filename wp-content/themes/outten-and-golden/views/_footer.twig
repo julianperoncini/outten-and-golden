@@ -1,4 +1,111 @@
 {{ function('wp_footer') }}
 
+<script>
+    // Set up global AJAX data that your JavaScript expects
+    window.ajaxurl_data = {
+        url: '{{ function('admin_url', 'admin-ajax.php') }}',
+        nonce: '{{ function('wp_create_nonce', 'newsroom_filter_nonce') }}'
+    };
+    
+    // Optional: Add newsroom-specific data if needed
+    window.newsroom_data = {
+        nonce: '{{ function('wp_create_nonce', 'newsroom_filter_nonce') }}',
+        {% if total_posts is defined %}
+        total_posts: {{ total_posts }},
+        {% endif %}
+        {% if posts_per_load is defined %}
+        posts_per_load: {{ posts_per_load }},
+        {% endif %}
+        {% if initial_posts is defined %}
+        initial_posts: {{ initial_posts }}
+        {% endif %}
+    };
+    
+    // DEBUG: Test if data is available
+    console.log('🔍 AJAX Data Check:');
+    console.log('ajaxurl_data:', window.ajaxurl_data);
+    console.log('newsroom_data:', window.newsroom_data);
+    console.log('AJAX URL:', window.ajaxurl_data?.url);
+
+    // Debug direct link loading
+    console.log('🔗 DIRECT LINK DEBUG');
+    console.log('Current URL:', window.location.href);
+    console.log('URL Search Params:', window.location.search);
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log('Parsed params:', {
+        category: urlParams.get('category'),
+        page: urlParams.get('page'),
+        per_page: urlParams.get('per_page')
+    });
+    
+    // Check if posts container has content
+    const postsContainer = document.querySelector('.js-newsroom-posts');
+    if (postsContainer) {
+        const newsGrid = postsContainer.querySelector('.news-grid-blog-page');
+        console.log('Server-side posts found:', newsGrid ? newsGrid.children.length : 0);
+        
+        if (newsGrid && newsGrid.children.length > 0) {
+            console.log('✅ Server provided posts - JavaScript should use these');
+        } else {
+            console.log('❌ No server-side posts - JavaScript must load via AJAX');
+        }
+    }
+    
+    // Check pagination
+    const paginationContainer = document.querySelector('.js-newsroom-pagination');
+    if (paginationContainer) {
+        console.log('Server-side pagination HTML length:', paginationContainer.innerHTML.length);
+        if (paginationContainer.innerHTML.trim()) {
+            console.log('✅ Server provided pagination');
+        } else {
+            console.log('❌ No server-side pagination');
+        }
+    }
+    
+    // Test AJAX manually
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get('category') || 'all';
+            const page = parseInt(params.get('page')) || 1;
+            const per_page = parseInt(params.get('per_page')) || 12;
+            
+            console.log('🧪 Testing AJAX with URL params:', { category, page, per_page });
+            
+            const formData = new FormData();
+            formData.append('action', 'filter_newsroom_posts');
+            formData.append('category', category);
+            formData.append('page', page);
+            formData.append('posts_per_page', per_page);
+            formData.append('nonce', window.ajaxurl_data?.nonce || window.newsroom_data?.nonce);
+            
+            fetch(window.ajaxurl_data?.url || window.ajaxurl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('🧪 Manual AJAX test result:', data.success ? 'SUCCESS' : 'FAILED');
+                if (data.success) {
+                    console.log('📊 AJAX returned:', {
+                        totalPosts: data.data.total_posts,
+                        totalPages: data.data.total_pages,
+                        currentPage: data.data.current_page,
+                        category: data.data.category,
+                        postsHtmlLength: data.data.posts_html?.length || 0,
+                        paginationHtmlLength: data.data.pagination_html?.length || 0
+                    });
+                } else {
+                    console.log('❌ AJAX failed:', data);
+                }
+            })
+            .catch(error => {
+                console.error('💥 AJAX error:', error);
+            });
+        }, 1000);
+    });
+</script>
+
 </body>
-</html>
+</html

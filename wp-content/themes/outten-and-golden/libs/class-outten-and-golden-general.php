@@ -37,9 +37,11 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         $this->cleanup_wp_head();
 
         // Check if ACF is installed.
-        if (function_exists('acf_add_options_page')) {
-            acf_add_options_page();
-        }
+        add_action('acf/init', function() {
+            if( function_exists('acf_add_options_page') ) {
+                acf_add_options_page();
+            }
+        });
 
         set_post_thumbnail_size( 0, 0 );
 
@@ -424,8 +426,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             'order' => 'ASC'
         ]);
 
-        $search_related = get_field('search_category', 'option');
-
+       
+         $search_related = get_field('search_category', 'option');
 
         // Convert WP_Post objects to Timber Posts
         if ($search_related) {
@@ -450,8 +452,8 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
 
         $context['taxi_namespace'] = $this->taxi_namespace('default');
 
-
         $context['options'] = get_fields('option');
+        
         $args = array(
             'post_type' => 'post',
             'posts_per_page' => -1,

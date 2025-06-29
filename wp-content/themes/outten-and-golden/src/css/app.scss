@@ -652,3 +652,17 @@ input:focus::placeholder {
 		}
 	}
 }
+
+/**
+	Pagination
+	========================== */
+.pagination {
+	.disabled {
+		
+		pointer-events: none;
+
+		svg {
+			opacity: 0.5;
+		}
+	}
+}

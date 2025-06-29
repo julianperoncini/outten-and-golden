@@ -1,53 +1,59 @@
 <?php
 
 /**
-	 * Load Composer dependencies
-	 * ==========================
-*/
+ * Load Composer dependencies
+ * ==========================
+ */
 if (!class_exists('Timber\Timber')) {
-	include __DIR__ . '/vendor/autoload.php';
+    include __DIR__ . '/vendor/autoload.php';
 }
 
 /**
-	 * General
-	 * =======
-	 *
-	 * General theme settings and actions.
-*/
+ * General
+ * =======
+ *
+ * General theme settings and actions.
+ */
 require_once __DIR__ . '/libs/class-outten-and-golden-general.php';
 
 /**
-	 * Enqueue
-	 * =======
-	 *
-	 * Hooks and filters for enqueu scripts.
-*/
+ * Enqueue
+ * =======
+ *
+ * Hooks and filters for enqueu scripts.
+ */
 require_once __DIR__ . '/libs/class-outten-and-golden-enqueue.php';
 
 /**
-	 * AJAX
-	 * ====
-	 *
-	 * Hooks and filters for enqueu scripts.
-*/
+ * AJAX
+ * ====
+ *
+ * Hooks and filters for enqueu scripts.
+ */
 require_once __DIR__ . '/libs/class-outten-and-golden-ajax.php';
 
 /**
-	 * Search
-	 * ======
-	 *
-	 * Hooks and filters for search.
-*/
+ * Search
+ * ======
+ *
+ * Hooks and filters for search.
+ */
 require_once __DIR__ . '/libs/class-outten-and-golden-search.php';
 
 /**
-	 * Attorney
-	 * =======
-	 *
-	 * Hooks and filters for attorney.
-*/
+ * Attorney
+ * =======
+ *
+ * Hooks and filters for attorney.
+ */
 require_once __DIR__ . '/libs/class-outten-and-golden-attorney.php';
 
+/**
+ * Tag Parent Child Mapping
+ * =======================
+ *
+ * Outputs the tag parent child mapping to the head.
+ */
 function output_tag_parent_child_mapping() {
     $parent_mapping = array();
     $parent_child_mapping = array();

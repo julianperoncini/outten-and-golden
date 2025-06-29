@@ -3,14 +3,13 @@
 {% set items_per_page_options = props.items_per_page_options|default([6, 12, 18]) %}
 
 {% if pagination.pages is not empty %}
-    <nav class="pagination-block relative flex items-center justify-between">
-        <div class="absolute top-0 left-0 w-full h-[0.1rem] bg-grey-taupe"></div>
-
+    <nav class="pagination-block relative flex items-center justify-between border-t border-grey-taupe">
+ 
         <ul class="pagination flex items-center justify-start">
             {# Previous #}
             {% if pagination.prev %}
                 <li class="prev btn">
-                    <a data-taxi-ignore href="{{ pagination.prev.link }}" class="inline-flex w-45 h-45 border !border-t-0 !border-r-0 border-grey-taupe">
+                    <a data-taxi-ignore href="{{ pagination.prev.link }}" class="hover:bg-white-smoke transition-colors duration-300 inline-flex w-45 h-45 border !border-t-0 border-grey-taupe">
                         <span class="inline-flex items-center justify-center w-full h-full">
                             <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5.95313 10L1.45313 5.5L5.95312 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -20,7 +19,7 @@
                 </li>
             {% else %}
                 <li class="prev btn disabled">
-                    <button disabled class="inline-flex w-45 h-45 border !border-t-0 !border-r-0 border-grey-taupe">
+                    <button disabled class="hover:bg-white-smoke transition-colors duration-300 inline-flex w-45 h-45 border !border-t-0 border-grey-taupe ml-[-1px]">
                         <span class="inline-flex items-center justify-center w-full h-full">
                             <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5.95313 10L1.45313 5.5L5.95312 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -34,7 +33,7 @@
             {% for page in pagination.pages %}
                 {% if page.link %}
                     <li class="inline-flex">
-                        <a data-taxi-ignore href="{{ page.link }}" class="{{ page.class }} inline-flex w-45 h-45 border !border-t-0 !border-l-0 border-grey-taupe">
+                        <a data-taxi-ignore href="{{ page.link }}" class="{{ page.class }} hover:bg-white-smoke transition-colors duration-300 inline-flex w-45 h-45 border !border-t-0 border-grey-taupe ml-[-1px]">
                             <span class="inline-flex items-center justify-center w-full h-full">
                                 <span class="text-12 font-medium leading-none tracking-[10%] uppercase">
                                     {{ page.title }}
@@ -44,7 +43,7 @@
                     </li>
                 {% else %}
                     <li class="current inline-flex">
-                        <span class="{{ page.class }} inline-flex w-45 h-45 border !border-t-0 border-grey-taupe">
+                        <span class="{{ page.class }} bg-white-smoke inline-flex w-45 h-45 border !border-t-0 border-grey-taupe ml-[-1px]">
                             <span class="inline-flex items-center justify-center w-full h-full">
                                 <span class="text-12 font-medium leading-none tracking-[10%] uppercase">
                                     {{ page.title }}
@@ -58,7 +57,7 @@
             {# Next #}
             {% if pagination.next %}
                 <li class="next btn">
-                    <a data-taxi-ignore href="{{ pagination.next.link }}" class="inline-flex w-45 h-45 border !border-t-0 !border-l-0 border-grey-taupe">
+                    <a data-taxi-ignore href="{{ pagination.next.link }}" class="hover:bg-white-smoke transition-colors duration-300 inline-flex w-45 h-45 border !border-t-0 border-grey-taupe ml-[-1px]">
                         <span class="inline-flex items-center justify-center w-full h-full">
                             <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.45312 1L5.95312 5.5L1.45312 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -68,7 +67,7 @@
                 </li>
             {% else %}
                 <li class="next btn disabled">
-                    <button disabled class="inline-flex w-45 h-45 border !border-t-0 !border-l-0 border-grey-taupe">
+                    <button disabled class="hover:bg-white-smoke transition-colors duration-300 inline-flex w-45 h-45 border !border-t-0 border-grey-taupe ml-[-1px]">
                         <span class="inline-flex items-center justify-center w-full h-full">
                             <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.45312 1L5.95312 5.5L1.45312 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -83,17 +82,17 @@
             <p class="font-sans text-12 font-medium leading-none tracking-[0.1rem] uppercase">Results per page</p>
 
             <div class="relative w-65 h-45 flex items-center justify-center">
-                <button class="relative w-full h-full flex items-center justify-center gap-8 border !border-t-0 border-grey-taupe" type="button" aria-label="Button to select results per page">
-                    <div class="font-sans text-12 font-medium leading-none tracking-[0.1rem] uppercase">{{ items_per_page }}</div>
+                <button class="results-per-page-button relative w-full h-full flex items-center justify-center gap-8 border !border-t-0 border-grey-taupe hover:bg-white-smoke transition-colors duration-300" type="button" aria-label="Button to select results per page">
+                    <div class="results-per-page-display font-sans text-12 font-medium leading-none tracking-[0.1rem] uppercase">{{ items_per_page }}</div>
                     <div class="relative shrink-0">
                         <svg class="w-11 h-6" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.86719 0.75L5.36719 5.25L0.867187 0.75" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
                 </button>
-                <div class="absolute top-full left-0 w-full h-fit py-15 flex flex-col items-center justify-center gap-15 border !border-t-0 border-grey-taupe invisible">
+                <div class="results-per-page-dropdown absolute top-full left-0 w-full h-fit flex flex-col items-center justify-center border !border-t-0 border-grey-taupe bg-white z-10  invisible">
                     {% for option in items_per_page_options %}
-                        <div class="relative w-full {% if not loop.last %}pb-15 border-b border-grey-taupe{% endif %} text-center font-sans text-12 font-medium leading-none tracking-[0.1rem] uppercase">{{ option }}</div>
+                        <div class="hover:bg-white-smoke transition-colors duration-300 results-per-page-option relative w-full py-15 border-t mt-[-1px] border-grey-taupe text-center font-sans text-12 font-medium leading-none tracking-[0.1rem] uppercase cursor-pointer">{{ option }}</div>
                     {% endfor %}
                 </div>
             </div>

@@ -13,7 +13,7 @@ import carouselTestimonials from './carousel-testimonials'
 import sliderFake from './slider-fake'
 import carouselStories from './carousel-stories'
 import listIssuesFilter from './filters/listIssuesFilter'
-import blogsFilter from './filters/blogsFilter'
+import newsroomFilter from './filters/newsroomFilter'
 import casesFilter from './filters/casesFilter'
 import teamFilter from './filters/teamFilter'
 import searchFilter from './filters/searchFilter'
@@ -34,7 +34,7 @@ export {
     sliderFake,
     carouselStories,
     listIssuesFilter,
-    blogsFilter,
+    newsroomFilter,
     casesFilter,
     teamFilter,
     searchFilter,
