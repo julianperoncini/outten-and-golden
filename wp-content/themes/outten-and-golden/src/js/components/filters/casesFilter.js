@@ -21,16 +21,16 @@ export default function casesFilter(config) {
         if (ct) ct.kill()
         
         ct = gsap.to(gridContainer, {
-            autoAlpha: 0,
-            duration: 0.3,
-            ease: "power2.out",
+            autoAlpha: 0.3,
+            duration: 0.5,
+            ease: "power3",
             onComplete: () => {
                 callback()
                 
                 ct = gsap.to(gridContainer, {
                     autoAlpha: 1,
-                    duration: 0.4,
-                    ease: "power2.out",
+                    duration: 0.5,
+                    ease: "power3",
                     onComplete: () => {
                         ct = null
                     }
@@ -64,12 +64,17 @@ export default function casesFilter(config) {
         // Scroll to the section with smooth behavior
         scroll.scrollTo(elements.section, {
             offset: 0,
-            duration: 0.5,
-            ease: "power2.out"
+            duration: 0.8, // Reduced from 0.5
+            ease: "power3"
         })
     }
 
     function showAllItems(updateUrl = true, scroll = false) {
+        // Scroll immediately if requested
+        if (scroll && !isInitialLoad) {
+            scrollToSection()
+        }
+        
         const callback = () => {
             allItems.forEach(item => {
                 item.style.display = 'block'
@@ -79,10 +84,6 @@ export default function casesFilter(config) {
             
             if (updateUrl) {
                 updateURL('all', !isInitialLoad)
-            }
-            
-            if (scroll && !isInitialLoad) {
-                scrollToSection()
             }
         }
 
@@ -94,6 +95,11 @@ export default function casesFilter(config) {
     }
 
     function filterByCategory(filterValue, updateUrl = true, scroll = false) {
+        // Scroll immediately if requested
+        if (scroll && !isInitialLoad) {
+            scrollToSection()
+        }
+        
         const callback = () => {
             const visibleItems = []
             
@@ -117,10 +123,6 @@ export default function casesFilter(config) {
             
             if (updateUrl) {
                 updateURL(filterValue, !isInitialLoad)
-            }
-            
-            if (scroll && !isInitialLoad) {
-                scrollToSection()
             }
         }
 
@@ -181,11 +183,11 @@ export default function casesFilter(config) {
         
         applyFilter(finalFilter, true, false) // Update URL if invalid, don't scroll on init
         
-        // Scroll to section if there's a filter parameter in URL
+        // Scroll to section if there's a filter parameter in URL (with immediate scroll)
         if (filterValue !== 'all' && window.location.search.includes('filter=')) {
             scroll.scrollTo(elements.section, {
                 offset: 0,
-                duration: 1,
+                duration: 0.8, // Reduced from 1
                 ease: "power3.out"
             })
         }
