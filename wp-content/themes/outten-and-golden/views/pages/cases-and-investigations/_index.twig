@@ -50,10 +50,11 @@
             {% include 'pages/cases-and-investigations/partials/_all_posts.twig' with {
                 props: {
                     all_cases_and_investigations: all_cases_and_investigations,
-                    cases_posts: all_posts,
+                    cases_posts: cases_posts,
                     categories: categories,
                     tags: tags,
-                    active_investigations: active_investigations
+                    active_investigations: active_investigations,
+                    case_status_buttons: case_status_buttons
                 }
             } %}
 

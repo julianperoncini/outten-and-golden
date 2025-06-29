@@ -3,6 +3,7 @@
 {% set categories = props.categories %}
 {% set tags = props.tags %}
 {% set active_investigations = props.active_investigations %}
+{% set case_status_buttons = props.case_status_buttons %}
 
 {# Filter tags to only show parent tags in filter buttons #}
 {% set parent_tags = [] %}
@@ -15,8 +16,8 @@
 {% endif %}
 
 <section class="relative">
-    <div class="site-max pt-80 s:pt-120 pb-80 s:pb-160" data-component="casesFilter(js-all-posts-container)">
-        <div class="site-grid">
+    <div class="site-max site-grid pt-80 s:pt-120 pb-80 s:pb-160" data-component="casesAjaxFilter">
+        
             <div class="s:col-start-1 col-span-full s:col-span-6 pb-65 s:pb-0">
                 <h2 class="font-sans text-32 s:text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_cases_and_investigations.title }}</h2>
             </div>
@@ -31,7 +32,7 @@
 
                 <div class="newsroom-gradient select-none pointer-events-none absolute top-0 -right-20 w-[15rem] h-full block s:hidden"></div>
                 <div class="absolute top-1/2 -translate-y-1/2 -right-10 block s:hidden select-none pointer-events-none">
-                    <button class="relative pointer-events-auto flex items-center justify-center bg-white-smoke p-8 rounded-[0.4rem]" type="button" aria-label="Button to scroll the filters">
+                    <button class="relative pointer-events-auto flex items-center justify-center bg-white-smoke p-8 rounded-[0.4rem] js-filter-scroll-btn" type="button" aria-label="Button to scroll the filters">
                         <svg class="w-[0.7rem] h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.57813 1L6.07813 5.5L1.57812 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
@@ -39,21 +40,12 @@
                 </div>
             </div>
 
-            <div class="col-start-1 col-span-full pt-30 s:pt-50 flex flex-col gap-25 js-all-posts-container">
+            {# Posts container that will be replaced via AJAX #}
+            <div class="col-start-1 col-span-full pt-30 s:pt-50 js-cases-posts">
                 <div class="relative grid grid-cols-3 gap-x-30 s:gap-x-24 gap-y-32 s:gap-y-[6.4rem]">
                     {% for post in cases_posts %}
                         {% set feature_content = function('get_field', 'feature_content', post.ID) %}
                         {% set post_link = function('get_permalink', post.ID) %}
-                        
-                        {# Check if this post is featured in active investigations #}
-                        {% set is_featured = false %}
-                        {% if active_investigations.active_investigations_posts %}
-                            {% for active_post in active_investigations.active_investigations_posts %}
-                                {% if active_post.post == post.ID %}
-                                    {% set is_featured = true %}
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
                         
                         {% set all_taxonomies = function('get_object_taxonomies', 'cases') %}
                         {% set post_terms = {} %}
@@ -67,16 +59,6 @@
 
                         {# Get case-status terms for filtering #}
                         {% set case_status_terms = post_terms['case-status'] is defined ? post_terms['case-status'] : [] %}
-    
-                        {# Filter post tags to only parent tags #}
-                        {% set parent_post_tags = [] %}
-                        {% if post_terms['post_tag'] %}
-                            {% for tag in post_terms['post_tag'] %}
-                                {% if tag.parent == 0 %}
-                                    {% set parent_post_tags = parent_post_tags|merge([tag]) %}
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
 
                         {# Build filter classes based on case-status #}
                         {% set filter_classes = ['all'] %}
@@ -105,115 +87,35 @@
                         {# Remove duplicates from filter classes #}
                         {% set filter_classes = filter_classes|reduce((carry, item) => item in carry ? carry : carry|merge([item]), []) %}
 
-                        
-                        <div class="relative block col-span-full s:col-span-1 w-full group js-all-posts-item" href="{{ post_link }}"
-                            data-filter-category="{{ filter_classes|join(',') }}"
-                        >
-                            {# Featured indicator for active investigations #}
-                            {#% if is_featured %}
-                                <div class="absolute top-16 right-16 bg-yellow text-black px-8 py-4 text-xs font-bold uppercase z-10">
-                                    Featured
-                                </div>
-                            {% endif %#}
-
-                            <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
-                                {% if post_terms['case-categories'] %}
-                                    {% for category in post_terms['case-categories'] %}
-                                        {% include "/views/partials/tag.twig" with {
-                                            data: {
-                                                text: category.name,
-                                            }
-                                        } %}
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-
-
-                            <a href="{{ post_link }}">
-
-
-                            <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none bg-green">
-                                {% if feature_content.feature_image %}
-                                    {% include "blocks/common/image.twig" with {
-                                        props : {
-                                            data: {
-                                                image : feature_content.feature_image
-                                            },
-                                            options: {
-                                                container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.02] group-hover:opacity-90 transition-all duration-[1s]',
-                                                class : 'w-full h-full object-cover pointer-events-none select-none',
-                                                aspect_ratio: '67%',
-                                                aspect_ratio_mobile: '67%',
-                                            }
-                                        }
-                                    } %}
-                                {% else %}
-                                    <div class="pt-[150%] s:pt-[67%] bg-{{ feature_content.background_color|lower }}"></div>
-                                {% endif %}
-                            </figure>
-
-                            <div class="relative w-full pt-24 s:pt-32 space-y-24 s:space-y-32">
-                                <div class="flex flex-wrap items-start justify-start gap-4">
-                                    {# Display case-status as category tags #}
-                                    {% if case_status_terms %}
-                                        {% for status in case_status_terms %}
-                                            {% set status_background_color = function('get_field', 'background_color', 'term_' ~ status.term_id) %}
-                                            {% include "/views/partials/category.twig" with {
-                                                data: {
-                                                    text: status.name,
-                                                    bgColor: status_background_color|default('purple'),
-                                                }
-                                            } %}
-                                        {% endfor %}
-                                    {% endif %}
-                                    
-                                    {# Display parent tags if you still want them #}
-                                    {% if parent_post_tags %}
-                                        {% for tag in parent_post_tags %}
-                                            {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
-                                            {% include "/views/partials/category.twig" with {
-                                                data: {
-                                                    text: tag.name,
-                                                    bgColor: tag_background_color|default('green'),
-                                                }
-                                            } %}
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
-
-                                <div class="flex flex-row items-start justify-between">
-                                    <div class="relative pb-24 s:pb-0">
-                                        <h4 class="text-24 font-normal leading-[1.04] tracking-[-0.024rem] text-green">{{ feature_content.title }}</h4>
-                                    </div>
-
-                                    <div class="relative">
-                                        <button class="relative inline-flex space-x-8 text-12 font-medium leading-none tracking-[0.12rem] text-green uppercase" type="button" aria-label="Button to view post">
-                                            <span class="inline-flex">
-                                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            </a>
-                        </div>
+                        {# Include the post item template #}
+                        {% include 'partials/cases-post-item.twig' with {
+                            'post': post,
+                            'feature_content': feature_content,
+                            'post_link': post_link,
+                            'post_terms': post_terms,
+                            'case_status_terms': case_status_terms,
+                            'filter_classes': filter_classes|join(',')
+                        } %}
                     {% endfor %}
                 </div>
             </div>
 
-            {% if cases_posts.pagination.pages is not empty %}
-                {% include 'partials/pagination.twig' with {
-                    props: {
-                        pagination: cases_posts.pagination,
-                        items_per_page: 18,
-                        items_per_page_options: [6, 12, 18]
-                    }
-                } %}
-            {% endif %}
+            {# Pagination container that will be replaced via AJAX #}
+            <div class="col-start-1 col-span-full pt-30 s:pt-50 js-cases-pagination">
+                {# Pagination container that will be replaced via AJAX #}
+                
+                    {% if cases_posts.pagination and cases_posts.pagination.pages is not empty and cases_posts.pagination.total > 1 %}
+                        {% include 'partials/pagination.twig' with {
+                            props: {
+                                pagination: cases_posts.pagination,
+                                items_per_page: 6,
+                                items_per_page_options: [6, 12, 18]
+                            }
+                        } %}
+                    {% endif %}
+                
+            </div>
             
-        </div>
+        
     </div>
 </section>

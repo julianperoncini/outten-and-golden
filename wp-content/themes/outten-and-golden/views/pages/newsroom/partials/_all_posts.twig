@@ -4,7 +4,7 @@
 {% set is_direct_link = is_direct_link|default(false) %}
 {% set current_category = current_category|default('all') %}
 
-<section class="relative" data-component="newsroomFilter(js-newsroom-container)">
+<section class="relative" data-component="newsroomAjaxFilter">
     <div class="site-max site-grid pt-80 s:pt-0 pb-32 s:pb-160">
         <div class="s:col-start-1 col-span-full s:col-span-6 pb-65 s:pb-0">
             <h2 class="font-sans text-40 font-normal leading-[1.15] tracking-[-1%] text-green">{{ all_post_articles.title }}</h2>

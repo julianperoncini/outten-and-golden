@@ -5,6 +5,7 @@
 
 use Timber\Timber;
 use Timber\Post as TimberPost;
+use Timber\PostQuery;
 use Timber\Term;
 
 // Initialize context
@@ -69,24 +70,24 @@ $context['tags'] = get_terms([
     'hide_empty' => true,
 ]);
 
-// Custom filter buttons
+// Custom filter buttons - FIXED to be objects
 $context['case_status_buttons'] = [
-    [
+    (object) [
         'slug' => 'cases', 
         'name' => 'Cases', 
         'original_terms' => ['Active Case', 'Resolved Case']
     ],
-    [
+    (object) [
         'slug' => 'investigations', 
         'name' => 'Investigations', 
         'original_terms' => ['Active Investigation', 'Resolved Investigation']
     ],
-    [
+    (object) [
         'slug' => 'active', 
         'name' => 'Active', 
         'original_terms' => ['Active Case', 'Active Investigation']
     ],
-    [
+    (object) [
         'slug' => 'resolved', 
         'name' => 'Resolved', 
         'original_terms' => ['Resolved Case', 'Resolved Investigation']
@@ -96,7 +97,70 @@ $context['case_status_buttons'] = [
 // ================================
 // MAIN POSTS QUERY
 // ================================
-$context['cases_posts'] = build_main_posts_query($context);
+// Check for current page and per_page parameters
+$paged = get_query_var('paged') ? get_query_var('paged') : 1;
+$posts_per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 6; // Changed to 3 for testing
+
+// Build the main query for all posts section
+$all_posts_args = [
+    'post_type' => 'cases',
+    'posts_per_page' => $posts_per_page,
+    'paged' => $paged,
+    'post_status' => 'publish',
+    'orderby' => 'date',
+    'order' => 'DESC'
+];
+
+// Apply filter if present in URL
+if (isset($_GET['filter']) && $_GET['filter'] !== 'all') {
+    $filter = sanitize_text_field($_GET['filter']);
+    
+    $tax_query = ['relation' => 'OR'];
+    
+    switch($filter) {
+        case 'cases':
+            $tax_query[] = [
+                'taxonomy' => 'case-status',
+                'field' => 'slug',
+                'terms' => ['active-case', 'resolved-case'],
+            ];
+            break;
+            
+        case 'investigations':
+            $tax_query[] = [
+                'taxonomy' => 'case-status',
+                'field' => 'slug',
+                'terms' => ['active-investigation', 'resolved-investigation'],
+            ];
+            break;
+            
+        case 'active':
+            $tax_query[] = [
+                'taxonomy' => 'case-status',
+                'field' => 'slug',
+                'terms' => ['active-case', 'active-investigation'],
+            ];
+            break;
+            
+        case 'resolved':
+            $tax_query[] = [
+                'taxonomy' => 'case-status',
+                'field' => 'slug',
+                'terms' => ['resolved-case', 'resolved-investigation'],
+            ];
+            break;
+    }
+    
+    if (count($tax_query) > 1) {
+        $all_posts_args['tax_query'] = $tax_query;
+    }
+}
+
+// Create WP_Query first
+$wp_query = new WP_Query($all_posts_args);
+
+// Use Timber's PostQuery to get proper pagination
+$context['cases_posts'] = new PostQuery($wp_query);
 
 // ================================
 // ALL POSTS (Unfiltered for "All" section)
@@ -267,8 +331,8 @@ function build_exclusion_list($context) {
  * @return \Timber\PostQuery
  */
 function build_all_posts_query() {
-    // Get pagination settings
-    $posts_per_page = get_option('posts_per_page');
+    // Get pagination settings - Use 3 for testing
+    $posts_per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 3;
     $paged = get_query_var('paged') ?: 1;
     
     // Query all cases posts without exclusions

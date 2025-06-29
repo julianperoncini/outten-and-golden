@@ -1,0 +1,85 @@
+{# partials/cases-post-item.twig #}
+<div class="relative block col-span-full s:col-span-1 w-full group js-all-posts-item" 
+     data-filter-category="{{ filter_classes }}">
+    
+    {# Tags at top of image #}
+    <div class="absolute top-0 left-0 w-full flex flex-wrap items-center gap-4 p-16 z-2">
+        {% if post_terms['case-categories'] %}
+            {% for category in post_terms['case-categories'] %}
+                {% include "/views/partials/tag.twig" with {
+                    data: {
+                        text: category.name,
+                    }
+                } %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <a class="relative block w-full" href="{{ post_link }}">
+        <figure class="relative overflow-hidden w-full h-auto pointer-events-none select-none bg-green">
+            {% if feature_content.feature_image %}
+                {% include "blocks/common/image.twig" with {
+                    props : {
+                        data: {
+                            image : feature_content.feature_image
+                        },
+                        options: {
+                            container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.02] group-hover:opacity-90 transition-all duration-[1s]',
+                            class : 'w-full h-full object-cover pointer-events-none select-none',
+                            aspect_ratio: '67%',
+                            aspect_ratio_mobile: '67%',
+                        }
+                    }
+                } %}
+            {% else %}
+                <div class="pt-[150%] s:pt-[67%] bg-{{ feature_content.background_color|default('grey')|lower }}"></div>
+            {% endif %}
+        </figure>
+
+        <div class="relative w-full pt-24 s:pt-32 space-y-24 s:space-y-32">
+            <div class="flex flex-wrap items-start justify-start gap-4">
+                {# Display case-status as category tags #}
+                {% if case_status_terms %}
+                    {% for status in case_status_terms %}
+                        {% set status_background_color = function('get_field', 'background_color', 'term_' ~ status.term_id) %}
+                        {% include "/views/partials/category.twig" with {
+                            data: {
+                                text: status.name,
+                                bgColor: status_background_color|default('purple'),
+                            }
+                        } %}
+                    {% endfor %}
+                {% endif %}
+                
+                {# Display parent tags if available #}
+                {% if parent_post_tags %}
+                    {% for tag in parent_post_tags %}
+                        {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
+                        {% include "/views/partials/category.twig" with {
+                            data: {
+                                text: tag.name,
+                                bgColor: tag_background_color|default('green'),
+                            }
+                        } %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="flex flex-row items-start justify-between">
+                <div class="relative pb-24 s:pb-0">
+                    <h4 class="text-24 font-normal leading-[1.04] tracking-[-0.024rem] text-green">{{ feature_content.title }}</h4>
+                </div>
+
+                <div class="relative">
+                    <button class="relative inline-flex space-x-8 text-12 font-medium leading-none tracking-[0.12rem] text-green uppercase" type="button" aria-label="Button to view post">
+                        <span class="inline-flex">
+                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>

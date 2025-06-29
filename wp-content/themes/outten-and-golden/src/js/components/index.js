@@ -13,8 +13,6 @@ import carouselTestimonials from './carousel-testimonials'
 import sliderFake from './slider-fake'
 import carouselStories from './carousel-stories'
 import listIssuesFilter from './filters/listIssuesFilter'
-import newsroomFilter from './filters/newsroomFilter'
-import casesFilter from './filters/casesFilter'
 import teamFilter from './filters/teamFilter'
 import searchFilter from './filters/searchFilter'
 import stickyAside from './stickyAside'
@@ -22,6 +20,10 @@ import carouselIssueText from './carousel-issue-text'
 import bookACall from './bookacall'
 import highlight from './highlight'
 import accordion from './accordion'
+
+import ajaxFilter from './filters/ajaxFilter'
+import newsroomAjaxFilter from './filters/newsroomAjaxFilter'
+import casesAjaxFilter from './filters/casesAjaxFilter'
 
 export {
     s,
@@ -33,14 +35,16 @@ export {
     carouselTestimonials,
     sliderFake,
     carouselStories,
+    ajaxFilter,
     listIssuesFilter,
-    newsroomFilter,
-    casesFilter,
+    newsroomAjaxFilter,
+    casesAjaxFilter,
     teamFilter,
     searchFilter,
     stickyAside,
     carouselIssueText,
     bookACall,
     highlight,
-    accordion
+    accordion,
+    
 }
