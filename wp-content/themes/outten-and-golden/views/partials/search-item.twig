@@ -5,7 +5,7 @@
 {% set description = fn('get_field', 'feature_content_description', post_id) %}
 
 <div class="column w-full relative group overflow-hidden">
-    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block w-full relative js-search-link {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
+    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block size-full relative js-search-link {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
         {% if image %}
             {% include "blocks/common/image.twig" with {
                 props : {

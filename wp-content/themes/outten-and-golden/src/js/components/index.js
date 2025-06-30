@@ -24,6 +24,7 @@ import accordion from './accordion'
 import ajaxFilter from './filters/ajaxFilter'
 import newsroomAjaxFilter from './filters/newsroomAjaxFilter'
 import casesAjaxFilter from './filters/casesAjaxFilter'
+import blogsFilter from './filters/blogsFilter'
 
 export {
     s,
@@ -46,5 +47,5 @@ export {
     bookACall,
     highlight,
     accordion,
-    
+    blogsFilter
 }

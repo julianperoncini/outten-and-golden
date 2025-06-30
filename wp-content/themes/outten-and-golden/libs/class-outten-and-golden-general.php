@@ -384,6 +384,71 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
         wp_deregister_script('wp-embed');
     }
 
+    public function get_posts_limited_by_category_acf_style($posts_per_category = 6) {
+        $filtered_posts = array();
+        $category_counts = array();
+        
+        // Get all posts
+        $query = new WP_Query([
+            'post_type' => 'post',
+            'posts_per_page' => -1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post_status' => 'publish'
+        ]);
+        
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $post_id = get_the_ID();
+                
+                // Get categories for this post
+                $categories = get_the_terms($post_id, 'category');
+                
+                if ($categories && !is_wp_error($categories)) {
+                    $can_add = false;
+                    
+                    // Check if we can add this post based on category limits
+                    foreach ($categories as $category) {
+                        $cat_slug = $category->slug;
+                        
+                        // Initialize counter if not exists
+                        if (!isset($category_counts[$cat_slug])) {
+                            $category_counts[$cat_slug] = 0;
+                        }
+                        
+                        // Check if we haven't reached the limit for this category
+                        if ($category_counts[$cat_slug] < $posts_per_category) {
+                            $can_add = true;
+                        }
+                    }
+                    
+                    // Add post if it fits within limits
+                    if ($can_add) {
+                        // Structure it like ACF repeater field
+                        $post_data = array(
+                            'news_post' => get_post($post_id),
+                            'feature_content' => get_field('feature_content', $post_id),
+                            'fields' => get_fields($post_id)
+                        );
+                        
+                        $filtered_posts[] = $post_data;
+                        
+                        // Increment counters for all categories this post belongs to
+                        foreach ($categories as $category) {
+                            $cat_slug = $category->slug;
+                            $category_counts[$cat_slug]++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        wp_reset_postdata();
+        
+        return $filtered_posts;
+    }
+
     public function add_base_timber_context($context) {
         $context['site']    = $this;
         $context['menu']    = Timber::get_menu('main-menu');
@@ -423,9 +488,7 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             'post_type' => 'post',
             'posts_per_page' => 6,
             'orderby' => 'date',
-            'order' => 'ASC'
         ]);
-
        
          $search_related = get_field('search_category', 'option');
 
@@ -468,6 +531,15 @@ class OUTTEN_AND_GOLDEN_Theme_General extends Site {
             'template' => get_page_template_slug(),
             'body_classes' => get_body_class(),
         ];
+
+        // Get posts limited to 6 per category
+        $context['articles'] = $this->get_posts_limited_by_category_acf_style(6);
+    
+        // Also get categories for filter buttons
+        $context['categories'] = Timber::get_terms([
+            'taxonomy' => 'category',
+            'hide_empty' => true
+        ]);
 
         return $context;
     }

@@ -25,19 +25,14 @@ $feature_billboard_id = $context['feature_billboard']['post'] ?? null;
 
 // Debug feature billboard post
 if ($feature_billboard_id) {
-    error_log('Feature billboard post ID: ' . $feature_billboard_id);
-    
     // Check what taxonomies this post has
     $post_taxonomies = get_object_taxonomies('cases');
-    error_log('Available taxonomies for cases: ' . print_r($post_taxonomies, true));
-    
+
     // Check case-status terms specifically
     $case_status_terms = get_the_terms($feature_billboard_id, 'case-status');
-    error_log('Case status terms for billboard post: ' . print_r($case_status_terms, true));
-    
+
     // Try alternative taxonomy name
     $case_status_alt = get_the_terms($feature_billboard_id, 'case_status');
-    error_log('Case status (underscore) terms: ' . print_r($case_status_alt, true));
 }
 
 // ================================

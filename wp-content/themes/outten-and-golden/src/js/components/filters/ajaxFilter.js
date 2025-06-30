@@ -164,7 +164,7 @@ export default function ajaxFilter(config) {
         isLoading = true
         
         if (shouldScroll) {
-            scrollToSection()
+            //scrollToSection()
         }
         
         let animationComplete = false
@@ -505,7 +505,7 @@ export default function ajaxFilter(config) {
         if (shouldScrollOnLoad) {
             // Small delay to ensure DOM is ready
             setTimeout(() => {
-                scrollToSection()
+                //scrollToSection()
             }, 100)
         }
     }

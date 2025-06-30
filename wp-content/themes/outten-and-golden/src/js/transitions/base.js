@@ -1,54 +1,48 @@
-import { animate } from 'motion/mini'
-import { Transition } from '@unseenco/taxi';
-import { utils, evt } from '@/core';
+import { gsap } from 'gsap'
+import { Transition } from '@unseenco/taxi'
+import { utils, evt } from '@/core'
 
-const { qs, qsa } = utils;
-const mask = qs('.js-transition-mask');
+const { qs, qsa } = utils
+const mask = qs('.js-transition-mask')
 
 export default class extends Transition {
-    onLeave({ from, trigger, done }) {
-		mask.classList.remove('invisible')
-		
-        evt.emit('menu:close');
-
-        // Create new timeline
-        let tl = animate(mask, {
-			opacity: [0, 1]
-		},{
-			duration: 0.35,
-			easing: 'ease-out'
-		})
-
-        tl.finished.then(() => {
-            done();
-        })
-
-        evt.emit('leave');
-    }
 
     onEnter({ to, trigger, done }) {
-        //evt.emit('tick:start');
-        //evt.emit('speed:boost');
-		done()
+        done()
 
         // Reset scroll
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+        window.scrollTo(0, 0)
+        document.body.scrollTop = 0
+        document.documentElement.scrollTop = 0
+        evt.emit('scroll:reset')
 
-        evt.emit('scroll:reset');
+        // Reset menu
+        evt.emit('menu:reset')
 
-        evt.emit('menu:reset');
+        gsap.killTweensOf(mask)
+        gsap.to(mask, {
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power3',
+            onComplete: () => {
+                mask.classList.add('invisible')
+            }
+        })
+    }
 
-        let tl = animate(mask, {
-			opacity: [1, 0]
-		},{
-			duration: 0.35,
-			easing: 'ease-out'
-		})
+    onLeave({ from, trigger, done }) {
+        mask.classList.remove('invisible')
+        
+        evt.emit('menu:close')
+        
+        gsap.killTweensOf(mask)
+        gsap.to(mask, {
+            opacity: 1,
+            duration: 0.5,
+            ease: 'power3',
+            onComplete: done
+        })
 
-		tl.finished.then(() => {
-			mask.classList.add('invisible')
-		})
+        evt.emit('leave')
     }
 }
