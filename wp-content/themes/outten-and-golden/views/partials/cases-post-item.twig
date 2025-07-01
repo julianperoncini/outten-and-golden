@@ -50,19 +50,6 @@
                         } %}
                     {% endfor %}
                 {% endif %}
-                
-                {# Display parent tags if available #}
-                {% if parent_post_tags %}
-                    {% for tag in parent_post_tags %}
-                        {% set tag_background_color = function('get_field', 'background_color', 'term_' ~ tag.term_id) %}
-                        {% include "/views/partials/category.twig" with {
-                            data: {
-                                text: tag.name,
-                                bgColor: tag_background_color|default('green'),
-                            }
-                        } %}
-                    {% endfor %}
-                {% endif %}
             </div>
 
             <div class="flex flex-row items-start justify-between">
