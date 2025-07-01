@@ -47,10 +47,20 @@ class PredictiveSearchEngine {
         const textLower = text.toLowerCase();
         const queryLower = query.toLowerCase();
         
+        // For short queries (3 chars or less), require exact matches, startsWith, or contains
+        if (queryLower.length <= 3) {
+            if (textLower === queryLower) return 100;
+            if (textLower.startsWith(queryLower)) return 90;
+            if (textLower.includes(queryLower)) return 70;
+            return 0; // No fuzzy matching for short queries
+        }
+        
+        // Normal matching for longer queries
         if (textLower === queryLower) return 100;
         if (textLower.startsWith(queryLower)) return 90;
         if (textLower.includes(queryLower)) return 70;
         
+        // Fuzzy matching for longer queries only
         let textIndex = 0;
         let queryIndex = 0;
         let matchCount = 0;
@@ -63,6 +73,7 @@ class PredictiveSearchEngine {
             textIndex++;
         }
         
+        // Only return a score if we matched ALL characters in the query
         return queryIndex === queryLower.length ? 
             Math.max(10, 50 * (matchCount / textLower.length)) : 0;
     }
@@ -334,7 +345,7 @@ class PredictiveSearchEngine {
                     
                     return { ...tagData, relevanceScore: score };
                 })
-                .filter(tagData => tagData.relevanceScore > 0)
+                .filter(tagData => tagData.relevanceScore > 10) // Require a minimum score to filter out weak matches
                 .sort((a, b) => b.relevanceScore - a.relevanceScore);
             
             this.state.filteredResults.forEach(tagData => {
@@ -465,6 +476,9 @@ class PredictiveSearchEngine {
                 fetch(`/wp-json/outten-golden/v1/search?query=${encodeURIComponent(query)}&limit=10`)
                     .then(response => response.ok ? response.json() : Promise.reject())
                     .then(apiResults => {
+                        // Add logging to debug API results
+                        console.log('API Results for query:', query, apiResults);
+                        
                         // Process API results to include parent tags
                         const processedResults = this.processAPIResults(apiResults);
                         this.callbacks.onAPIResults?.(processedResults);
@@ -748,77 +762,79 @@ class PredictiveSearchUI {  // Previously: BaseUIController
         }
         
         if (bothBordersColliding) {
-            this.elements.scrollNextButton.classList.remove('is-active');
-            this.elements.searchContainer.classList.add('is-scrolling');
-            if (this.elements.scrollGradient) this.elements.scrollGradient.classList.remove('is-active');
+            this.elements.scrollNextButton.classList.remove('is-active')
+            this.elements.searchContainer.classList.add('is-scrolling')
+            if (this.elements.scrollGradient) this.elements.scrollGradient.classList.remove('is-active')
         } else if (scrollState.borderCollision.left) {
-            this.elements.scrollNextButton.classList.add('is-active');
-            this.elements.searchContainer.classList.remove('is-scrolling');
-            if (this.elements.scrollGradient) this.elements.scrollGradient.classList.add('is-active');
+            this.elements.scrollNextButton.classList.add('is-active')
+            this.elements.searchContainer.classList.remove('is-scrolling')
+            if (this.elements.scrollGradient) this.elements.scrollGradient.classList.add('is-active')
         } else {
-            this.elements.scrollNextButton.classList.remove('is-active');
-            this.elements.searchContainer.classList.add('is-scrolling');
-            if (this.elements.scrollGradient) this.elements.scrollGradient.classList.remove('is-active');
+            this.elements.scrollNextButton.classList.remove('is-active')
+            this.elements.searchContainer.classList.add('is-scrolling')
+            if (this.elements.scrollGradient) this.elements.scrollGradient.classList.remove('is-active')
         }
     }
 
     updateClearButtonVisibility() {
-        if (!this.elements.clearButton) return;
+        if (!this.elements.clearButton) return
         
         // Get real-time input value
-        const currentInputValue = this.elements.searchInput ? this.elements.searchInput.value.trim() : '';
-        const hasInputText = currentInputValue.length > 0;
+        const currentInputValue = this.elements.searchInput ? this.elements.searchInput.value.trim() : ''
+        const hasInputText = currentInputValue.length > 0
         
         // Get real-time selected tags count
         const selectedTagsCount = this.elements.selectedTagsContainer ? 
-            this.elements.selectedTagsContainer.querySelectorAll('.js-search-tag').length : 0;
-        const hasSelectedTags = selectedTagsCount > 0;
+            this.elements.selectedTagsContainer.querySelectorAll('.js-search-tag').length : 0
+        const hasSelectedTags = selectedTagsCount > 0
         
         if (hasInputText || hasSelectedTags) {
-            gsap.set(this.elements.clearButton, { opacity: 1 });
-            this.elements.clearButton.style.pointerEvents = 'auto';
+            gsap.set(this.elements.clearButton, { opacity: 1 })
+            this.elements.clearButton.style.pointerEvents = 'auto'
         } else {
-            gsap.set(this.elements.clearButton, { opacity: 0 });
-            this.elements.clearButton.style.pointerEvents = 'none';
+            gsap.set(this.elements.clearButton, { opacity: 0 })
+            this.elements.clearButton.style.pointerEvents = 'none'
         }
     }
 
     // Event Handlers
     handleFormSubmit(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault()
+        e.stopPropagation()
 
-        const inputValue = this.elements.searchInput?.value.trim() || '';
-        const selectedTags = this.searchEngine.getSelectedTags();
+        const inputValue = this.elements.searchInput?.value.trim() || ''
+        const selectedTags = this.searchEngine.getSelectedTags()
         
         // Add current input as tag if it exists and is not already selected
         if (inputValue && !selectedTags.includes(inputValue)) {
-            this.searchEngine.selectTag(inputValue);
+            this.searchEngine.selectTag(inputValue)
         }
 
         // Get updated tags after potential addition
-        const finalTags = this.searchEngine.getSelectedTags();
+        const finalTags = this.searchEngine.getSelectedTags()
 
         // Build search URL
-        const baseURL = window.location.origin;
-        let searchURL = baseURL + '/search';
+        const baseURL = window.location.origin
+        let searchURL = baseURL + '/search'
         
         if (finalTags.length > 0) {
             const tagsSlugs = finalTags.map(tag => 
                 tag.toLowerCase()
-                   .replace(/\s+/g, '-')
-                   .replace(/[^a-z0-9\-]/g, '')
+                   .replace(/&/g, ' ')  // Replace ampersands with spaces
+                   .replace(/\s+/g, '-')  // Replace spaces with single dash
+                   .replace(/[^a-z0-9\-]/g, '')  // Remove any non-alphanumeric characters (except dashes)
+                   .replace(/\-{2,}/g, '-')  // Replace multiple consecutive dashes with a single dash
             ).join('+');
             
             if (inputValue) {
-                searchURL += `/${encodeURIComponent(inputValue)}/tags/${tagsSlugs}`;
+                searchURL += `/${encodeURIComponent(inputValue)}/tags/${tagsSlugs}`
             } else {
-                searchURL += `/tags/${tagsSlugs}`;
+                searchURL += `/tags/${tagsSlugs}`
             }
         } else if (inputValue) {
-            searchURL += `/${encodeURIComponent(inputValue)}`;
+            searchURL += `/${encodeURIComponent(inputValue)}`
         } else {
-            searchURL = baseURL + '/?s=';
+            searchURL = baseURL + '/?s='
         }
         
         // Clear selections for fresh search
