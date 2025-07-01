@@ -281,12 +281,8 @@
                             "post_type": [
                                 "cases"
                             ],
-                            "post_status": [
-                                "publish"
-                            ],
-                            "taxonomy": [
-                                "tags-cases:active-investigation"
-                            ],
+                            "post_status": "",
+                            "taxonomy": "",
                             "return_format": "id",
                             "multiple": 0,
                             "allow_null": 0,
@@ -411,5 +407,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1749732315
+    "modified": 1751343615
 }

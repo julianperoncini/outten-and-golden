@@ -24,7 +24,7 @@
             {% endif %}
 
             <div class="column w-full relative group overflow-hidden js-list-grid-item">
-                <a href="{{ post_link }}" class="column-inner overflow-hidden block w-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-white' }}">
+                <a href="{{ post_link }}" class="column-inner size-full overflow-hidden block relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-white' }}">
                     <div class="absolute inset-0 z-1 js-list-grid-item-image">
                         <figure class="relative overflow-hidden w-full h-full pointer-events-none select-none">
                             {% if feature_content.feature_image %}
