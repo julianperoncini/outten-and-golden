@@ -1,5 +1,4 @@
 import { evt, utils, store } from '@/core'
-import { animate } from 'motion'
 const { qs, qsa } = utils
 
 export default function bookACall(el) {
@@ -142,8 +141,7 @@ export default function bookACall(el) {
         
         return true;
     }
-
-    // Show field error with Motion.js
+    
     function showFieldError(field, message = 'This field is required') {
         if (!field) return;
         

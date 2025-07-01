@@ -1,6 +1,10 @@
-import { animate, clamp, inView, spring, wrap, timeline } from 'motion'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { evt, utils, store } from '../core'
 import lerp from '@14islands/lerp'
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const { qs, qsa, rect } = utils
 const { dom, features, bounds, device } = store
@@ -67,11 +71,11 @@ export default function Carousel(element, options = {}) {
 
         requestAnimationFrame(() => {
             if (state.cache && state.cache.length > 0) {
-            updateActiveSlide(0)
+                updateActiveSlide(0)
 
-            setTimeout(() => {
-                resize()
-            }, 500)
+                setTimeout(() => {
+                    resize()
+                }, 500)
             }
         })
     }
@@ -115,7 +119,7 @@ export default function Carousel(element, options = {}) {
 
         if (state.cache) {
             state.cache.forEach((c, i) => {
-                c.el.style.transform = `translate3d(0, 0, 0)`
+                gsap.set(c.el, { x: 0, y: 0, z: 0 })
 
                 const position = (config.sliderType === 'fake' && fakePositions[i]) ? fakePositions[i] : rect(c.el)
                 const { left, right, width } = position
@@ -130,7 +134,7 @@ export default function Carousel(element, options = {}) {
             })
         } else {
             state.cache = slide.map((elem, i) => {
-                elem.style.transform = `translate3d(0, 0, 0)`
+                gsap.set(elem, { x: 0, y: 0, z: 0 })
 
                 const position = (config.sliderType === 'fake' && fakePositions[i]) ? fakePositions[i] : rect(elem)
                 const { left, width } = position
@@ -161,11 +165,11 @@ export default function Carousel(element, options = {}) {
             item.el.classList.remove('active')
 
             if (config.sliderType === 'fake') {
-                animate(item.el, {
+                gsap.to(item.el, {
                     maxWidth: device.isSmall ? '100%' : '41rem',
                     minWidth: device.isSmall ? '100%' : '41rem',
-                }, { 
                     duration: 0.35,
+                    overwrite: true
                 })
             }
         })
@@ -175,11 +179,11 @@ export default function Carousel(element, options = {}) {
             activeSlide.classList.add('active')
             
             if (config.sliderType === 'fake') {
-                animate(activeSlide, {
+                gsap.to(activeSlide, {
                     maxWidth: device.isSmall ? '100%' : '67rem',
                     minWidth: device.isSmall ? '100%' : '67rem',
-                }, {
                     duration: 0.35,
+                    overwrite: true
                 })
             }
         }
@@ -224,7 +228,7 @@ export default function Carousel(element, options = {}) {
         }
 
         const newT = state.ox - x * state.speed
-        state.t = clamp(0, state.max, newT)
+        state.t = gsap.utils.clamp(0, state.max, newT)
 
         const now = Date.now()
 
@@ -233,7 +237,7 @@ export default function Carousel(element, options = {}) {
             const currentIdx = snaps.indexOf(nearestSnap)
             
             if (currentIdx !== state.idx) {
-            updateActiveSlide(currentIdx)
+                updateActiveSlide(currentIdx)
             }
             
             state.lastActiveUpdate = now
@@ -264,11 +268,11 @@ export default function Carousel(element, options = {}) {
     const snap = () => {
         if (state.resizing) return;
 
-        const clampedT = clamp(0, state.max, state.t);
+        const clampedT = gsap.utils.clamp(0, state.max, state.t);
         const snapValue = findNearestSnap(snaps, clampedT);
         const diff = snapValue - clampedT - state.margin;
 
-        state.t = clamp(0, state.max, clampedT + diff);
+        state.t = gsap.utils.clamp(0, state.max, clampedT + diff);
 
         const newIdx = snaps.indexOf(snapValue);
 
@@ -283,8 +287,8 @@ export default function Carousel(element, options = {}) {
         for (let i = 1; i < snapPoints.length; i++) {
             const distance = Math.abs(snapPoints[i] - value)
             if (distance < closestDistance) {
-            closest = snapPoints[i]
-            closestDistance = distance
+                closest = snapPoints[i]
+                closestDistance = distance
             }
         }
 
@@ -310,7 +314,7 @@ export default function Carousel(element, options = {}) {
 
         state.cache.forEach((c, i) => {
             const { start, end, left, width, el } = c
-            const t = clamp(0, state.max, state.tc)
+            const t = gsap.utils.clamp(0, state.max, state.tc)
             const v = visible(start, end, left, width, t)
             const isActive = i === state.idx
 
@@ -325,13 +329,9 @@ export default function Carousel(element, options = {}) {
     }
 
     const transformElement = (el, transform, isActive = false) => {
-        const animationOptions = {
+        gsap.set(el, {
             x: -transform,
-        }
-
-        animate(el, animationOptions, { 
-            duration: 0,
-            preserve: true
+            overwrite: "auto"
         })
     }
 
@@ -390,82 +390,88 @@ export default function Carousel(element, options = {}) {
         snap()
     }
 
-  const bindEvents = () => {
-    setEvents()
+    const bindEvents = () => {
+        setEvents()
 
-    elements.el.addEventListener(state.events.down, down)
-    elements.el.addEventListener(state.events.move, move)
-    window.addEventListener(state.events.up, up)
+        elements.el.addEventListener(state.events.down, down)
+        elements.el.addEventListener(state.events.move, move)
+        window.addEventListener(state.events.up, up)
 
-    elements.prev && elements.prev.addEventListener('click', previous)
-    elements.next && elements.next.addEventListener('click', next)
-    
-    evt.on('resize', () => {
-      resetCarousel()
-    })
-    
-    if (config.toggle) {
-      observer = inView(elements.el, () => {
-        state.run = true
-        return () => {
-          state.run = false
+        elements.prev && elements.prev.addEventListener('click', previous)
+        elements.next && elements.next.addEventListener('click', next)
+        
+        evt.on('resize', () => {
+            resetCarousel()
+        })
+        
+        if (config.toggle) {
+            const scrollTrigger = ScrollTrigger.create({
+                trigger: elements.el,
+                start: "top bottom",
+                end: "bottom top",
+                onEnter: () => { state.run = true },
+                onLeave: () => { state.run = false },
+                onEnterBack: () => { state.run = true },
+                onLeaveBack: () => { state.run = false }
+            })
+            
+            observer = scrollTrigger
         }
-      })
+        
+        animationFrame = requestAnimationFrame(tick)
     }
-    
-    animationFrame = requestAnimationFrame(tick)
-  }
 
-  const unbindEvents = () => {
-    elements.el.removeEventListener(state.events.down, down)
-    elements.el.removeEventListener(state.events.move, move)
-    window.removeEventListener(state.events.up, up)
+    const unbindEvents = () => {
+        elements.el.removeEventListener(state.events.down, down)
+        elements.el.removeEventListener(state.events.move, move)
+        window.removeEventListener(state.events.up, up)
 
-    elements.prev && elements.prev.removeEventListener('click', previous)
-    elements.next && elements.next.removeEventListener('click', next)
+        elements.prev && elements.prev.removeEventListener('click', previous)
+        elements.next && elements.next.removeEventListener('click', next)
 
-    evt.off('resize', resetCarousel)
-    
-    if (observer) {
-      observer.disconnect()
+        evt.off('resize', resetCarousel)
+        
+        if (observer) {
+            // Kill the ScrollTrigger instance instead of disconnecting an IntersectionObserver
+            observer.kill()
+        }
+        
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame)
+        }
     }
-    
-    if (animationFrame) {
-      cancelAnimationFrame(animationFrame)
+
+    const init = async () => {
+        bindEvents()
+        resetCarousel()
     }
-  }
 
-  const init = async () => {
-    bindEvents()
-    resetCarousel()
-  }
-
-  const destroy = () => {
-    unbindEvents()
-    state.cache = null
-    elements.prev = null
-    elements.next = null
-  }
-
-  init()
-
-  return {
-    init,
-    destroy,
-    reset: resetCarousel,
-    next,
-    previous,
-    get index() {
-      return state.idx
-    },
-    get cache() {
-      return state.cache
-    },
-    get prev() {
-      return elements.prev
-    },
-    get next() {
-      return elements.next
+    const destroy = () => {
+        unbindEvents()
+        state.cache = null
+        elements.prev = null
+        elements.next = null
     }
-  }
+
+    init()
+
+    return {
+        init,
+        destroy,
+        reset: resetCarousel,
+        next,
+        previous,
+        get index() {
+            return state.idx
+        },
+        get cache() {
+            return state.cache
+        },
+        get prev() {
+            return elements.prev
+        },
+        get next() {
+            return elements.next
+        }
+    }
 }

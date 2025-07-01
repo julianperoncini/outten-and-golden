@@ -1,5 +1,4 @@
 import { evt, utils, store } from '@/core'
-import { animate } from 'motion'
 const { qs, qsa } = utils
 
 export default function accordion(el) {
