@@ -22,8 +22,8 @@ export default class extends Transition {
         gsap.killTweensOf(mask)
         gsap.to(mask, {
             opacity: 0,
-            duration: 0.5,
-            ease: 'power3',
+            duration: 0.35,
+            ease: 'power2',
             onComplete: () => {
                 mask.classList.add('invisible')
             }
@@ -38,8 +38,8 @@ export default class extends Transition {
         gsap.killTweensOf(mask)
         gsap.to(mask, {
             opacity: 1,
-            duration: 0.5,
-            ease: 'power3',
+            duration: 0.35,
+            ease: 'power2',
             onComplete: done
         })
 

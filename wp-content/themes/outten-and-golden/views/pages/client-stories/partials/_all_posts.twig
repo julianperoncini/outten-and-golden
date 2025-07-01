@@ -15,7 +15,7 @@
             </div>
 
             <div class="col-start-1 col-span-full pt-30 s:pt-80 flex flex-col gap-25 js-all-posts-container">
-                <div class="relative flex flex-wrap pb-32 s:pb-80 gap-24">
+                <div class="relative grid grid-cols-8 s:grid-cols-24 pb-32 s:pb-80 gap-24">
                     {% for post in client_stories_posts %}
                         {% set loop_index = loop.index0 %}
 
@@ -52,7 +52,7 @@
                         {% endfor %}
 
                         {% if is_large %}
-                            <a class="relative h-fit s:h-[inherit] flex flex-col-reverse s:flex-row items-start w-full max-w-full {{ text_color ? text_color : 'text-white' }} {% if image_position == 'left' %}flex-col-reverse s:flex-row-reverse{% endif %}" href="{{ post_link }}">
+                            <a class="col-span-8 s:col-span-24 relative h-fit s:h-[inherit] flex flex-col-reverse s:flex-row items-start w-full max-w-full {{ text_color ? text_color : 'text-white' }} {% if image_position == 'left' %}flex-col-reverse s:flex-row-reverse{% endif %}" href="{{ post_link }}">
                                 <div class="relative p-24 s:p-32 w-full h-full bg-{{ feature_content.background_color|lower }}">
                                     <div class="flex flex-col items-start space-y-24 s:space-y-32">
                                         <div class="relative w-full flex flex-wrap items-center gap-4 z-2">
@@ -93,7 +93,7 @@
                                 </div>
 
                                 <div class="relative w-full h-full overflow-hidden">
-                                    <figure class="relative overflow-hidden w-full max-w-full s:max-w-[65rem] h-[120%] pointer-events-none select-none" data-parallax-scroll-start="top bottom"  data-parallax="trigger"  data-parallax-start="-30" data-parallax-end="0">
+                                    <figure class="relative overflow-hidden w-full max-w-full h-[120%] pointer-events-none select-none" data-parallax-scroll-start="top bottom"  data-parallax="trigger"  data-parallax-start="-30" data-parallax-end="0">
                                         {% if feature_content.feature_image %}
                                             {% include "blocks/common/image.twig" with {
                                                 props : {
@@ -117,7 +117,7 @@
 
                             </a>
                         {% else %}
-                            <a class="relative block w-full min-w-full s:min-w-[44.3rem] max-w-full s:max-w-[44.3rem] {{ text_color ? text_color : 'text-white' }}" href="{{ post_link }}">
+                            <a class="relative block w-full min-w-full col-span-8 {{ text_color ? text_color : 'text-white' }}" href="{{ post_link }}">
                                 <div class="relative overflow-hidden w-full h-auto pointer-events-none select-none">
                                     <div class="pt-[100%] s:pt-[112%] bg-{{ feature_content.background_color|lower }}"></div>
                                 </div>
