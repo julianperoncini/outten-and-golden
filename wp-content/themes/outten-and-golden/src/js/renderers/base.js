@@ -20,9 +20,10 @@ export default class extends Renderer {
     initialLoad() {
         isPageReload = true;
 
-        this.onEnter();
-
         window.onload = () => this.load()
+
+		this.onEnter()
+		this.onEnterCompleted()
     }
 
     load() {
@@ -56,11 +57,13 @@ export default class extends Renderer {
 			disableScrollTrigger: true 
 		});
 
-		this.onEnterCompleted()
+		console.log(this.el)
     }
 
     onEnter() {
+		console.log('onEnter')
         this.el = this.content;
+
 
 		components['triggered'](this.el);
 
@@ -76,19 +79,10 @@ export default class extends Renderer {
 				mode: 'static',
 			})
 		}
-/*
-        const searchLinks = qsa('.js-search-link');
-        searchLinks.forEach(searchLink => {
-            evt.on('click', searchLink, (e) => {
-                components['search'](this.el).clearSearch()
-            });
-        });
-		*/
-
-
     }
 
     onEnterCompleted() {
+		console.log('onEnterCompleted')
 		this.initComponents();
     }
 
@@ -163,5 +157,5 @@ export default class extends Renderer {
 			}
 		  }).filter(Boolean)
 		}
-	  }
+	}
 }

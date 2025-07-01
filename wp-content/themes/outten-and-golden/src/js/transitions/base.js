@@ -9,7 +9,7 @@ export default class extends Transition {
 
     onEnter({ to, trigger, done }) {
         done()
-
+        
         // Reset scroll
         window.scrollTo(0, 0)
         document.body.scrollTop = 0
