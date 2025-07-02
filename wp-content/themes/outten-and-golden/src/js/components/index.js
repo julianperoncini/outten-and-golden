@@ -47,5 +47,6 @@ export {
     bookACall,
     highlight,
     accordion,
-    blogsFilter
+    blogsFilter,
+    menu
 }

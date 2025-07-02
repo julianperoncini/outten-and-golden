@@ -1,21 +1,12 @@
-/**
- * Enhanced Menu Animation Module
- * Simple GSAP implementation with separate open/close functions
- */
 import { evt, utils, store } from '@/core'
 import { gsap } from 'gsap'
 
 const { qs, qsa } = utils
 const { device, dom } = store
 
-// Animation settings
-const DURATION = 0.45
-const EASE = 'power2'
-
-export default function menuController(el, options = {}) {
+export default function (el, options = {}) {
   if (!el) return () => {}
   
-  // Cache DOM elements
   const elements = {
     trigger: qs('.js-menu-trigger'),
     boxes: qsa('.js-menu-box', el),
@@ -25,49 +16,50 @@ export default function menuController(el, options = {}) {
 
   const span = qsa('span', elements.trigger)
 
-  // Set initial states
-  gsap.set(el, { clipPath: 'inset(0 0 100% 0)' })
+  const DURATION = 0.45
+  const EASE = 'power2'
   
-  // State
+  let tl = null;
+  
   const state = {
     isOpen: false,
     previousNavState: ''
   }
+
+  gsap.set(el, { clipPath: 'inset(0 0 100% 0)' })
   
-  /**
-   * Opens the menu with GSAP animations
-   */
+
   function openMenu() {
     if (state.isOpen) return
     
     state.isOpen = true
     state.previousNavState = dom.body.dataset.nav || ''
 
-    // Update DOM states
     dom.body.classList.add('overflow-hidden')
+    dom.body.classList.add('menu-is-open')
     dom.body.dataset.nav = 'white'
     el.classList.add('is-open')
 
-    // Kill any running animations
-    gsap.killTweensOf([ el, elements.animateIn, elements.boxes, dom.overlay ])
+    el.scrollTo({ top: 0 })
 
-    // Animate overlay
-    gsap.to(dom.overlay, {
+    if (tl) tl.kill()
+    
+    tl = gsap.timeline()
+    
+    tl.to(dom.overlay, {
       opacity: 0.5,
       duration: 0.3,
       ease: EASE
-    })
+    }, 0)
 
-    // Animate menu reveal
-    gsap.to(el, {
+    tl.to(el, {
       clipPath: 'inset(0% 0% 0% 0%)',
       duration: DURATION,
       ease: EASE
-    })
-  
-    // Animate menu items with stagger
-    gsap.fromTo(elements.animateIn, {
-      y: 40,
+    }, 0)
+
+    tl.fromTo(elements.animateIn, {
+      y: 30,
       alpha: 0,
     }, {
       y: 0,
@@ -75,21 +67,19 @@ export default function menuController(el, options = {}) {
       duration: DURATION,
       stagger: 0.04,
       ease: EASE,
-    })
+    }, 0.1)
     
-    // Animate boxes with stagger
-    gsap.fromTo(elements.boxes, {
-      y: 20,
+    tl.fromTo(elements.boxes, {
+      y: 60,
       alpha: 0,
     }, {
       y: 0,
       alpha: 1,
       duration: DURATION,
-      stagger: 0.1,
+      stagger: 0.04,
       ease: EASE,
-    })
-    
-    // Add click outside listener after a short delay
+    },0)
+
     document.addEventListener('click', handleClickOutside)
   }
   
@@ -98,33 +88,31 @@ export default function menuController(el, options = {}) {
    */
   function closeMenu() {
     if (!state.isOpen) return
+
+    dom.body.dataset.nav = state.previousNavState
+    dom.body.classList.remove('overflow-hidden')
+    dom.body.classList.remove('menu-is-open')
+    el.classList.remove('is-open')
     
     state.isOpen = false
     
-    // Remove click outside listener
     document.removeEventListener('click', handleClickOutside)
     
-    // Update DOM states
-    dom.body.dataset.nav = state.previousNavState
-    dom.body.classList.remove('overflow-hidden')
-    el.classList.remove('is-open')
-
-    // Kill any running animations
-    gsap.killTweensOf([ el, elements.animateIn, elements.boxes, dom.overlay ])
-
-    // Animate overlay
-    gsap.to(dom.overlay, {
+    if (tl) tl.kill()
+    
+    tl = gsap.timeline()
+    
+    tl.to(dom.overlay, {
       opacity: 0,
       duration: 0.3,
       ease: EASE
-    })
+    }, 0)
     
-    // Animate menu hide
-    gsap.to(el, {
+    tl.to(el, {
       clipPath: 'inset(0 0 100% 0)',
       duration: DURATION,
       ease: EASE
-    })
+    }, 0)
   }
 
   /**
@@ -142,7 +130,7 @@ export default function menuController(el, options = {}) {
    * Toggles menu state
    */
   function toggleMenu(e) {
-    e.stopPropagation()
+    if (e) e.stopPropagation()
     state.isOpen ? closeMenu() : openMenu()
   }
   
@@ -156,17 +144,10 @@ export default function menuController(el, options = {}) {
   }
   document.addEventListener('keydown', handleKeydown)
   
-  // Optional resize handler
-  function handleResize() {
-    // Uncomment if needed
-    // if (state.isOpen) closeMenu()
-  }
-  evt.on('resize', handleResize)
-  
   // Return cleanup function
   return () => {
     // Kill any running animations
-    gsap.killTweensOf([el, elements.animateIn, elements.boxes, span, dom.overlay])
+    if (tl) tl.kill()
     
     // Remove event listeners
     document.removeEventListener('click', handleClickOutside)

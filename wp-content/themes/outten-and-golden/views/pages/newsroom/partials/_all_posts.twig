@@ -59,7 +59,7 @@
                         {% for post in all_posts %}
                             {% if loop.index0 % 6 == 0 %}
                                 {% set group_number = (loop.index0 / 6) + 1 %}
-                                <div class="site-grid gap-y-20 s:gap-y-25 mb-20 grid-layout {% if not group_number % 2 == 0 %}grid-layout-reverse{% else %}grid-layout-normal{% endif %}">
+                                <div class="site-grid gap-y-20 s:gap-y-20 mb-20 grid-layout {% if not group_number % 2 == 0 %}grid-layout-reverse{% else %}grid-layout-normal{% endif %}">
                             {% endif %}
                             
                             {% include 'partials/newsroom-post-item.twig' with { post: post } %}

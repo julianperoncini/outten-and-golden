@@ -327,7 +327,19 @@ header {
 	@apply flex items-center gap-x-8 whitespace-nowrap mr-8 px-12 py-[0.7rem] bg-white-smoke block leading-[1.4] rounded-[0.4rem] transition-colors hover:bg-grey-taupe;
 }
 
+body.menu-is-open {
+	.js-menu-trigger {
+		span {
+			&:first-child {
+				@apply -rotate-45 -translate-x-1/2 translate-y-0;
+			}
 
+			&:last-child {
+				@apply rotate-45 -translate-x-1/2 translate-y-0;
+			}
+		}
+	}
+}
 
 body.search-results {
 	header {

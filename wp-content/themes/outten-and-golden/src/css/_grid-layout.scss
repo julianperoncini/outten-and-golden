@@ -10,6 +10,11 @@
 .grid-layout {
     .column-title {
         @apply leading-[1.24] tracking-[-0.01em];
+        display: initial;
+    }
+
+    .column-link-full {
+        @apply whitespace-nowrap;
     }
 
     &-reverse {
@@ -48,7 +53,7 @@
 
                 @screen s {
                     margin-top: calc(-50% * 2 / 3);
-                    padding-bottom: 0.8rem;
+                    top: -0.8rem;
                 }
             }
               
@@ -193,8 +198,9 @@
                 margin-top: 0;
                 
                 @screen s {
-                    margin-top: calc(-100% * (2/3) - 2.5rem);
-                    padding-top: 2rem;
+                    aspect-ratio: 14 / 9;
+                    top: -0.8rem;
+                    margin-top: calc(-100% * (2/3));
                 }
                 
                 @apply s:col-start-9;
@@ -222,7 +228,7 @@
                 @apply col-span-8 s:col-span-8;
     
                 .column-title {
-                    @apply max-w-[35rem] text-24 s:text-32 leading-[1.15] tracking-[-0.01em];
+                    @apply max-w-[80%] text-24 s:text-32 leading-[1.15] tracking-[-0.01em];
                 }
     
                 .column-link-text {

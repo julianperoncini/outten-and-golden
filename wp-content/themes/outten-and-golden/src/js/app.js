@@ -7,9 +7,6 @@ import { ev, utils } from '@/core'
 
 const { qs } = utils
 
-// Components
-import menu from '@/components/menu'
-
 // Renderers
 import * as R from '@/renderers'
 
@@ -21,7 +18,6 @@ const initResize = ev.resize()
 const initScroll = ev.scroll()
 const initMouse = ev.mouse()
 
-menu(qs('.js-menu'))
 
 // Update admin bar actions
 const updateWpAdminBar = (page = document) => {

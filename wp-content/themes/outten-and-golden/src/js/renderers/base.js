@@ -3,6 +3,7 @@ import { evt, ev, utils, store } from '@/core';
 
 import * as components from '@/components'
 
+
 const { qs, qsa, rect } = utils;
 const { device } = store;
 
@@ -30,6 +31,8 @@ export default class extends Renderer {
         if (!isWpAdmin) {
             this.preloader?.loaded()
         }
+
+		components['menu'](qs('.js-menu'))
 
 		components['s']({
 			section: qs('.js-header-search'),
