@@ -87,15 +87,16 @@
                         {# Remove duplicates from filter classes #}
                         {% set filter_classes = filter_classes|reduce((carry, item) => item in carry ? carry : carry|merge([item]), []) %}
 
-                        {# Include the post item template #}
-                        {% include 'partials/cases-post-item.twig' with {
-                            'post': post,
-                            'feature_content': feature_content,
-                            'post_link': post_link,
-                            'post_terms': post_terms,
-                            'case_status_terms': case_status_terms,
-                            'filter_classes': filter_classes|join(',')
-                        } %}
+                        <div class="column-item">
+                            {% include 'partials/cases-post-item.twig' with {
+                                'post': post,
+                                'feature_content': feature_content,
+                                'post_link': post_link,
+                                'post_terms': post_terms,
+                                'case_status_terms': case_status_terms,
+                                'filter_classes': filter_classes|join(',')
+                            } %}
+                        </div>
                     {% endfor %}
                 </div>
             </div>

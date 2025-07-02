@@ -33,7 +33,7 @@
 <section class="relative bg-white" data-component="blogsFilter" data-filter-param="blog_category" role="region" aria-label="Blog posts by category">
     <div class="site-max pt-80 s:pt-160 pb-80 site-grid items-end">
   
-        <div class="col-start-1 col-span-full s:col-span-4 space-y-32 s:space-y-40 pb-65 s:pb-0">
+        <div class="col-span-full s:col-span-4 space-y-32 s:space-y-40 pb-65 s:pb-0">
 
             <div class="relative">
                 <h2 class="font-sans text-grey text-12 font-medium leading-none tracking-[0.12rem] uppercase">{{ item.subtitle|default('Latest') }}</h2>
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <div class="relative s:col-start-6 col-span-full s:col-span-7 text-green">
+        <div class="relative col-span-full s:col-span-8 text-green">
             <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex items-start s:items-center justify-start s:justify-center flex-nowrap s:flex-wrap" 
                     data-filter-container
                     role="tablist" 
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div class="col-start-15 col-span-2 hidden s:flex justify-end">
+        <div class="col-span-4 hidden s:flex justify-end">
             <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url|default('/blog') }}" target="{{ item.link.target|default('_self') }}">
                 <span class="inline-flex">
                     See all
@@ -137,12 +137,12 @@
                             {% set text_color = 'text-white' %}
                         {% else %}
                             {% set text_color_map = {
-                                'grey': 'text-grey-taupe',
+                                'grey-taupe': 'text-black',
                                 'black': 'text-grey-taupe',
                                 'yellow': 'text-black',
                                 'green': 'text-white-smoke'
                             } %}
-                            {% set text_color = text_color_map[bg_color]|default('text-white') %}
+                            {% set text_color = text_color_map[bg_color] %}
                         {% endif %}
 
                         <article class="column w-full relative group overflow-hidden text-white" 
@@ -150,7 +150,7 @@
                                 data-post-id="{{ post.ID }}"
                                 data-item-category="{{ cat_slug }}">
 
-                            <a class="column-inner overflow-hidden block w-full h-full relative text-white {{ text_color }} block" 
+                            <a class="column-inner overflow-hidden block w-full h-full relative {{ text_color }} block" 
                             href="{{ function('get_permalink', post.ID) }}"
                             aria-label="Read more about {{ post.post_title }}">
                                 
@@ -199,14 +199,13 @@
 
                                     <div class="relative flex items-end justify-between w-full">
                                         <div class="relative">
-                                            <h4 class="column-title font-sans max-w-[90%] text-20 font-normal leading-[1.04] tracking-[-0.02rem]" data-post-title>
+                                            <h4 class="column-title font-sans text-20 font-normal" data-post-title>
                                                 {{ post.post_title }}
                                             </h4>
                                         </div>
                                         
-                                        <div class="relative top-15 left-25">
-                                            <span class="column-link-full relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 uppercase" 
-                                                aria-hidden="true">
+                                        <div class="relative top-15 left-25 ml-auto">
+                                            <button class="column-link-full relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 uppercase" type="button" aria-label="See more">
                                                 <span class="column-link-text hidden s:inline-flex">
                                                     See more
                                                 </span>
@@ -218,7 +217,13 @@
                                                 <svg class="column-link-arrow block s:hidden w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 </svg>
-                                            </span>
+                                            </button>
+
+                                            <button class="column-link-simple relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 px-25 uppercase">
+                                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

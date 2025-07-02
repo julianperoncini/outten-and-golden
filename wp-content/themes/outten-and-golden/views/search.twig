@@ -62,13 +62,13 @@
                                             {% endfor %}
                                         </div>
                                     {% elseif post_type == 'issues' %}
-                                        <div class="site-grid items-start gap-y-20 grid-layout">
+                                        <div class="site-grid items-start gap-y-20 grid-layout-normal">
                                             {% for post in group.posts %}
                                                 {% include 'partials/search-item.twig' with { post: post } %}
                                             {% endfor %}
                                         </div>
                                     {% elseif post_type == 'post' %}
-                                        <div class="site-grid items-start gap-y-20 grid-layout">
+                                        <div class="site-grid items-start gap-y-20 grid-layout-normal">
                                             {% for post in group.posts %}
                                                 {% include 'partials/search-item.twig' with { post: post } %}
                                             {% endfor %}

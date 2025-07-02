@@ -8,6 +8,63 @@
 }
 
 .grid-layout {
+    .column-title {
+        @apply leading-[1.24] tracking-[-0.01em];
+    }
+
+    &-reverse {
+        .column {
+            @apply col-span-8 s:col-span-4;
+            overflow: hidden;
+            aspect-ratio: 3/2;
+
+            .column-link-full {
+                @apply hidden;
+            }
+    
+            &:nth-child(6n+4),
+            &:nth-child(3n+3):not(:nth-child(6n+6)) {
+                @apply col-span-8 s:col-span-8;
+
+                .column-title {
+                    @apply max-w-[35rem] text-24 s:text-32 leading-[1.15] tracking-[-0.01em];
+                }
+    
+                .column-link-text {
+                    @apply m:block;
+                }
+    
+                .column-link-full {
+                    @apply inline-flex;
+                }
+    
+                .column-link-simple {
+                    @apply hidden;
+                }
+            }
+              
+            &:nth-child(6n+4) {
+                margin-top: 0;
+
+                @screen s {
+                    margin-top: calc(-50% * 2 / 3);
+                    padding-bottom: 0.8rem;
+                }
+            }
+              
+            &:nth-child(6n+6) {
+                @apply col-span-8 s:col-span-4;
+
+
+            }
+           
+    
+            &-inner {
+                //padding-top: var(--aspect);
+            }
+        }
+    }
+
     &.is-listed {
         @apply gap-y-20 s:gap-y-60;
         
@@ -93,12 +150,40 @@
     }
 
     &-newsroom {
+        @apply gap-y-20 s:gap-y-25;
+        
         .column {
-            &:first-child {
-                aspect-ratio: 1;
+            @apply col-span-8 s:col-span-4;
+            overflow: hidden;
+            aspect-ratio: 3/2;
 
-                .column-inner {
+            .column-link-full {
+                @apply hidden;
+            }
+        }
+
+        .column {
+            &:nth-child(4),
+            &:first-child {
+                @apply col-span-8 s:col-span-8;
+
+                @screen s {
                     aspect-ratio: 1;
+                }
+
+                .column-title {
+                    @apply text-24 s:text-32 leading-[1.15] tracking-[-0.01em];
+                }
+
+                .column-link-full {
+                    @apply inline-flex whitespace-nowrap;
+                }
+
+                .column-link-simple {
+                    @apply hidden;
+                }
+                
+                .column-inner {
                     padding-top: 0;
                 }
             }
@@ -107,74 +192,68 @@
                 aspect-ratio: 3/2;
                 margin-top: 0;
                 
-
                 @screen s {
-                    margin-top: calc(-100% * (2/3));
-                    padding-top: 1.5rem;
+                    margin-top: calc(-100% * (2/3) - 2.5rem);
+                    padding-top: 2rem;
                 }
                 
-                @apply col-span-8 s:col-span-8 !col-start-9;
-                
-                .column-inner {
-                    aspect-ratio: 1;
-                    padding-top: 0;
+                @apply s:col-start-9;
+            }
+
+        }
+    }
+
+    &-normal {
+        .column {
+            @apply col-span-8 s:col-span-4;
+            overflow: hidden;
+            aspect-ratio: 3/2;
+    
+            .column-link-full {
+                @apply hidden;
+            }
+    
+            .column-link-simple {
+                @apply inline-flex;
+            }
+    
+            &:nth-child(6n+1),
+            &:nth-child(6n) {
+                @apply col-span-8 s:col-span-8;
+    
+                .column-title {
+                    @apply max-w-[35rem] text-24 s:text-32 leading-[1.15] tracking-[-0.01em];
                 }
+    
+                .column-link-text {
+                    @apply m:block;
+                }
+    
+                .column-link-full {
+                    @apply inline-flex;
+                }
+    
+                .column-link-simple {
+                    @apply hidden;
+                }
+            }
+    
+            &:nth-child(6n) {
+                margin-top: 0;
+    
+                @screen s {
+                    margin-top: calc(-50% * 2 / 3);
+                    padding-bottom: 0.8rem;
+                }
+            }
+    
+            &-inner {
+                //padding-top: var(--aspect);
             }
         }
     }
 }
 
-.column {
-    @apply col-span-8 s:col-span-4;
-    overflow: hidden;
-    aspect-ratio: 3/2;
-
-    .column-title {
-        @apply font-sans max-w-[90%] text-20 font-normal leading-[1.04] tracking-[-0.02rem];
-    }
-
-    .column-link-full {
-        @apply hidden;
-    }
-
-    .column-link-simple {
-        @apply inline-flex;
-    }
-
-    &:nth-child(6n+1),
-    &:nth-child(6n) {
-        @apply col-span-8 s:col-span-8;
-
-        .column-title {
-            @apply max-w-[35rem] text-24 s:text-32 tracking-[-0.032rem];
-        }
-
-        .column-link-text {
-            @apply m:block;
-        }
-
-        .column-link-full {
-            @apply inline-flex;
-        }
-
-        .column-link-simple {
-            @apply hidden;
-        }
-    }
-
-    &:nth-child(6n) {
-        margin-top: 0;
-
-        @screen s {
-            margin-top: calc(-50% * 2 / 3);
-            padding-bottom: 0.8rem;
-        }
-    }
-
-    &-inner {
-        //padding-top: var(--aspect);
-    }
-}
 
 /**
 * Newsroom Grid Page Reverse

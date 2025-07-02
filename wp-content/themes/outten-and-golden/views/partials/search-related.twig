@@ -2,7 +2,7 @@
 {% for category in search_related %}
     <div class="relative">
         <p class="text-40 mb-50 leading-none tracking-[0.-2em] text-green">{{ category.search_category_title }}</p>
-        <div class="site-grid items-start gap-y-20 grid-layout">
+        <div class="site-grid items-start gap-y-20 grid-layout-normal">
             {% for post_group in category.search_category_posts %}
                 {% for post in post_group.search_category_post %}
                     {% include './partials/search-item.twig' with { post: post } %}
@@ -27,7 +27,7 @@
 
 {% if latest_posts %}
     <p class="text-40 mb-50 leading-none tracking-[0.-2em] text-green">Latest Posts</p>
-    <div class="site-grid items-start gap-y-20 grid-layout">
+    <div class="site-grid items-start gap-y-20 grid-layout-normal">
         {% for post in latest_posts %}
             {% include './partials/search-item.twig' with { post: post } %}
         {% endfor %}

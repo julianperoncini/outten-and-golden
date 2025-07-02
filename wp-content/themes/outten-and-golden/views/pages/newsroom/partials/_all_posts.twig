@@ -56,11 +56,18 @@
                 {% else %}
                     {# Default state - show server-side posts #}
                     {% if all_posts and all_posts|length > 0 %}
-                        <div class="news-grid-blog-page">
-                            {% for post in all_posts %}
-                                {% include 'partials/newsroom-post-item.twig' with { post: post } %}
-                            {% endfor %}
-                        </div>
+                        {% for post in all_posts %}
+                            {% if loop.index0 % 6 == 0 %}
+                                {% set group_number = (loop.index0 / 6) + 1 %}
+                                <div class="site-grid gap-y-20 s:gap-y-25 mb-20 grid-layout {% if not group_number % 2 == 0 %}grid-layout-reverse{% else %}grid-layout-normal{% endif %}">
+                            {% endif %}
+                            
+                            {% include 'partials/newsroom-post-item.twig' with { post: post } %}
+                            
+                            {% if loop.index % 6 == 0 or loop.last %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     {% else %}
                         <div class="no-posts">
                             <p class="text-center text-gray-600">No posts found.</p>

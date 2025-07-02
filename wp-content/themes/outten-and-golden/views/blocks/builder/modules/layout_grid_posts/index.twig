@@ -71,7 +71,7 @@
                     {% set description = item.fields.feature_content.description %}
 
                     <div class="column w-full relative group overflow-hidden">
-                        <a href="{{ item.link }}" data-transition="child" class="column-inner overflow-hidden block w-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
+                        <a href="{{ item.link }}" data-transition="child" class="column-inner overflow-hidden block w-full size-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
                             {% if image %}
                                 {% include "blocks/common/image.twig" with {
                                     props : {
@@ -93,7 +93,7 @@
                             </div>
 
                             <div class="column-title absolute z-1 bottom-0 left-0 w-full p-16 l:p-24 leading-none flex justify-between items-end">
-                                <p class="column-title text-24 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem] max-w-[25rem] s:max-w-[31rem]">{{ item.title }}</p>
+                                <p class="column-title font-normal leading-[1.04] tracking-[-0.032rem] max-w-[25rem] s:max-w-[31rem]">{{ item.title }}</p>
                                 <p class="column-link text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center whitespace-nowrap">
                                     <span class="column-link-text hidden">
                                         See more

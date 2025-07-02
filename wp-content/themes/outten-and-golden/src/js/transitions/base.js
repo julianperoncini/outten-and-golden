@@ -24,15 +24,10 @@ export default class extends Transition {
             opacity: 0,
             duration: 0.35,
             ease: 'power2',
-            onComplete: () => {
-                mask.classList.add('invisible')
-            }
         })
     }
 
     onLeave({ from, trigger, done }) {
-        mask.classList.remove('invisible')
-        
         evt.emit('menu:close')
         
         gsap.killTweensOf(mask)

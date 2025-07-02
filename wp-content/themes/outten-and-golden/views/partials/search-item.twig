@@ -4,8 +4,16 @@
 {% set bg = fn('get_field', 'feature_content_background_color', post_id) %}
 {% set description = fn('get_field', 'feature_content_description', post_id) %}
 
+{% set text_color_map = {
+    'grey': 'text-grey-taupe',
+    'black': 'text-grey-taupe',
+    'yellow': 'text-black',
+    'green': 'text-white-smoke'
+} %}
+{% set text_color = text_color_map[bg|lower] %}
+
 <div class="column w-full relative group overflow-hidden">
-    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block size-full relative js-search-link {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-green' }}">
+    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block size-full relative js-search-link {{ image ? 'text-white' }} bg-{{ bg|lower }} {{ text_color }}">
         {% if image %}
             {% include "blocks/common/image.twig" with {
                 props : {
@@ -27,7 +35,7 @@
         </div>
 
         <div class="absolute z-1 bottom-0 left-0 w-full p-16 l:p-24 leading-none flex justify-between items-end w-full">
-            <p class="column-title text-24 s:text-32 font-normal leading-[1.04] tracking-[-0.032rem] max-w-[25rem] s:max-w-[31rem]">{{ post.post_title }}</p>
+            <p class="column-title text-20 font-normal">{{ post.post_title }}</p>
             <p class="column-link text-12 font-medium leading-none tracking-[0.12rem] uppercase flex gap-x-5 items-center whitespace-nowrap">
                 <span class="column-link-text hidden">
                     See more

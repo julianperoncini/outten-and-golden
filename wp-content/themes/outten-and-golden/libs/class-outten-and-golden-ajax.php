@@ -226,28 +226,44 @@ class OUTTEN_AND_GOLDEN_AJAX {
   /**
    * Generate posts HTML using Timber and your newsroom-post-item.twig
    */
-  private function generate_timber_posts_html($query) {
-      if (!$query->have_posts()) {
-          return '<div class="no-posts"><p class="text-center text-gray-600">No posts found for this category.</p></div>';
-      }
-      
-      ob_start();
-      echo '<div class="news-grid-blog-page">';
-      
-      while ($query->have_posts()) {
-          $query->the_post();
-          
-          // Get Timber post object
-          $timber_post = Timber::get_post();
-          
-          // Render your existing post template
-          echo Timber::compile('partials/newsroom-post-item.twig', array('post' => $timber_post));
-      }
-      
-      echo '</div>';
-      
-      return ob_get_clean();
-  }
+/**
+ * Generate posts HTML using Timber and your newsroom-post-item.twig with the same layout as your main template
+ */
+private function generate_timber_posts_html($query) {
+    if (!$query->have_posts()) {
+        return '<div class="no-posts"><p class="text-center text-gray-600">No posts found for this category.</p></div>';
+    }
+    
+    ob_start();
+    
+    $post_count = 0;
+    $total_posts = $query->found_posts;
+    
+    while ($query->have_posts()) {
+        $query->the_post();
+        
+        // Start a new group every 6 posts
+        if ($post_count % 6 == 0) {
+            $group_number = floor($post_count / 6) + 1;
+            $layout_class = ($group_number % 2 == 0) ? 'grid-layout-normal' : 'grid-layout-reverse';
+            echo '<div class="site-grid gap-y-20 s:gap-y-25 mb-20 grid-layout ' . $layout_class . '">';
+        }
+        
+        // Get Timber post object and render
+        $timber_post = Timber::get_post();
+        echo Timber::compile('partials/newsroom-post-item.twig', array('post' => $timber_post));
+        
+        $post_count++;
+        
+        // Close the group after 6 posts or if this is the last post
+        if ($post_count % 6 == 0 || $post_count == $total_posts) {
+            echo '</div>';
+        }
+    }
+    
+    wp_reset_postdata();
+    return ob_get_clean();
+}
   
   /**
    * Generate cases posts HTML using Timber

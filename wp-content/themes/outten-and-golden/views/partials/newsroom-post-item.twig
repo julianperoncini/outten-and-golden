@@ -14,8 +14,8 @@
     } %}
     {% set text_color = text_color_map[bg_color] %}
 {% endif %}
-<div class="column w-full relative group overflow-hidden {{ text_color ? text_color : 'text-white' }}">
-    <a href="{{ post_link }}" class="column-inner overflow-hidden block w-full relative  text-white"
+<div class="column w-full relative group overflow-hidden {{ text_color }}">
+    <a href="{{ post_link }}" class="column-inner overflow-hidden block w-full relative size-full"
         {% if post_categories %}
             {% set category_slugs = [] %}
             {% for category in post_categories %}
@@ -24,7 +24,6 @@
             data-filter-category="all,{{ category_slugs|join(',') }}"
         {% endif %}
     >
-        
         <div class="absolute inset-0 z-1 bg-green">
             <figure class="relative overflow-hidden w-full h-full pointer-events-none select-none">
                 {% if feature_content.feature_image %}
@@ -42,7 +41,7 @@
                         }
                     } %}
                 {% else %}
-                    <div class="pt-[102%] bg-{{ feature_content.background_color|lower }}"></div>
+                    <div class="size-full bg-{{ feature_content.background_color|lower }}"></div>
                 {% endif %}
             </figure>
         </div>
@@ -64,7 +63,7 @@
 
             <div class="relative flex items-end justify-between w-full">
                 <div class="relative">
-                    <h4 class="column-title font-sans max-w-[90%] text-20 font-normal leading-[1.04] tracking-[-0.02rem]">
+                    <h4 class="column-title font-sans text-20 font-normal">
                         {{ feature_content.title ?: post.post_title }}
                     </h4>
                 </div>

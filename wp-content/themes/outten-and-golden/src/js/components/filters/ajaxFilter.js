@@ -382,6 +382,8 @@ export default function ajaxFilter(config) {
             }
             
             loadPosts(currentFilter, 1, true, true, newResultsPerPage)
+
+            scrollToSection()
         }
     }
     
@@ -433,6 +435,8 @@ export default function ajaxFilter(config) {
             updateURL(filter, page, resultsPerPage)
             loadPosts(filter, page, true, true, resultsPerPage)
         }
+
+        scrollToSection()
     }
     
     function handleOutsideClick(e) {
