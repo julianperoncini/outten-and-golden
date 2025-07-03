@@ -79,8 +79,9 @@
         }
 
         .column {
-            @apply col-span-8 s:col-span-5 overflow-hidden;
+            @apply col-span-8 s:!col-span-5 overflow-hidden mb-0 pb-0;
             @apply border-b border-solid border-grey-taupe px-0 h-full;
+            aspect-ratio: auto;
 
             a  {
                 @apply h-full;
@@ -112,7 +113,7 @@
             }
             
             &:nth-child(6n) {
-                @apply m-0;
+                @apply m-0 pb-0;
             }
         }
 
@@ -129,7 +130,7 @@
             @apply border-b border-solid border-grey-taupe px-0 h-full;
 
             a  {
-                @apply h-fit pb-25 text-green;
+                @apply pb-25 text-green;
             }
 
             &-inner-two {
@@ -141,11 +142,11 @@
             }
 
             .column-title-two {
-                @apply text-24 text-green !important;
+                @apply text-24 text-green;
             }
 
             .column-category-type {
-                @apply text-grey !important;
+                @apply text-grey;
             }
 
             .column-category-date {
