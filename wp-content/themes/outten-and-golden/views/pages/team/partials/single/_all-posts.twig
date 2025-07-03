@@ -72,7 +72,7 @@
                     role="tablist" 
                     aria-label="Filter posts by category">
                 {% for cat_slug, cat_data in posts_by_category %}
-                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.first ? '!border-r-0 bg-white-smoke' : (loop.last ? 'border-r-[0.1rem]' : '!border-r-0') }} border-solid border-grey-taupe" 
+                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium hover:bg-white-smoke transition-colors duration-300 leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.first ? '!border-r-0 bg-white-smoke' : (loop.last ? 'border-r-[0.1rem]' : '!border-r-0') }} border-solid border-grey-taupe" 
                             type="button" 
                             role="tab"
                             aria-label="Filter by {{ cat_data.category.name }}" 
@@ -137,6 +137,8 @@
 
                         {% if feature_content.feature_image %}
                             {% set text_color = 'text-white' %}
+                            {% set bg_hover_color = 'bg-white-smoke' %}
+                            {% set text_hover_color = 'text-white' %}
                         {% else %}
                             {% set text_color_map = {
                                 'grey-taupe': 'text-black',
@@ -181,7 +183,7 @@
                                                         image : feature_content.feature_image
                                                     },
                                                     options: {
-                                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.02] group-hover:opacity-90 transition-all duration-[1s]',
                                                         class : 'w-full h-full object-cover pointer-events-none select-none',
                                                         aspect_ratio: '102%',
                                                         aspect_ratio_mobile: '102%',

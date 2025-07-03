@@ -24,9 +24,9 @@
 
             <div class="relative s:col-start-9 col-span-full s:col-span-8 flex justify-end">
                 <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex items-start s:items-center justify-start s:justify-center flex-nowrap s:flex-wrap">
-                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
+                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium hover:bg-white-smoke transition-colors duration-300 leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
                     {% for button in case_status_buttons %}
-                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.last ? 'border-r-[0.1rem]' : '!border-r-0' }} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ button.name }}" data-filter="{{ button.slug }}">{{ button.name }}</button>
+                        <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium hover:bg-white-smoke transition-colors duration-300 leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.last ? 'border-r-[0.1rem]' : '!border-r-0' }} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ button.name }}" data-filter="{{ button.slug }}">{{ button.name }}</button>
                     {% endfor %}
                 </div>
 

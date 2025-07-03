@@ -7,10 +7,10 @@
                 <div class="site-grid">
                     <div class="relative order-2 s:order-none col-start-1 col-span-full s:col-span-10">
                         <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex flex-nowrap s:flex-wrap items-center text-green">
-                            <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
+                            <button class="relative whitespace-nowrap s:whitespace-normal hover:bg-white-smoke transition-colors duration-300 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
 
                             {% for category in all_categories %}
-                                <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}" data-filter="{{ category.slug }}">
+                                <button class="relative whitespace-nowrap s:whitespace-normal hover:bg-white-smoke transition-colors duration-300 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}" data-filter="{{ category.slug }}">
                                     {{ category.name }}
                                 </button>
                             {% endfor %}
@@ -29,7 +29,7 @@
 
                     <div class="relative order-1 s:order-none s:col-start-14 col-span-full s:col-span-3 flex justify-center s:justify-end pb-80">
                         <div class="relative w-fit">
-                            <button class="relative py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center space-x-12 border-[0.1rem] border-solid border-grey-taupe js-all-team-members-select-location" type="button" aria-label="Button to select a location">
+                            <button class="relative hover:bg-white-smoke transition-colors duration-300 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase flex items-center space-x-12 border-[0.1rem] border-solid border-grey-taupe js-all-team-members-select-location" type="button" aria-label="Button to select a location">
                                 <span class="inline-flex js-all-team-members-location-button-text">Select a location</span>
                                 <span class="inline-flex js-all-team-members-select-location-arrow">
                                     <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 6" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -40,9 +40,9 @@
 
                             <div class="absolute top-full left-0 z-3 w-full h-fit bg-white border-[0.1rem] !border-t-0 border-solid border-grey-taupe invisible js-all-team-members-locations-container">
                                 <div class="relative js-all-team-members-locations">
-                                    <button class="relative w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="all" aria-label="Button to filter by all">All</button>
+                                    <button class="relative hover:bg-white-smoke transition-colors duration-300 w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="all" aria-label="Button to filter by all">All</button>
                                     {% for location in all_locations %}
-                                        <button class="relative w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="{{ location.slug }}" aria-label="Button to filter by {{ location.name }}">
+                                        <button class="relative hover:bg-white-smoke transition-colors duration-300 w-full py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase {{ loop.last ? '!border-b-0' : '!border-b' }} border-solid border-grey-taupe" data-filter-location="{{ location.slug }}" aria-label="Button to filter by {{ location.name }}">
                                             {{ location.name }}
                                         </button>
                                     {% endfor %}

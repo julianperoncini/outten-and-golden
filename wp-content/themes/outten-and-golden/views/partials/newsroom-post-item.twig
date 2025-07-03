@@ -5,6 +5,8 @@
 
 {% if feature_content.feature_image %}
     {% set text_color = 'text-white' %}
+    {% set bg_hover_color = 'bg-white-smoke' %}
+    {% set text_hover_color = 'text-white' %}
 {% else %}
     {% set text_color_map = {
         'grey': 'text-white',
@@ -28,7 +30,7 @@
     {% set text_hover_color = text_hover_map[bg_color]|default('text-white') %}
     {% set bg_hover_color = bg_hover_map[bg_color]|default('bg-grey') %}
 {% endif %}
-<div class="column w-full relative group overflow-hidden {{ text_color }}">
+<div class="column w-full relative group overflow-hidden">
     <a href="{{ post_link }}" class="column-inner overflow-hidden group block w-full relative size-full hover:{{ text_hover_color }} transition-all duration-300"
         {% if post_categories %}
             {% set category_slugs = [] %}
