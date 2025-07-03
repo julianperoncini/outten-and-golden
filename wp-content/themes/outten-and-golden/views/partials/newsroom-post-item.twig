@@ -1,5 +1,5 @@
 {% set feature_content = function('get_field', 'feature_content', post.ID) %}
-{% set bg_color = feature_content.background_color|lower %}
+{% set bg_color = feature_content.background_color|default('grey')|lower %}
 {% set post_link = function('get_permalink', post.ID) %}
 {% set post_categories = function('get_the_terms', post.ID, 'category') %}
 
@@ -12,26 +12,32 @@
         'grey': 'text-white',
         'black': 'text-grey-taupe',
         'yellow': 'text-black',
-        'green': 'text-white-smoke'
+        'green': 'text-white-smoke',
+        'grey-taupe': 'text-black'
     } %}
-    {% set text_hover_map = {
-        'grey': 'text-grey',
-        'black': 'text-black',
-        'yellow': 'text-white',
-        'green': 'text-grey',
-    } %}
+    {% set text_color = text_color_map[bg_color]|default('text-grey') %}
+
     {% set bg_hover_map = {
         'grey': 'bg-white-smoke',
         'black': 'bg-grey-taupe',
         'yellow': 'bg-grey',
         'green': 'bg-white-smoke',
+        'grey-taupe': 'bg-grey-taupe'
     } %}
-    {% set text_color = text_color_map[bg_color]|default('text-grey') %}
-    {% set text_hover_color = text_hover_map[bg_color]|default('text-white') %}
     {% set bg_hover_color = bg_hover_map[bg_color]|default('bg-grey') %}
+
+    {% set text_hover_map = {
+        'grey': 'text-green',
+        'black': 'text-black',
+        'yellow': 'text-white',
+        'green': 'text-grey',
+        'grey-taupe': 'text-black'
+    } %}
+    {% set text_hover_color = text_hover_map[bg_color]|default('text-white') %}
 {% endif %}
+
 <div class="column w-full relative group overflow-hidden">
-    <a href="{{ post_link }}" class="column-inner overflow-hidden group block w-full relative size-full hover:{{ text_hover_color }} transition-all duration-300"
+    <a href="{{ post_link }}" class="column-inner overflow-hidden block w-full h-full relative {{ text_color }} block hover:{{ text_hover_color }} hover:{{ bg_hover_color }} transition-all duration-300"
         {% if post_categories %}
             {% set category_slugs = [] %}
             {% for category in post_categories %}
@@ -57,7 +63,7 @@
                         }
                     } %}
                 {% else %}
-                    <div class="size-full bg-{{ feature_content.background_color|lower }} group-hover:{{ bg_hover_color }} transition-all duration-300"></div>
+                     <div class="pt-[102%] bg-{{ bg_color }} group-hover:{{ bg_hover_color }} transition-all duration-300" aria-hidden="true"></div>
                 {% endif %}
             </figure>
         </div>

@@ -70,7 +70,7 @@
                     role="tablist" 
                     aria-label="Filter posts by category">
                 {% for cat_slug, cat_data in posts_by_category %}
-                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium hover:bg-white-smoke transition-colors duration-300 leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.first ? '!border-r-0 bg-white-smoke' : (loop.last ? 'border-r-[0.1rem]' : '!border-r-0') }} border-solid border-grey-taupe" 
+                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.first ? '!border-r-0 bg-white-smoke' : (loop.last ? 'border-r-[0.1rem]' : '!border-r-0') }} border-solid border-grey-taupe" 
                             type="button" 
                             role="tab"
                             aria-label="Filter by {{ cat_data.category.name }}" 
