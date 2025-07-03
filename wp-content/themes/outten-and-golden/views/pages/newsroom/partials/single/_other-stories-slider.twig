@@ -49,14 +49,14 @@
         <div class="flex cursor-grab js-slider-team" data-component="sliderTeamMembers(js-slider-members)">
             {% for item in other_stories_slider %}
                 {% set text_color_map = {
-                    'grey': 'text-grey-taupe',
+                    'grey': 'text-white',
                     'black': 'text-grey-taupe',
                     'yellow': 'text-black',
                     'green': 'text-white-smoke'
                 } %}
 
                 {% set bg_color = item.feature_content.background_color|lower %}
-                {% set text_color = text_color_map[bg_color] %}
+                {% set text_color = text_color_map[bg_color]|default('text-grey') %}
 
                 <article data-member="true" class="bg-{{ bg_color }} {{ text_color }} h-[32rem] s:h-[50rem] relative max-w-[32rem] s:max-w-[44.3rem] min-w-[32rem] s:min-w-[44.3rem] mr-24 js-member-item">
                     <div class="relative h-full s:h-[inherit] flex flex-col items-start justify-between s:justify-start p-16 s:p-32 space-y-32">

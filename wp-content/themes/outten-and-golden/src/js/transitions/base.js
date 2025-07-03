@@ -8,8 +8,7 @@ const mask = qs('.js-transition-mask')
 export default class extends Transition {
 
     onEnter({ to, trigger, done }) {
-        done()
-        
+
         // Reset scroll
         window.scrollTo(0, 0)
         document.body.scrollTop = 0
@@ -24,6 +23,7 @@ export default class extends Transition {
             opacity: 0,
             duration: 0.35,
             ease: 'power2',
+            onComplete: done
         })
     }
 

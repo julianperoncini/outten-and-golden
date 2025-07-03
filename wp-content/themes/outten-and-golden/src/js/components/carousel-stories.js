@@ -13,6 +13,7 @@ export default function carouselStories() {
         current: 0,
         d: 5,
         cache: null,
+        isAnimating: false      // Animation state flag only
     }
 
     const elements = {
@@ -27,18 +28,8 @@ export default function carouselStories() {
         const img = qs('.js-carousel-story-img', item)
         const tags = qs('.js-carousel-story-tags', item)
         const fades = qsa('.js-carousel-story-fade', item)
-
-        const tl = gsap.timeline({ 
-            paused: true,
-            defaults: {
-                duration: 1.25,
-                ease: 'expo'
-            }
-        })
-
-        return {
-            fig, img, tags, fades, tl, item
-        }
+    
+        return { fig, img, tags, fades, tl: null, item }
     })
 
     const mount = () => {
@@ -56,6 +47,9 @@ export default function carouselStories() {
     }
 
     const click = ({ currentTarget }) => {
+        // Prevent action if animation is in progress
+        if (state.isAnimating) return
+        
         state.last = state.current
         state.current = elements.dots.indexOf(currentTarget)
         
@@ -63,6 +57,9 @@ export default function carouselStories() {
     }
 
     const next = () => {
+        // Prevent action if animation is in progress
+        if (state.isAnimating) return
+        
         state.last = state.current
         state.current = gsap.utils.wrap(0, cache.length, state.current + 1)
         
@@ -70,6 +67,9 @@ export default function carouselStories() {
     }
 
     const prev = () => {
+        // Prevent action if animation is in progress
+        if (state.isAnimating) return
+        
         state.last = state.current
         state.current = gsap.utils.wrap(0, cache.length, state.current - 1)
         
@@ -79,8 +79,21 @@ export default function carouselStories() {
     const animate = () => { 
         const l = cache[state.last]
         const c = cache[state.current]
-
-        l && l.tl.clear()
+    
+        // Set animation state to active at the beginning
+        state.isAnimating = true
+    
+        // Kill existing timelines before creating new ones
+        if (l && l.tl) l.tl.kill()
+        if (c && c.tl) c.tl.kill()
+        
+        // Create new timelines
+        l && (l.tl = gsap.timeline({
+            defaults: {
+                duration: 1.25,
+                ease: 'expo'
+            }
+        }))
         .to(l.fig, {
             clipPath: 'inset(0% 0% 100% 0%)',
             duration: 1,
@@ -100,9 +113,18 @@ export default function carouselStories() {
             ease: 'expo.inOut'
         }, 0)
         .set([l.item], { autoAlpha: 0 })
-        .restart()
-
-        c && c.tl.clear()
+        .play()
+    
+        c && (c.tl = gsap.timeline({
+            defaults: {
+                duration: 1.25,
+                ease: 'expo'
+            },
+            onComplete: () => {
+                // Reset animation state when complete
+                state.isAnimating = false
+            }
+        }))
         .set([c.item], { autoAlpha: 1 })
         .fromTo(c.fig, {
             clipPath: 'inset(100% 0% 0% 0%)',
@@ -133,7 +155,7 @@ export default function carouselStories() {
             autoAlpha: 1,
             stagger: .1,
         }, 0.75)
-        .restart()
+        .play()
     }
 
     mount()

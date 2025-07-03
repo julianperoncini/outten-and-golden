@@ -5,7 +5,7 @@
         <h3 class="font-sans text-32 s:text-40 text-green font-normal leading-[1.32]">{{ layout.title }}</h3>
     </div>
 
-    <div class="site-max site-grid items-start gap-y-20 grid-layout js-list-grid-layout">
+    <div class="site-max site-grid items-start gap-y-20 grid-layout grid-layout-normal js-list-grid-layout">
         {% for item in layout.posts %}
             {% set feature_content = function('get_field', 'feature_content', item.ID) %}
             {% set bg_color = feature_content.background_color|lower %}
@@ -15,7 +15,7 @@
                 {% set text_color = 'text-white' %}
             {% else %}
                 {% set text_color_map = {
-                    'grey': 'text-grey-taupe',
+                    'grey': 'text-white',
                     'black': 'text-grey-taupe',
                     'yellow': 'text-black',
                     'green': 'text-white-smoke'
@@ -23,8 +23,10 @@
                 {% set text_color = text_color_map[bg_color] %}
             {% endif %}
 
+            {% set bg_color_class = bg_color ? 'bg-' ~ bg_color %}
+
             <div class="column w-full relative group overflow-hidden js-list-grid-item">
-                <a href="{{ post_link }}" class="column-inner size-full overflow-hidden block relative {{ bg ? 'bg-' ~ bg|lower }} {{ bg|lower == 'green' or image ? 'text-white' : 'text-white' }}">
+                <a href="{{ post_link }}" class="column-inner size-full overflow-hidden block relative {{ bg_color_class }} {{ text_color }}">
                     <div class="absolute inset-0 z-1 js-list-grid-item-image">
                         <figure class="relative overflow-hidden w-full h-full pointer-events-none select-none">
                             {% if feature_content.feature_image %}

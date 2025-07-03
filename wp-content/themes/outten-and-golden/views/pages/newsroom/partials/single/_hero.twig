@@ -6,7 +6,7 @@
 } %}
 
 {% set bg_color = post.feature_content.background_color|lower %}
-{% set text_color = text_color_map[bg_color] %}
+{% set text_color = text_color_map[bg_color]|default('text-grey') %}
 
 <section class="relative {{ text_color }} bg-{{ post.feature_content.background_color|lower}}">
     <div class="relative h-auto s:h-[calc(100vh-11rem)] s:max-h-[calc(100vh-11rem)] s:max-h-[calc(100vh-12rem)] site-max !px-0">

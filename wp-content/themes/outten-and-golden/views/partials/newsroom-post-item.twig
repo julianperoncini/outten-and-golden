@@ -7,12 +7,12 @@
     {% set text_color = 'text-white' %}
 {% else %}
     {% set text_color_map = {
-        'grey': 'text-grey-taupe',
+        'grey': 'text-white',
         'black': 'text-grey-taupe',
         'yellow': 'text-black',
         'green': 'text-white-smoke'
     } %}
-    {% set text_color = text_color_map[bg_color] %}
+    {% set text_color = text_color_map[bg_color]|default('text-grey') %}
 {% endif %}
 <div class="column w-full relative group overflow-hidden {{ text_color }}">
     <a href="{{ post_link }}" class="column-inner overflow-hidden block w-full relative size-full"
@@ -24,7 +24,7 @@
             data-filter-category="all,{{ category_slugs|join(',') }}"
         {% endif %}
     >
-        <div class="absolute inset-0 z-1 bg-green">
+        <div class="absolute inset-0 z-1">
             <figure class="relative overflow-hidden w-full h-full pointer-events-none select-none">
                 {% if feature_content.feature_image %}
                     {% include "blocks/common/image.twig" with {
