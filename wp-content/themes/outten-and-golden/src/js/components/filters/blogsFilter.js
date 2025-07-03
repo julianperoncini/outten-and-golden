@@ -229,9 +229,9 @@ export default function blogsFilter(config) {
                 
                 // Fade out current category to 0.5 opacity
                 tl.to(visibleGroup, {
-                    opacity: 0.5,
-                    duration: 0.25,
-                    ease: 'power2.out'
+                    opacity: 0,
+                    duration: 0.35,
+                    ease: 'power3'
                 })
                 
                 // Update ARIA attributes and completely hide current group
@@ -244,8 +244,8 @@ export default function blogsFilter(config) {
                 // Fade in target category
                 .to(targetGroup, {
                     autoAlpha: 1,
-                    duration: 0.25,
-                    ease: 'power2.in'
+                    duration: 0.5,
+                    ease: 'power3'
                 })
             } else {
                 // If no visible group, just show the target

@@ -50,15 +50,15 @@ export default function ajaxFilter(config) {
         gsap.set(postsContainer, { autoAlpha: 1 })
         
         ct = gsap.to(postsContainer, {
-            autoAlpha: 0.3,
-            duration: 0.2,
+            autoAlpha: 0,
+            duration: 0.35,
             ease: "power3",
             onComplete: () => {
                 callback()
                 
                 ct = gsap.to(postsContainer, {
                     autoAlpha: 1,
-                    duration: 0.3,
+                    duration: 0.5,
                     ease: "power3",
                     onComplete: () => {
                         ct = null

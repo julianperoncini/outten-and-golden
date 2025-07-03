@@ -94,6 +94,10 @@ textarea {
 	background-color: transparent;
 }
 
+strong {
+	@apply font-medium;
+}
+
 .bg-light {
 	background-color: #F7F5F2;
 }
