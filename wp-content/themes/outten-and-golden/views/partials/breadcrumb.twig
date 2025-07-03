@@ -1,4 +1,4 @@
-<aside class="relative z-1">
+<aside class="relative z-[5] bg-white s:sticky s:top-80">
 
     <div class="relative py-12 bg-white border-b border-solid border-grey-taupe">
         <ul class="relative site-max flex items-center gap-x-10 font-normal text-12 leading-[1.4]">
@@ -6,7 +6,7 @@
             {% if breadcrumb %}
                 {% for item in breadcrumb %}
                     <li class="relative">
-                        <a class="flex items-center gap-x-8 {{ loop.last ? 'text-black' : 'text-grey' }}" href="{{ item.url }}" aria-label="{{ item.label }}">
+                        <a class="flex items-center hover:text-green gap-x-8 {{ loop.last ? 'text-green' : 'text-grey' }} transition-colors duration-300" href="{{ item.url }}" aria-label="{{ item.label }}">
                             <span class="inline-flex tc-1">{{ item.label }}</span>
                             {% if not loop.last %}
                                 <span class="inline-flex relative top-[0.1rem]">

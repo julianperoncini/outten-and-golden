@@ -19,7 +19,7 @@ export default function stickyAside(elm) {
 
     const mm = gsap.matchMedia()
 
-    let startScroll = 120
+    let startScroll = 180
     let endScroll = main.offsetHeight - aside.offsetHeight - (startScroll / 2)
     let currPos = 0
     let screenHeight = window.innerHeight
