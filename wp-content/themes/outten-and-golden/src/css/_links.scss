@@ -109,3 +109,108 @@
         }
     }
 }
+
+
+.btn-link {
+    .btn-link-main {
+        transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+        transition-delay: 0.15s;
+    }
+
+    .btn-link-secondary {
+        transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+        transform: translateY(100%);
+        transition-delay: 0s;
+    }
+
+    .btn-link-arrow {
+        .btn-link-arrow-main {
+            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+            transition-delay: 0.15s;
+        }
+
+        .btn-link-arrow-secondary {
+            transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+            transform: translateX(-100%);
+            transition-delay: 0s;
+        }
+    }
+
+    @screen has-hover {
+        &:hover {
+            .btn-link-main {
+                transform: translateY(-100%);
+                transition-delay: 0s;
+            }
+
+            .btn-link-secondary {
+                transform: translateY(0%);
+                transition-delay: 0.15s;
+            }
+
+            .btn-link-arrow {
+                .btn-link-arrow-main {
+                    transform: translateX(100%);
+                    transition-delay: 0s;
+                }
+
+                .btn-link-arrow-secondary {
+                    transform: translateX(0%);
+                    transition-delay: 0.15s;
+                }
+            }
+        }
+    }
+}
+
+.btn-slider-box {
+    transition: all 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+
+    .btn-slider-box-main-l {
+        transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+        transition-delay: 0.15s;
+    }
+
+    .btn-slider-box-secondary-l {
+        transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+        transform: translateX(100%);
+        transition-delay: 0s;
+    }
+
+    .btn-slider-box-main-r {
+        transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+        transition-delay: 0.15s;
+    }
+
+    .btn-slider-box-secondary-r {
+        transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+        transform: translateX(-100%);
+        transition-delay: 0s;
+    }
+
+    @screen has-hover {
+        &:hover {
+            background-color: #dedad35c;
+
+            .btn-slider-box-main-l {
+                transform: translateX(-100%);
+                transition-delay: 0s;
+            }
+
+            .btn-slider-box-secondary-l {
+                transform: translateX(0%);
+                transition-delay: 0.15s;
+            }
+
+            .btn-slider-box-main-r {
+                transform: translateX(100%);
+                transition-delay: 0s;
+            }
+
+            .btn-slider-box-secondary-r {
+                transform: translateX(0%);
+                transition-delay: 0.15s;
+            }
+        }
+    }
+}

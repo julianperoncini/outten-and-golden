@@ -6,7 +6,7 @@
         <ul class="relative flex space-x-12">
             {% if socials.facebook_url %}
                 <li class="relative">
-                    <a href="{{ socials.facebook_url }}" target="_blank" class="relative flex">
+                    <a href="{{ socials.facebook_url }}" target="_blank" class="relative flex transition-opacity duration-[1s] hover:opacity-70">
                         <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.49986 8.04721H11.2493L11.949 5.24818H9.49986V3.84867C9.49986 3.12792 9.49986 2.44915 10.8994 2.44915H11.949V0.0979661C11.7209 0.0678765 10.8595 0 9.94981 0C8.04997 0 6.70083 1.1595 6.70083 3.28886V5.24818H4.60156V8.04721H6.70083V13.9951H9.49986V8.04721Z" fill="{{ icon_color|default('#1E383E') }}"/>
                         </svg>
@@ -16,7 +16,7 @@
 
             {% if socials.x_url %}
                 <li class="relative">
-                    <a href="{{ socials.x_url }}" target="_blank" class="relative flex">
+                    <a href="{{ socials.x_url }}" target="_blank" class="relative flex transition-opacity duration-[1s] hover:opacity-70">
                         <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.7143 0.00390625H15.0825L9.90936 5.93155L15.9958 13.9991H11.2308L7.49595 9.10715L3.22725 13.9991H0.856859L6.38962 7.65667L0.553528 0.00500926H5.43992L8.81075 4.47556L12.7143 0.00390625ZM11.8816 12.5784H13.1942L4.72295 1.3507H3.3155L11.8816 12.5784Z" fill="#1E383E"/>
                         </svg>
@@ -26,7 +26,7 @@
 
             {% if socials.linkedin_url %}
                 <li class="relative">
-                    <a href="{{ socials.linkedin_url }}" target="_blank" class="relative flex">
+                    <a href="{{ socials.linkedin_url }}" target="_blank" class="relative flex transition-opacity duration-[1s] hover:opacity-70">
                         <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M4.71142 1.55571C4.71122 1.9681 4.5472 2.36352 4.25544 2.65498C3.96369 2.94644 3.56811 3.11007 3.15572 3.10986C2.74332 3.10965 2.3479 2.94563 2.05644 2.65388C1.76498 2.36213 1.60136 1.96655 1.60156 1.55415C1.60177 1.14176 1.76579 0.746339 2.05754 0.454879C2.34929 0.163419 2.74488 -0.000206002 3.15727 1.94647e-07C3.56966 0.000206391 3.96508 0.164227 4.25654 0.455978C4.548 0.74773 4.71163 1.14331 4.71142 1.55571ZM4.75807 4.26129H1.64821V13.9951H4.75807V4.26129ZM9.67165 4.26129H6.57734V13.9951H9.64055V8.8872C9.64055 6.04168 13.3491 5.77734 13.3491 8.8872V13.9951H16.42V7.82985C16.42 3.03289 10.9311 3.21171 9.64055 5.56743L9.67165 4.26129Z" fill="{{ icon_color|default('#1E383E') }}"/>
                         </svg>
@@ -36,7 +36,7 @@
 
             {% if socials.tiktok_url %}
                 <li class="relative">
-                    <a href="{{ socials.tiktok_url }}" target="_blank" class="relative flex">
+                    <a href="{{ socials.tiktok_url }}" target="_blank" class="relative flex transition-opacity duration-[1s] hover:opacity-70">
                         <svg class="shrink-0 w-[1.7rem] h-[2.3rem]" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.2738 2.19257C11.7424 1.58575 11.4495 0.806586 11.4496 0H9.04711V9.6411C9.02896 10.163 8.80881 10.6574 8.43311 11.02C8.05741 11.3827 7.55553 11.5852 7.03336 11.5849C5.9293 11.5849 5.01184 10.683 5.01184 9.56335C5.01184 8.22604 6.3025 7.22305 7.63204 7.63513V5.1782C4.94964 4.82055 2.60156 6.90427 2.60156 9.56335C2.60156 12.1525 4.74749 13.9951 7.02558 13.9951C9.46696 13.9951 11.4496 12.0125 11.4496 9.56335V4.67282C12.4238 5.37247 13.5935 5.74784 14.7929 5.74579V3.34329C14.7929 3.34329 13.3312 3.41326 12.2738 2.19257Z" fill="{{ icon_color|default('#1E383E') }}"/>
                         </svg>
@@ -48,7 +48,7 @@
             {% if additional_icons is defined %}
                 {% for icon in additional_icons %}
                     <li class="relative">
-                        <a href="{{ icon.url }}" target="_blank" class="relative flex">
+                        <a href="{{ icon.url }}" target="_blank" class="relative flex transition-opacity duration-[1s] hover:opacity-70">
                             {{ icon.svg|raw }}
                         </a>
                     </li>

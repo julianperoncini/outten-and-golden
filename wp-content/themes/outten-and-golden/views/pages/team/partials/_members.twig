@@ -9,10 +9,13 @@
                         <div class="relative pr-150 s:pr-0 overflow-x-auto s:overflow-x-visible scrollbar-hide flex flex-nowrap s:flex-wrap items-center text-green">
                             <button class="relative whitespace-nowrap s:whitespace-normal hover:bg-white-smoke transition-colors duration-300 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] !border-r-0 border-solid border-grey-taupe bg-white-smoke" type="button" aria-label="Button to filter by all" data-filter="all">All</button>
 
-                            {% for category in all_categories %}
-                                <button class="relative whitespace-nowrap s:whitespace-normal hover:bg-white-smoke transition-colors duration-300 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ category.name }}" data-filter="{{ category.slug }}">
-                                    {{ category.name }}
-                                </button>
+                            {% for category in filters_settings %}
+                                {% set term = Term(category) %}
+                                {% for c in term %}
+                                    <button class="relative whitespace-nowrap s:whitespace-normal hover:bg-white-smoke transition-colors duration-300 py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {% if not loop.last %}!border-r-0{% endif %} border-solid border-grey-taupe" type="button" aria-label="Button to filter by {{ c.name }}" data-filter="{{ c.slug }}">
+                                        {{ c.name }}
+                                    </button>
+                                {% endfor %}
                             {% endfor %}
                         </div>
 

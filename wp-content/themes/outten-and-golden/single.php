@@ -11,6 +11,7 @@ $post->feature_content = get_field('feature_content');
 $post->content_post = get_field('content_post');
 $post->attorneys_on_the_case = get_field('attorneys_on_the_case');
 $post->content_builder = get_field('content_builder');
+$post->author_settings = get_field('author_settings');
 
 $context['post'] = $post;
 $context['categories'] = wp_get_post_terms($post->ID, 'category');

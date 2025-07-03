@@ -12,21 +12,40 @@
                         <h3 class="font-sans s:max-w-[65rem] text-24 s:text-40 text-center font-normal leading-[1.16] tracking-[-0.04rem] text-green">{{ item.title }}</h3>
                     </div>
                     <div class="relative">
-                        <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
-                            <span class="inline-flex">
-                                {{ item.link.title }}
+                        <a class="btn-link relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                            <span class="relative overflow-hidden">
+                                <span class="btn-link-main inline-flex relative">
+                                    {{ item.link.title }}
+                                </span>
+                                <span class="btn-link-secondary inline-flex absolute top-0 left-0">
+                                    {{ item.link.title }}
+                                </span>
                             </span>
-                            <span class="inline-flex">
-                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g clip-path="url(#clip0_5001_23171)">
-                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0_5001_23171">
-                                            <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
-                                        </clipPath>
-                                    </defs>
-                                </svg>
+                            <span class="btn-link-arrow relative inline-flex overflow-hidden">
+                                <span class="btn-link-arrow-main inline-flex relative">
+                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_5001_23171)">
+                                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_5001_23171">
+                                                <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                </span>
+                                <span class="btn-link-arrow-secondary inline-flex absolute top-0 left-0">
+                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_5001_23171)">
+                                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_5001_23171">
+                                                <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                </span>
                             </span>
                         </a>
                     </div>
@@ -35,11 +54,18 @@
                 <div class="col-start-1 col-span-full">
                     <div class="site-grid items-center justify-center">
                         <div class="col-start-1 col-span-1 hidden s:block">
-                            <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-prev" type="button">
-                                <span class="inline-flex">
-                                    <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
+                            <button class="btn-slider-box relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-prev" type="button">
+                                <span class="inline-flex relative overflow-hidden">
+                                    <span class="btn-slider-box-main-l inline-flex relative">
+                                        <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    <span class="btn-slider-box-secondary-l inline-flex absolute top-0 left-0">
+                                        <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M5.75 10L1.25 5.5L5.75 1" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
                                 </span>
                             </button>
                         </div>
@@ -114,14 +140,40 @@
                                                 </div>
 
                                                 <div class="relative text-white-smoke js-carousel-story-fade">
-                                                    <a class="relative font-sans inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" href="{{ post_link }}">
-                                                        <span class="inline-flex">
-                                                            Read the full story
+                                                    <a class="btn-link relative font-sans inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] py-15 uppercase" href="{{ post_link }}">
+                                                        <span class="relative overflow-hidden">
+                                                            <span class="btn-link-main inline-flex relative">
+                                                                Read the full story
+                                                            </span>
+                                                            <span class="btn-link-secondary inline-flex absolute top-0 left-0">
+                                                                Read the full story
+                                                            </span>
                                                         </span>
-                                                        <span class="inline-flex">
-                                                            <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                                            </svg>
+                                                        <span class="btn-link-arrow relative inline-flex overflow-hidden">
+                                                            <span class="btn-link-arrow-main inline-flex relative">
+                                                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g clip-path="url(#clip0_5001_23171)">
+                                                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                    </g>
+                                                                    <defs>
+                                                                        <clipPath id="clip0_5001_23171">
+                                                                            <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                                                        </clipPath>
+                                                                    </defs>
+                                                                </svg>
+                                                            </span>
+                                                            <span class="btn-link-arrow-secondary inline-flex absolute top-0 left-0">
+                                                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g clip-path="url(#clip0_5001_23171)">
+                                                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                    </g>
+                                                                    <defs>
+                                                                        <clipPath id="clip0_5001_23171">
+                                                                            <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                                                        </clipPath>
+                                                                    </defs>
+                                                                </svg>
+                                                            </span>
                                                         </span>
                                                     </a>
                                                 </div>
@@ -133,11 +185,18 @@
                         </div>
 
                         <div class="col-start-16 col-span-1 hidden s:flex justify-end">
-                            <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-next" type="button">
-                                <span class="inline-flex">
-                                    <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
+                            <button class="btn-slider-box relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-story-next" type="button">
+                                <span class="inline-flex relative overflow-hidden">
+                                    <span class="btn-slider-box-main-r inline-flex relative">
+                                        <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    <span class="btn-slider-box-secondary-r inline-flex absolute top-0 left-0">
+                                        <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1.25 1L5.75 5.5L1.25 10" stroke="#1E383E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
                                 </span>
                             </button>
                         </div>

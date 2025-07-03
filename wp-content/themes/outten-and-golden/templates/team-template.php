@@ -8,6 +8,7 @@ use Timber\Timber;
 $context = Timber::context();
 $context['hero'] = get_field('hero', $context['post']->ID) ?? [];
 $context['content_builder'] = get_fields($context['post']->ID)['content_builder'] ?? null;
+$context['filters_settings'] = get_fields($context['post']->ID)['filters_settings'] ?? null;
 
 $args = array(
     'post_type' => 'attorney',

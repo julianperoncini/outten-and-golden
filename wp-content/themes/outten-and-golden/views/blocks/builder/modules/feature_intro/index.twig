@@ -17,7 +17,17 @@
 
                     {% if item.link %}
                         <div class="relative">
-                            <a class="relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">{{ item.link.title }}</a>
+                            <a class="btn-link relative inline-flex items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url }}" target="{{ item.link.target }}">
+                                <span class="relative overflow-hidden">
+                                    <span class="btn-link-main inline-flex relative">
+                                        {{ item.link.title }}
+                                    </span>
+
+                                    <span class="btn-link-secondary inline-flex absolute top-0 left-0">
+                                        {{ item.link.title }}
+                                    </span>
+                                </span>
+                            </a>
                         </div>
                     {% endif %}
                 </div>

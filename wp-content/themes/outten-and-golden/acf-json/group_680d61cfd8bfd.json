@@ -422,7 +422,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "return_format": "url",
+                    "return_format": "array",
                     "allow_in_bindings": 0
                 },
                 {
@@ -482,27 +482,6 @@
                     "max_size": "",
                     "mime_types": "",
                     "allow_in_bindings": 1
-                },
-                {
-                    "key": "field_685ea71da847a",
-                    "label": "Calendly Link",
-                    "name": "calendly_url",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": "",
-                    "allow_in_bindings": 0,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
                 }
             ]
         },
@@ -691,5 +670,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1751062583
+    "modified": 1751550619
 }

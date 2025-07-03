@@ -332,7 +332,7 @@
     }
 
     blockquote {
-        @apply relative flex flex-col items-center justify-center py-65;
+        @apply relative flex flex-col items-center justify-center py-30;
 
         h1, h2, h3, h4, h5, h6 {
             @apply text-center text-grey not-italic font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase;

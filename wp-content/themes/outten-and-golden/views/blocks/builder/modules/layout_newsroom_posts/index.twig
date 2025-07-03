@@ -70,7 +70,7 @@
                     role="tablist" 
                     aria-label="Filter posts by category">
                 {% for cat_slug, cat_data in posts_by_category %}
-                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] {{ loop.first ? '!border-r-0 bg-white-smoke' : (loop.last ? 'border-r-[0.1rem]' : '!border-r-0') }} border-solid border-grey-taupe" 
+                    <button class="relative whitespace-nowrap s:whitespace-normal py-16 px-24 font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase border-[0.1rem] hover:bg-white-smoke transition-colors duration-300 {{ loop.first ? '!border-r-0 bg-white-smoke' : (loop.last ? 'border-r-[0.1rem]' : '!border-r-0') }} border-solid border-grey-taupe" 
                             type="button" 
                             role="tab"
                             aria-label="Filter by {{ cat_data.category.name }}" 
@@ -97,21 +97,40 @@
         </div>
 
         <div class="col-span-4 hidden s:flex justify-end">
-            <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url|default('/newsroom') }}">
-                <span class="inline-flex">
-                    See all
+            <a class="btn-link relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] text-white py-15 px-25 bg-green uppercase" href="{{ item.link.url|default('/newsroom') }}">
+                <span class="relative overflow-hidden">
+                    <span class="btn-link-main inline-flex relative">
+                        {{ item.link.title }}
+                    </span>
+                    <span class="btn-link-secondary inline-flex absolute top-0 left-0">
+                        {{ item.link.title }}
+                    </span>
                 </span>
-                <span class="inline-flex">
-                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_5001_23171)">
-                            <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_5001_23171">
-                                <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
-                            </clipPath>
-                        </defs>
-                    </svg>
+                <span class="btn-link-arrow relative inline-flex overflow-hidden">
+                    <span class="btn-link-arrow-main inline-flex relative">
+                        <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_5001_23171)">
+                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_5001_23171">
+                                    <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </span>
+                    <span class="btn-link-arrow-secondary inline-flex absolute top-0 left-0">
+                        <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_5001_23171)">
+                                <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_5001_23171">
+                                    <rect width="7" height="11" fill="white" transform="translate(0.734375)"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </span>
                 </span>
             </a>
         </div>
@@ -164,14 +183,13 @@
                         {% endif %}
 
                         <article class="column w-full relative group overflow-hidden text-white" 
-                                data-post-item
-                                data-post-id="{{ post.ID }}"
-                                data-item-category="{{ cat_slug }}">
-
+                            data-post-item
+                            data-post-id="{{ post.ID }}"
+                            data-item-category="{{ cat_slug }}"
+                        >
                             <a class="column-inner overflow-hidden block w-full h-full relative {{ text_color }} block hover:{{ text_hover_color }} hover:{{ bg_hover_color }} transition-all duration-300" 
                             href="{{ function('get_permalink', post.ID) }}"
                             aria-label="Read more about {{ post.post_title }}">
-                                
                                 <div class="absolute inset-0 z-1 bg-green">
                                     <figure class="relative overflow-hidden w-full h-full pointer-events-none select-none">
                                         {% if feature_content.feature_image %}
@@ -181,7 +199,7 @@
                                                         image : feature_content.feature_image
                                                     },
                                                     options: {
-                                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.02] group-hover:opacity-90 transition-all duration-[1s]',
+                                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.1] group-hover:opacity-90 transition-all duration-[1.2s]',
                                                         class : 'w-full h-full object-cover pointer-events-none select-none',
                                                         aspect_ratio: '102%',
                                                         aspect_ratio_mobile: '102%',
@@ -245,9 +263,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
                             </a>
-
                         </article>
                     {% endfor %}
                 </div>
