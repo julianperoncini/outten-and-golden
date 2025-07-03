@@ -18,15 +18,34 @@
                     'grey': 'text-white',
                     'black': 'text-grey-taupe',
                     'yellow': 'text-black',
-                    'green': 'text-white-smoke'
+                    'green': 'text-white-smoke',
+                    'grey-taupe': 'text-black'
                 } %}
-                {% set text_color = text_color_map[bg_color] %}
+                {% set text_color = text_color_map[bg_color]|default('text-grey') %}
+
+                {% set bg_hover_map = {
+                    'grey': 'bg-white-smoke',
+                    'black': 'bg-grey-taupe',
+                    'yellow': 'bg-grey',
+                    'green': 'bg-white-smoke',
+                    'grey-taupe': 'bg-grey-taupe'
+                } %}
+                {% set bg_hover_color = bg_hover_map[bg_color]|default('bg-grey') %}
+
+                {% set text_hover_map = {
+                    'grey': 'text-green',
+                    'black': 'text-black',
+                    'yellow': 'text-white',
+                    'green': 'text-grey',
+                    'grey-taupe': 'text-black'
+                } %}
+                {% set text_hover_color = text_hover_map[bg_color]|default('text-white') %}
             {% endif %}
 
             {% set bg_color_class = bg_color ? 'bg-' ~ bg_color %}
 
             <div class="column w-full relative group overflow-hidden js-list-grid-item">
-                <a href="{{ post_link }}" class="column-inner size-full overflow-hidden block relative {{ bg_color_class }} {{ text_color }}">
+                <a href="{{ post_link }}" class="column-inner size-full overflow-hidden group block relative {{ bg_color_class }} {{ text_color }} group hover:{{ feature_content.feature_image ? 'text-white' : text_hover_color }} hover:{{ bg_hover_color }} transition-all duration-300">
                     <div class="absolute inset-0 z-1 js-list-grid-item-image">
                         <figure class="relative overflow-hidden w-full h-full pointer-events-none select-none">
                             {% if feature_content.feature_image %}
@@ -36,7 +55,7 @@
                                             image : feature_content.feature_image
                                         },
                                         options: {
-                                            container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                            container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.05] group-hover:opacity-90 transition-all duration-[1s]',
                                             class : 'w-full h-full object-cover pointer-events-none select-none',
                                             aspect_ratio: '102%',
                                             aspect_ratio_mobile: '102%',
@@ -44,7 +63,7 @@
                                     }
                                 } %}
                             {% else %}
-                                <div class="h-full bg-{{ feature_content.background_color|lower }}"></div>
+                                <div class="h-full bg-{{ feature_content.background_color|lower }} group-hover:{{ bg_hover_color }} transition-all duration-300" aria-hidden="true"></div>
                             {% endif %}
                         </figure>
                     </div>

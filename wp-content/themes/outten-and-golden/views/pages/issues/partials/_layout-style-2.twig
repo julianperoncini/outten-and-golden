@@ -21,14 +21,33 @@
                 {% set text_color_map = {
                     'grey': 'text-white',
                     'black': 'text-grey-taupe',
-                    'yellow': 'text-green',
-                    'green': 'text-white'
+                    'yellow': 'text-black',
+                    'green': 'text-white-smoke',
+                    'grey-taupe': 'text-black'
                 } %}
-                {% set text_color = text_color_map[bg_color] %}
+                {% set text_color = text_color_map[bg_color]|default('text-grey') %}
+
+                {% set bg_hover_map = {
+                    'grey': 'bg-white-smoke',
+                    'black': 'bg-grey-taupe',
+                    'yellow': 'bg-grey',
+                    'green': 'bg-white-smoke',
+                    'grey-taupe': 'bg-grey-taupe'
+                } %}
+                {% set bg_hover_color = bg_hover_map[bg_color]|default('bg-grey') %}
+
+                {% set text_hover_map = {
+                    'grey': 'text-green',
+                    'black': 'text-black',
+                    'yellow': 'text-white',
+                    'green': 'text-grey',
+                    'grey-taupe': 'text-black'
+                } %}
+                {% set text_hover_color = text_hover_map[bg_color]|default('text-white') %}
             {% endif %}
 
             <div class="column-two w-full relative col-span-full s:col-span-8 overflow-hidden js-list-grid-item">
-                <a href="{{ post_link }}" class="column-inner-two overflow-hidden block w-full h-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ text_color ? text_color : 'text-white' }}">
+                <a href="{{ post_link }}" class="column-inner-two overflow-hidden group block w-full h-full relative {{ bg ? 'bg-' ~ bg|lower }} {{ text_color ? text_color : 'text-white' }} group hover:{{ text_hover_color }} hover:{{ bg_hover_color }} transition-all duration-300">
                     <figure class="relative overflow-hidden w-full h-[46rem] pointer-events-none select-none js-list-grid-item-image">
                         {% if feature_content.feature_image %}
                             {% include "blocks/common/image.twig" with {
@@ -37,7 +56,7 @@
                                         image : feature_content.feature_image
                                     },
                                     options: {
-                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none',
+                                        container_class: 'w-full h-full overflow-hidden pointer-events-none select-none group-hover:scale-[1.05] group-hover:opacity-90 transition-all duration-[1s]',
                                         class : 'w-full h-full object-cover pointer-events-none select-none',
                                         aspect_ratio: '102%',
                                         aspect_ratio_mobile: '102%',
@@ -45,7 +64,7 @@
                                 }
                             } %}
                         {% else %}
-                            <div class="h-full bg-{{ feature_content.background_color|lower }}"></div>
+                            <div class="h-full bg-{{ feature_content.background_color|lower }} group-hover:{{ bg_hover_color }} transition-all duration-300" aria-hidden="true"></div>
                         {% endif %}
                     </figure>
 
