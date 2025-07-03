@@ -9,7 +9,7 @@
 
 .grid-layout {
     .column-title {
-        @apply leading-[1.24] tracking-[-0.01em];
+        @apply leading-[1.24] tracking-[-0.01em] text-20 font-normal;
         display: initial;
     }
 
