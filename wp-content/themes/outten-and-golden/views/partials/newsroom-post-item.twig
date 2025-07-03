@@ -12,10 +12,24 @@
         'yellow': 'text-black',
         'green': 'text-white-smoke'
     } %}
+    {% set text_hover_map = {
+        'grey': 'text-grey',
+        'black': 'text-black',
+        'yellow': 'text-white',
+        'green': 'text-grey',
+    } %}
+    {% set bg_hover_map = {
+        'grey': 'bg-white-smoke',
+        'black': 'bg-grey-taupe',
+        'yellow': 'bg-grey',
+        'green': 'bg-white-smoke',
+    } %}
     {% set text_color = text_color_map[bg_color]|default('text-grey') %}
+    {% set text_hover_color = text_hover_map[bg_color]|default('text-white') %}
+    {% set bg_hover_color = bg_hover_map[bg_color]|default('bg-grey') %}
 {% endif %}
 <div class="column w-full relative group overflow-hidden {{ text_color }}">
-    <a href="{{ post_link }}" class="column-inner overflow-hidden block w-full relative size-full"
+    <a href="{{ post_link }}" class="column-inner overflow-hidden group block w-full relative size-full hover:{{ text_hover_color }} transition-all duration-300"
         {% if post_categories %}
             {% set category_slugs = [] %}
             {% for category in post_categories %}
@@ -41,13 +55,13 @@
                         }
                     } %}
                 {% else %}
-                    <div class="size-full bg-{{ feature_content.background_color|lower }}"></div>
+                    <div class="size-full bg-{{ feature_content.background_color|lower }} group-hover:{{ bg_hover_color }} transition-all duration-300"></div>
                 {% endif %}
             </figure>
         </div>
 
         <div class="absolute inset-0 p-24 z-2 w-full h-full flex flex-col justify-between">
-            <div class="relative flex items-center justify-between w-full font-sans text-12 font-medium leading-none tracking-[0.12rem] uppercase">
+            <div class="relative flex items-center justify-between w-full font-sans text-12 font-medium leading-none tracking-[0.1em] uppercase">
                 <div class="relative">
                     {% if post_categories %}
                         <p class="uppercase">{{ post_categories[0].name }}</p>

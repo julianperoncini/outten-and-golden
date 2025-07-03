@@ -145,6 +145,22 @@
                                 'green': 'text-white-smoke'
                             } %}
                             {% set text_color = text_color_map[bg_color] %}
+
+                            {% set bg_hover_map = {
+                                'grey-taupe': 'bg-grey-taupe',
+                                'black': 'bg-grey-taupe',
+                                'yellow': 'bg-grey',
+                                'green': 'bg-white-smoke',
+                            } %}
+                            {% set bg_hover_color = bg_hover_map[bg_color]|default('bg-white-smoke') %}
+
+                            {% set text_hover_map = {
+                                'grey-taupe': 'text-grey',
+                                'black': 'text-black',
+                                'yellow': 'text-white',
+                                'green': 'text-grey',
+                            } %}
+                            {% set text_hover_color = text_hover_map[bg_color]|default('text-green') %}
                         {% endif %}
 
                         <article class="column w-full relative group overflow-hidden text-white" 
@@ -152,7 +168,7 @@
                                 data-post-id="{{ post.ID }}"
                                 data-item-category="{{ cat_slug }}">
 
-                            <a class="column-inner overflow-hidden block w-full h-full relative {{ text_color }} block" 
+                            <a class="column-inner overflow-hidden block w-full h-full relative {{ text_color }} block hover:{{ text_hover_color }} hover:{{ bg_hover_color }} transition-all duration-300" 
                             href="{{ function('get_permalink', post.ID) }}"
                             aria-label="Read more about {{ post.post_title }}">
                                 
@@ -181,7 +197,7 @@
                                                     class="w-full h-full object-cover">
                                             {% endif %}
                                         {% else %}
-                                            <div class="pt-[102%] bg-{{ bg_color }}" aria-hidden="true"></div>
+                                            <div class="pt-[102%] bg-{{ bg_color }} group-hover:{{ bg_hover_color }} transition-all duration-300" aria-hidden="true"></div>
                                         {% endif %}
                                     </figure>
                                 </div>

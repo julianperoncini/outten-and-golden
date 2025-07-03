@@ -4,16 +4,30 @@
 {% set bg = fn('get_field', 'feature_content_background_color', post_id) %}
 {% set description = fn('get_field', 'feature_content_description', post_id) %}
 
-{% set text_color_map = {
-    'grey': 'text-grey-taupe',
-    'black': 'text-grey-taupe',
-    'yellow': 'text-black',
-    'green': 'text-white-smoke'
-} %}
-{% set text_color = text_color_map[bg|lower] %}
+    {% set text_color_map = {
+        'grey': 'text-white',
+        'black': 'text-grey-taupe',
+        'yellow': 'text-black',
+        'green': 'text-white-smoke'
+    } %}
+    {% set text_hover_map = {
+        'grey': 'text-grey',
+        'black': 'text-black',
+        'yellow': 'text-white',
+        'green': 'text-grey',
+    } %}
+    {% set bg_hover_map = {
+        'grey': 'bg-white-smoke',
+        'black': 'bg-grey-taupe',
+        'yellow': 'bg-grey',
+        'green': 'bg-white-smoke',
+    } %}
+    {% set text_color = text_color_map[bg|lower]|default('text-grey') %}
+    {% set text_hover_color = text_hover_map[bg|lower]|default('text-white') %}
+    {% set bg_hover_color = bg_hover_map[bg|lower]|default('bg-grey') %}
 
 <div class="column w-full relative group overflow-hidden">
-    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block size-full relative js-search-link {{ image ? 'text-white' }} bg-{{ bg|lower }} {{ text_color }}">
+    <a href="{{ fn('get_permalink', post_id) }}" class="column-inner overflow-hidden block size-full relative js-search-link {{ image ? 'text-white' }} bg-{{ bg|lower }} {{ text_color }} hover:{{ image ? 'text-white' :  text_hover_color }} hover:{{ bg_hover_color }} transition-all duration-300">
         {% if image %}
             {% include "blocks/common/image.twig" with {
                 props : {
