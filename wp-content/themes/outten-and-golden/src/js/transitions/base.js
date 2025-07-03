@@ -8,6 +8,7 @@ const mask = qs('.js-transition-mask')
 export default class extends Transition {
 
     onEnter({ to, trigger, done }) {
+        done()
 
         // Reset scroll
         window.scrollTo(0, 0)
@@ -21,9 +22,9 @@ export default class extends Transition {
         gsap.killTweensOf(mask)
         gsap.to(mask, {
             opacity: 0,
-            duration: 0.35,
-            ease: 'power2',
-            onComplete: done
+            duration: 1,
+            ease: 'power3',
+            delay: 0.1
         })
     }
 
@@ -33,8 +34,8 @@ export default class extends Transition {
         gsap.killTweensOf(mask)
         gsap.to(mask, {
             opacity: 1,
-            duration: 0.35,
-            ease: 'power2',
+            duration: 0.45,
+            ease: 'power3',
             onComplete: done
         })
 
