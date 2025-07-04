@@ -8,9 +8,9 @@
 {% set bg_color = post.feature_content.background_color|lower %}
 {% set text_color = text_color_map[bg_color] %}
 
-<section class="relative">
-    <div class="relative h-auto s:h-full s:h-screen s:h-[100dvh]">
-        <div class="relative p-20 s:p-32 w-full h-full flex flex-col items-start justify-between {{ text_color }} bg-{{ post.feature_content.background_color|lower}}">
+<section class="relative {{ text_color }} bg-{{ post.feature_content.background_color|lower}}" data-parallax-scroll-start="top bottom" data-parallax="trigger" data-parallax-start="0" data-parallax-end="40">
+    <div class="relative h-auto s:h-[calc(100vh-11rem)] s:max-h-[calc(100vh-11rem)] s:max-h-[calc(100vh-12rem)] site-max !px-0">
+        <div class="relative site-max py-20 s:py-32 w-full h-full flex flex-col items-start justify-between">
             <div class="relative flex items-start gap-4">
                 {% for item in categories %}
                     {% include "/views/partials/tag.twig" with {
