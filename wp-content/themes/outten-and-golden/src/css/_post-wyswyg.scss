@@ -394,7 +394,7 @@
     }
 
     p {
-        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+        @apply mt-20 s:mt-40 text-16 font-normal leading-[1.34] text-green;
 
         em { 
             @apply font-disp font-normal italic;
@@ -403,6 +403,13 @@
         strong {
             @apply text-16 font-medium leading-[1.32];
         }
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
     }
 
     ol {
@@ -504,4 +511,14 @@
             @apply mx-auto max-w-[37rem] text-center text-green font-disp italic text-24 font-normal leading-[1.24] tracking-[-2%];    
         }
     }
+}
+
+.pdfemb-viewer {
+    @apply border border-solid border-grey-taupe;
+    background-color: #fff !important;
+    margin: 3rem 0;
+}
+
+.pdfemb-viewer .pdfemb-pagescontainer {
+    background-color: #fff !important;
 }
