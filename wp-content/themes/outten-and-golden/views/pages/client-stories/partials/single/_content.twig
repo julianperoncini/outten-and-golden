@@ -1,11 +1,23 @@
 <section class="relative bg-white">
     {# <pre>{{ post.feature_content|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+    
 
-    <div class="site-max pt-60 s:pt-80 pb-60">
-        <div class="site-grid">
+    <div class="site-max pt-60 s:pt-80 pb-60 site-grid">
+
             <div class="relative s:col-start-5 col-span-full s:col-span-8">
-                <div class="client-stories-wyswyg">{{ post.content_post.description }}</div>
+
+        
+            <div class="post-wyswyg">
+                {% if post.content_post.title %}
+                    <h2 class="text-black font-sans font-normal text-40 leading-[1.15] mb-40 tracking-[-0.01em]">{{ post.content_post.title }}</h2>
+                {% endif %}
+                {% if post.content_post.intro %}
+                    <div class="text-20 leading-[1.24] mb-[2.5rem] tracking-[-0.01em] border-b border-solid border-grey-taupe pb-[6.4rem]">{{ post.content_post.intro|raw }}</div>
+                {% endif %}
+                {% if post.content_post.description %}
+                    <div class="post-wyswyg">{{ post.content_post.description }}</div>
+                {% endif %}
             </div>
-        </div>
+        
     </div>
 </section>
