@@ -6,7 +6,7 @@
 } %}
 {% set text_color = text_color_map[post.feature_content.background_color|lower] %}
 
-<div class="relative w-full s:h-[100dvh] max-h-[calc(100vh-11rem)] s:max-h-[calc(100vh-12rem)] {{ text_color }}">
+<div class="relative w-full s:h-[100dvh] max-h-[calc(100vh-11rem)] s:max-h-[calc(100vh-12rem)] {{ text_color }}" data-parallax-scroll-start="top bottom" data-parallax="trigger" data-parallax-start="0" data-parallax-end="40">
     <div class="relative size-full flex items-center py-100 s:py-120 justify-center bg-{{ post.feature_content.background_color|lower }}">
 
         <div class="relative site-grid flex flex-col items-center justify-center space-y-40">
