@@ -38,6 +38,12 @@
     .gfield {
         @apply col-span-2;
 
+        &--type-select {
+            label {
+                @apply hidden;
+            }
+        }
+
         &--type-captcha,
         &--type-consent {
             @apply col-span-1;
@@ -91,12 +97,22 @@
    3. FORM FIELDS & INPUTS
    =============================== */
 
-   .gform_page {
+.gform_page {
     @apply bg-white relative overflow-hidden;
-   }
+}
 
 .gfield {
     @apply relative;
+
+    select {
+        @apply border-b border-solid border-grey-taupe;
+        @apply outline-none;
+        @apply py-20 !important;
+    }
+
+    iframe {
+        @apply w-full h-full;
+    }
 
     // Base label styles for floating labels
     label:not(.gchoice label):not(.gfield_consent_label) {
@@ -115,11 +131,6 @@
 
         label {
             @apply hidden;
-        }
-
-        select {
-            @apply border-b border-solid border-grey-taupe;
-            @apply outline-none;
         }
 
         .gf-calendly-trigger {
@@ -147,6 +158,14 @@
     input::-webkit-input-placeholder {
         color: white; /*Change the placeholder color*/
         opacity: 0; /*Change the opacity between 0 and 1*/
+   }
+
+   .gform-initialized {
+    @apply w-full;
+
+    > div {
+        @apply w-full !important;
+    }
    }
 }
 
@@ -202,6 +221,8 @@
 
 .ginput_container {
     @apply relative;
+
+
 }
 
 // Base input styling
@@ -220,6 +241,10 @@
     input[type="time"],
     input[type="url"] {
         @extend %base-input;
+    }
+
+    select {
+        @apply bg-transparent;
     }
 
     textarea {
