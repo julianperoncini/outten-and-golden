@@ -13,7 +13,19 @@
     
     <div class="site-max site-grid pt-60 s:pt-120">
         <div class="relative pb-80 s:pb-0 s:col-start-1 col-span-full s:col-span-8">
-            <div class="post-wyswyg">{{ post.content_post.description_post }}</div>
+            <div class="post-wyswyg">
+                {% if post.content_post.description_title %}
+                    <h2 class="text-black font-sans font-normal text-40 leading-[1.15] mb-40 tracking-[-0.01em]">{{ post.content_post.description_title }}</h2>
+                {% endif %}
+
+                {% if post.content_post.description_intro %}
+                    <div class="text-20 text-green leading-[1.24] mb-[2.5rem] tracking-[-0.01em] border-b border-solid border-grey-taupe pb-[6.4rem]">{{ post.content_post.description_intro|raw }}</div>
+                {% endif %}
+
+                {% if post.content_post.description_post %}
+                    {{ post.content_post.description_post }}
+                {% endif %}
+            </div>
         </div>
 
          {% if post.content_post.description_card.title %}

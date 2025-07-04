@@ -54,7 +54,7 @@
     }
 
     ul {
-        @apply mt-20 s:mt-50 text-16 font-normal leading-[1.32] text-green;
+        @apply mb-20 s:mb-50 text-16 font-normal leading-[1.32] text-green;
 
         li {
             @apply relative border-t border-solid border-grey-taupe py-24;
@@ -78,6 +78,18 @@
         height: 100%;
         aspect-ratio: 16 / 9;
         object-fit: cover;
+    }
+
+    blockquote {
+        @apply relative flex flex-col items-center justify-center py-30;
+
+        h1, h2, h3, h4, h5, h6 {
+            @apply text-center text-grey not-italic font-sans text-12 font-medium leading-none tracking-[0.12rem] mb-25 uppercase;
+        }
+
+        p {
+            @apply mx-auto max-w-[37rem] text-center text-green font-disp italic text-24 font-normal leading-[1.24] tracking-[-2%];    
+        }
     }
 }
 
@@ -394,7 +406,7 @@
     }
 
     p {
-        @apply mt-20 s:mt-40 text-16 font-normal leading-[1.34] text-green;
+        @apply mt-20 s:mt-40 text-16 font-normal leading-[1.34] tracking-[-0.02em] text-green;
 
         em { 
             @apply font-disp font-normal italic;
