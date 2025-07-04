@@ -102,7 +102,7 @@
                                             <div class="team-member-contact absolute bottom-0 left-0 flex items-center gap-x-[2px] ml-[-1px] z-2 overflow-hidden">
                                                 <a 
                                                     class="relative py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
-                                                    href="{{ member.contact_info.phone }}" 
+                                                    href="{{ member.contact_info.phone.url }}" 
                                                     target="_blank"
                                                     aria-label="Phone of {{ member.title }}"
                                                 >
@@ -112,7 +112,7 @@
                                                         </svg>
                                                     </span>
 
-                                                    <span class="inline-flex">{{ member.contact_info.phone }}</span>
+                                                    <span class="inline-flex">{{ member.contact_info.phone.title }}</span>
                                                 </a>
 
                                                 <a 
@@ -145,7 +145,7 @@
                                             <a 
                                                 class="relative py-12 px-16 bg-green text-white flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
                                                 aria-label="Phone of {{ member.title }}"
-                                                href="{{ member.contact_info.phone }}" 
+                                                href="{{ member.contact_info.phone.url }}" 
                                                 target="_blank"
                                             >
                                                 <span class="inline-flex">
@@ -154,7 +154,7 @@
                                                     </svg>
                                                 </span>
 
-                                                <span class="inline-flex">{{ member.contact_info.phone }}</span>
+                                                <span class="inline-flex">{{ member.contact_info.phone.title }}</span>
                                             </a>
 
                                             <a
