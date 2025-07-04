@@ -29,11 +29,20 @@
 }
 
 .gform_body {
-    @apply h-full;
+    @apply h-full mb-40;
 }
 
 .gform_fields {
-    @apply flex flex-col gap-y-20;
+    @apply grid grid-cols-2 gap-x-20 gap-y-20;
+
+    .gfield {
+        @apply col-span-2;
+
+        &--type-captcha,
+        &--type-consent {
+            @apply col-span-1;
+        }
+    }
 }
 
 .gform_page {

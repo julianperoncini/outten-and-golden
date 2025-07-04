@@ -63,7 +63,7 @@
                         {% set member_locations = function('get_the_terms', member.ID, 'team-locations') %}
                         {% set member_link = function('get_permalink', member.ID) %}
 
-                        <li class="team-members-item relative w-full col-span-full s:col-span-3 l:col-span-2 js-all-team-members-item" 
+                        <li class="team-members-item relative w-full col-span-full s:col-span-3 l:col-span-2 group js-all-team-members-item" 
                             {% if member_categories %}
                                 {% set category_slugs = [] %}
                                 {% for cat in member_categories %}
@@ -81,7 +81,7 @@
                             {% endif %}
                         >
                             <div class="team-member w-full flex flex-col">
-                                {% if member.featured_image %}
+                                {% if member.featured_image.image %}
                                         <figure class="relative w-full h-full overflow-hidden">
                                             <a href="{{ member.link }}">
                                             {% include "blocks/common/image.twig" with {
@@ -90,19 +90,19 @@
                                                         image : member.featured_image.image
                                                     },
                                                     options: {
-                                                        container_class: 'w-full overflow-hidden',
+                                                        container_class: 'w-full overflow-hidden group-hover:scale-[1.03] transition-transform duration-[1.5s]',
                                                         class : 'w-full h-full object-cover',
                                                         aspect_ratio: '112%',
-                                                        aspect_ratio_mobile: '113%',
+                                                        aspect_ratio_mobile: '112%',
                                                     }
                                                 }
                                             } %}
                                             </a>
 
-                                            <div class="team-member-contact absolute bottom-0 left-0 flex items-center gap-x-[1px] ml-[-1px] z-2 overflow-hidden">
+                                            <div class="team-member-contact absolute bottom-0 left-0 flex items-center gap-x-[2px] ml-[-1px] z-2 overflow-hidden">
                                                 <a 
                                                     class="relative py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
-                                                    href="{{ member.contact_info.phone }}" 
+                                                    href="{{ member.contact_info.phone.url }}" 
                                                     target="_blank"
                                                     aria-label="Phone of {{ member.title }}"
                                                 >
@@ -112,7 +112,9 @@
                                                         </svg>
                                                     </span>
 
-                                                    <span class="inline-flex">212-245-1000</span>
+                                                    {% if member.contact_info.phone.title %}
+                                                        <span class="inline-flex">{{ member.contact_info.phone.title }}</span>
+                                                    {% endif %}
                                                 </a>
 
                                                 <a 
@@ -128,7 +130,51 @@
                                                 </a>
                                             </div>
                                         </figure>
-                                    
+                                {% else %}
+
+                                    <div class="relative w-full h-full bg-grey-taupe/20 text-grey-taupe overflow-hidden">
+                                        <a href="{{ member_link }}" class="relative w-full h-full">
+                                            <div class="pt-[112%]"></div>
+
+                                            <div class="absolute w-[17.8rem] top-1/2 right-0 -translate-y-1/2 pointer-events-none select-none">
+                                                <svg class="w-full fill-grey/5 h-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 178.51 527.35">
+                                                    <path d="M178.51,478.24c-72.87-8.01-129.75-70.08-129.75-145.22,0-48.61,28.74-85.4,73.39-126.74l40.7,35.65c-32.36,29.46-51.03,59.3-51.03,94.35,0,40.24,28.75,73.84,66.7,81.33v-41.59c-14.11-6.18-23.99-20.3-23.99-36.7,0-20.18,12.14-39.36,23.99-53.28v-88.05l-23.67-20.73c8.98-8.18,16.9-16.38,23.67-24.72V21.35C163.84,8.09,144.43,0,123.18,0,77.61,0,40.48,37.22,40.48,82.9c0,39.71,24.84,72,46.54,92.67C51.85,208.5,0,257.66,0,333.02c0,102.13,78.7,186.15,178.51,194.33v-49.1ZM83.24,79.86c0-22.08,17.91-40.04,39.94-40.04s39.94,17.96,39.94,40.04c0,30.22-27.22,58.21-39.94,69.61-12.72-11.45-39.94-39.39-39.94-69.61Z"/>
+                                                </svg>
+                                            </div>
+                                        </a>
+
+                                        <div class="team-member-contact absolute bottom-0 left-0 flex items-center gap-x-[2px] ml-[-1px] z-2 overflow-hidden">
+                                            <a 
+                                                class="relative py-12 px-16 bg-green text-white flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                                aria-label="Phone of {{ member.title }}"
+                                                href="{{ member.contact_info.phone.url }}" 
+                                                target="_blank"
+                                            >
+                                                <span class="inline-flex">
+                                                    <svg class="w-[1.1rem] h-auto" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M4.66917 11.8628H6.11754M3.03975 1H7.74696C8.94684 1 9.91953 1.97269 9.91953 3.17256V12.2249C9.91953 13.4248 8.94684 14.3975 7.74696 14.3975H3.03975C1.83988 14.3975 0.867188 13.4248 0.867188 12.2249V3.17256C0.867188 1.97269 1.83988 1 3.03975 1Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </span>
+
+                                                {% if member.contact_info.phone.title %}
+                                                    <span class="inline-flex">{{ member.contact_info.phone.title }}</span>
+                                                {% endif %}
+                                            </a>
+
+                                            <a
+                                                class="relative bg-green text-white py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
+                                                aria-label="Email of {{ member.title }}"
+                                                href="mailto:{{ member.contact_info.email }}" 
+                                                target="_blank"
+                                            >
+                                                <span class="inline-flex">
+                                                    <svg class="w-auto h-[1.6rem]" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M1.27164 3.42971C0.960193 3.25119 0.562992 3.35894 0.384467 3.67039C0.205941 3.98183 0.313696 4.37903 0.625142 4.55756L1.27164 3.42971ZM5.36874 6.52744L5.69497 5.96522L5.69199 5.96351L5.36874 6.52744ZM6.58809 6.85559V7.50559V6.85559ZM7.80744 6.52744L7.48486 5.96311L7.48121 5.96523L7.80744 6.52744ZM12.5626 4.55795C12.8743 4.37979 12.9825 3.98272 12.8044 3.67106C12.6262 3.3594 12.2291 3.25117 11.9175 3.42933L12.5626 4.55795ZM3.3736 2.13437H9.81546V0.834375H3.3736V2.13437ZM9.81546 2.13437C10.8118 2.13437 11.6195 2.94207 11.6195 3.93842H12.9195C12.9195 2.2241 11.5298 0.834375 9.81546 0.834375V2.13437ZM11.6195 3.93842V9.46002H12.9195V3.93842H11.6195ZM11.6195 9.46002C11.6195 10.4564 10.8118 11.2641 9.81546 11.2641V12.5641C11.5298 12.5641 12.9195 11.1743 12.9195 9.46002H11.6195ZM9.81546 11.2641H3.3736V12.5641H9.81546V11.2641ZM3.3736 11.2641C2.37725 11.2641 1.56956 10.4564 1.56956 9.46002H0.269556C0.269556 11.1743 1.65928 12.5641 3.3736 12.5641V11.2641ZM1.56956 9.46002V3.93842H0.269556V9.46002H1.56956ZM1.56956 3.93842C1.56956 2.94207 2.37725 2.13437 3.3736 2.13437V0.834375C1.65928 0.834375 0.269556 2.2241 0.269556 3.93842H1.56956ZM0.625142 4.55756L5.04549 7.09136L5.69199 5.96351L1.27164 3.42971L0.625142 4.55756ZM5.04251 7.08964C5.51203 7.36209 6.04524 7.50559 6.58809 7.50559V6.20559C6.2744 6.20559 5.96629 6.12267 5.69497 5.96523L5.04251 7.08964ZM6.58809 7.50559C7.13094 7.50559 7.66415 7.36209 8.13368 7.08964L7.48121 5.96523C7.20989 6.12267 6.90178 6.20559 6.58809 6.20559V7.50559ZM8.13002 7.09175L12.5626 4.55795L11.9175 3.42933L7.48487 5.96313L8.13002 7.09175Z" fill="currentColor"/>
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
                                 {% endif %}
 
                                 <div class="relative w-full space-y-24 pt-32 bg-white">

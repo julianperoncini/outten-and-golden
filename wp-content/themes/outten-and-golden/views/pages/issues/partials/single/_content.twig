@@ -16,61 +16,65 @@
             <div class="post-wyswyg">{{ post.content_post.description_post }}</div>
         </div>
 
-        <div class="relative s:col-start-10 col-span-full s:col-span-7" data-component="carouselIssueText(js-carousel-issue-text)">
-            <div class="sticky top-120 {{ text_color }} bg-{{ post.feature_content.background_color|lower }}">
-                <div class="relative p-32 space-y-24">
-                    <h3 class="font-disp text-56 leading-[1.10] tracking-[-2%]">{{ post.content_post.description_card.title }}</h3>
-                    <p class="text-20 font-normal leading-[1.24] tracking-[-1%]">{{ post.content_post.description_card.description }}</p>
-                    <div class="relative">
-                        <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] bg-white text-green py-15 px-25 uppercase" href="{{ post.content_post.description_card.link.url }}" target="{{ post.content_post.description_card.link.target }}">
-                            <span class="inline-flex">
-                                {{ post.content_post.description_card.link.title }}
-                            </span>
-                            <span class="inline-flex">
-                                <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="relative w-full h-[0.1rem] bg-white-smoke"></div>
-
-                <div class="relative p-32 flex flex-col items-start space-y-40 js-carousel-issue-text">
-                    <div class="relative flex items-center text-12 font-medium leading-none tracking-[10%]">
-                        <div class="js-carousel-current-index">1</div>
-                        <div>/</div>
-                        <div class="js-carousel-total-items">{{ post.content_post.description_card.slider_text|length }}</div>
+         {% if post.content_post.description_card.title %}
+            <div class="relative s:col-start-10 col-span-full s:col-span-7" data-component="carouselIssueText(js-carousel-issue-text)">
+                <div class="sticky top-120 {{ text_color }} bg-{{ post.feature_content.background_color|lower }}">
+                    <div class="relative p-32 space-y-24">
+                        <h3 class="font-disp text-56 leading-[1.10] tracking-[-2%]">{{ post.content_post.description_card.title }}</h3>
+                        <p class="text-20 font-normal leading-[1.24] tracking-[-1%]">{{ post.content_post.description_card.description }}</p>
+                        <div class="relative">
+                            <a class="relative inline-flex space-x-8 items-center justify-center text-12 font-medium leading-none tracking-[0.12rem] bg-white text-green py-15 px-25 uppercase" href="{{ post.content_post.description_card.link.url }}" target="{{ post.content_post.description_card.link.target }}">
+                                <span class="inline-flex">
+                                    {{ post.content_post.description_card.link.title|default('Contact us today') }}
+                                </span>
+                                <span class="inline-flex">
+                                    <svg class="w-8 h-11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.73438 1L6.23438 5.5L1.73438 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="relative">
-                        {% for item in post.content_post.description_card.slider_text %}
-                            <article class="{% if loop.index == 1 %}relative{% else %}absolute top-0 left-0 w-full h-full invisible{% endif %} js-carousel-issue-text-item">
-                                <p class="text-20 font-normal leading-[1.24] tracking-[-1%] js-ct-fade">{{ item.description }}</p>
-                            </article>
-                        {% endfor %}
-                    </div>
+                    <div class="relative w-full h-[1px] opacity-10 bg-white-smoke"></div>
 
-                    <div class="relative flex">
-                        <button class="relative flex items-center justify-center w-45 h-45 border-[0.1rem] border-r-0 border-grey-taupe border-solid js-carousel-issue-text-prev" type="button">
-                            <span class="inline-flex">
-                                <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5.75 10L1.25 5.5L5.75 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                        </button>
+                    <div class="relative p-32 flex flex-col items-start space-y-40 js-carousel-issue-text">
+                        <div class="relative flex items-center text-12 font-medium leading-none tracking-[10%]">
+                            <div class="js-carousel-current-index">1</div>
+                            <div>/</div>
+                            <div class="js-carousel-total-items">{{ post.content_post.description_card.slider_text|length }}</div>
+                        </div>
 
-                        <button class="relative -ml-2 flex items-center justify-center w-45 h-45 border-[0.1rem] border-grey-taupe border-solid js-carousel-issue-text-next" type="button">
-                            <span class="inline-flex">
-                                <svg class="w-7 h-auto" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1.25 1L5.75 5.5L1.25 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                        </button>
+                        <div class="relative">
+                            {% for item in post.content_post.description_card.slider_text %}
+                                <article class="{% if loop.index == 1 %}relative{% else %}absolute top-0 left-0 w-full h-full invisible{% endif %} js-carousel-issue-text-item">
+                                    <p class="text-20 font-normal leading-[1.24] tracking-[-1%] js-ct-fade">{{ item.description }}</p>
+                                </article>
+                            {% endfor %}
+                        </div>
+
+                        <div class="relative flex">
+                            <button class="relative group transition-colors duration-300 hover:bg-white-smoke flex items-center justify-center w-45 h-45 border-[1px] border-r-0 border-grey-taupe border-solid js-carousel-issue-text-prev" type="button">
+                                <span class="inline-flex">
+                                    <svg class="w-7 h-auto fill-current group-hover:fill-green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
+                                        <path d="M5.15,10.3c-.17,0-.33-.06-.46-.19L.19,5.61c-.25-.25-.25-.67,0-.92L4.69.19c.25-.25.67-.25.92,0s.25.67,0,.92L1.57,5.15l4.04,4.04c.25.25.25.67,0,.92-.13.13-.29.19-.46.19Z"/>
+                                    </svg>
+
+                                </span>
+                            </button>
+
+                            <button class="relative group transition-colors duration-300 hover:bg-white-smoke -ml-[1px] flex items-center justify-center w-45 h-45 border-[1px] border-grey-taupe border-solid js-carousel-issue-text-next" type="button">
+                                <span class="inline-flex">
+                                    <svg class="w-7 h-auto fill-current group-hover:fill-green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5.8 10.3">
+                                        <path d="M.65,0c.17,0,.33.06.46.19l4.5,4.5c.25.25.25.67,0,.92L1.11,10.11c-.25.25-.67.25-.92,0s-.25-.67,0-.92l4.04-4.04L.19,1.11C-.06.86-.06.44.19.19c.13-.13.29-.19.46-.19Z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
+
     </div>
 </section>

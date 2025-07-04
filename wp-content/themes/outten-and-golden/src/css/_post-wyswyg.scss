@@ -46,7 +46,7 @@
     }
 
     p {
-        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+        @apply text-16 font-normal leading-[1.34] text-green mb-25;
 
         em { 
             @apply font-disp font-normal italic;
@@ -70,14 +70,21 @@
     }
 
     hr {
-        @apply relative my-32 border-[#DEDAD3];
+        @apply relative my-25 border-[#DEDAD3];
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
     }
 }
 
 .values-wyswyg {
 
     p {
-        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+        @apply mt-20 s:mt-40 text-24 font-normal leading-[1.24] tracking-[-0.02em] text-green;
 
         em { 
             @apply font-disp font-normal italic;
@@ -88,7 +95,7 @@
 .credentials-wyswyg {
 
     p {
-        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+        @apply mt-20 s:mt-40 text-16 font-normal leading-[1.32] text-green;
 
         em { 
             @apply font-disp font-normal italic;
@@ -100,6 +107,14 @@
 
         li {
             @apply relative py-15 pl-16;
+
+            &:first-child {
+                @apply pt-0;
+
+                &:after {
+                    top: 0.85rem;
+                }
+            }
 
             a {
                 @apply relative !font-medium text-grey;
@@ -117,7 +132,7 @@
                     bottom: var(--bottom);
                     right: 0;
                     left: 0;
-                    height: 0.05em;
+                    height: 2px;
                     min-height: 1px;
                     background-color: currentColor;
                     opacity: 0.3;
@@ -164,10 +179,24 @@
     }
 }
 
+.my-story-wyswyg {
+    p {
+        @apply mb-20 text-16 font-normal leading-[1.34] border-b border-solid border-grey-taupe pb-20;
+
+        em { 
+            @apply font-disp font-normal italic;
+        }
+
+        &:last-child {
+            @apply border-b-0 pb-0 mb-0;
+        }
+    }
+}
+
 .notable-cases-wyswyg {
 
     p {
-        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+        @apply mt-20 s:mt-40 text-16 font-normal leading-[1.34];
 
         em { 
             @apply font-disp font-normal italic;
@@ -179,6 +208,14 @@
 
         li {
             @apply relative py-15 pl-16;
+
+            &:first-child {
+                @apply pt-0;
+
+                &:after {
+                    top: 0.85rem;
+                }
+            }
 
             a {
                 @apply relative !font-medium text-grey;
@@ -196,7 +233,7 @@
                     bottom: var(--bottom);
                     right: 0;
                     left: 0;
-                    height: 0.05em;
+                    height: 2px;
                     min-height: 1px;
                     background-color: currentColor
                 }
@@ -248,11 +285,18 @@
     }
 
     p {
-        @apply mt-20 s:mt-40 text-20 font-normal leading-[1.24] tracking-[-1%] text-green;
+        @apply mt-20 s:mt-40 text-16 font-normal leading-[1.34] text-green;
 
         em { 
             @apply font-disp font-normal italic;
         }
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
     }
 
     ul {
@@ -281,7 +325,7 @@
                     bottom: var(--bottom);
                     right: 0;
                     left: 0;
-                    height: 0.05em;
+                    height: 2px;
                     min-height: 1px;
                     background-color: currentColor;
                     opacity: 0.3;

@@ -39,7 +39,7 @@
                                         <div class="team-member-contact absolute bottom-0 left-0 flex items-center space-x-[0.1rem] z-2">
                                             <a 
                                                 class="relative py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
-                                                href="{{ attorney_info.phone }}" 
+                                                href="{{ attorney_info.phone.url }}" 
                                                 target="_blank"
                                                 aria-label="Phone of {{ member.attorney.post_title }}"
                                             >
@@ -49,7 +49,7 @@
                                                     </svg>
                                                 </span>
 
-                                                <span class="inline-flex">{{ attorney_info.phone }}</span>
+                                                <span class="inline-flex">{{ attorney_info.phone.title }}</span>
                                             </a>
 
                                             <a 
@@ -65,6 +65,10 @@
                                             </a>
                                         </div>
                                     </figure>
+                                {% else %}
+                                    <div class="relative w-full h-full bg-grey-taupe/20 text-grey-taupe overflow-hidden">
+                                        <div class="pt-[110%]"></div>
+                                    </div>
                                 {% endif %}
 
                                 <div class="relative w-full space-y-24">
