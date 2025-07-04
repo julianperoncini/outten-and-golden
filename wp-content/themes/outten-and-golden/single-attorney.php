@@ -9,6 +9,7 @@ $context['post'] = Timber::get_post();
 $post = $context['post'];
 $post->feature_media = get_field('featured_image');
 $post->feature_content = get_field('feature_content');
+$post->post_content = get_field('post_content');
 $post->contact_info = get_field('contact_info');
 $post->content_builder = get_field('content_builder');
 
