@@ -1,4 +1,5 @@
 <div class="relative flex gap-x-[2px] text-grey items-center">
+
     {% if post.contact_info.phone %}
         <a 
             class="relative h-[3.8rem] bg-grey-taupe transition-colors duration-300 group hover:bg-black py-12 px-16 flex items-center space-x-8 text-12 font-medium leading-none tracking-[0.12rem] uppercase" 
@@ -11,6 +12,8 @@
                     <path d="M7.53,14.7H2.82c-1.56,0-2.82-1.27-2.82-2.82V2.82C0,1.27,1.27,0,2.82,0h4.71c1.56,0,2.82,1.27,2.82,2.82v9.05c0,1.56-1.27,2.82-2.82,2.82ZM2.82,1.3c-.84,0-1.52.68-1.52,1.52v9.05c0,.84.68,1.52,1.52,1.52h4.71c.84,0,1.52-.68,1.52-1.52V2.82c0-.84-.68-1.52-1.52-1.52H2.82ZM5.9,12.16h-1.45c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h1.45c.36,0,.65.29.65.65s-.29.65-.65.65Z"/>
                 </svg>
             </span>
+
+            
 
             {% if post.contact_info.phone.title %}
                 <span class="inline-flex group-hover:text-white transition-colors duration-300">{{ post.contact_info.phone.title }}</span>
